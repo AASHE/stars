@@ -2738,7 +2738,7 @@ class NumericSubmission(DocumentationFieldSubmission):
         if self.requires_duplication():
             metric_locals = self.credit_submission.get_submission_field_key(metric=True)
             metric_locals.update({"value": None})
-            self.metric_value = self.run_formula(imperial_locals, log_exceptions=True)
+            self.metric_value = self.run_formula(metric_locals, log_exceptions=True)
 
 
     def save(self,
