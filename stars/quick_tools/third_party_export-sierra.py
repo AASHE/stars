@@ -16,8 +16,8 @@ from stars.apps.third_parties.models import ThirdParty
 from stars.apps.third_parties.utils import export_credit_csv
 
 
-START_DATE = datetime.date(year=2016, month=3, day=2)
-END_DATE = datetime.date(year=2019, month=3, day=1)
+START_DATE = datetime.date(year=2017, month=3, day=2)
+END_DATE = datetime.date(year=2020, month=3, day=1)
 
 
 """
@@ -50,7 +50,8 @@ summaries = {}
 
 
 for creditset in [CreditSet.objects.get(version="2.0"),
-                  CreditSet.objects.get(version="2.1")]:
+                  CreditSet.objects.get(version="2.1"),
+                  CreditSet.objects.get(version="2.2")]:
 
     reports = SubmissionSet.objects.filter(
         institution__in=sierra.access_to_institutions.all()).exclude(
