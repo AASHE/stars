@@ -22,7 +22,7 @@
 
   {% elif field.documentation_field.type == 'upload' %}
     {% if field.value %}
-      <a href='{% if host %}http://{{ host }}{% endif %}{{ field.value.url }}'>
+      <a href='{% if host %}https://{{ host }}{% endif %}{{ field.value.url }}'>
         {{ field.get_filename }}
       </a>
     {% endif %}

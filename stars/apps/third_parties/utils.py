@@ -11,6 +11,10 @@ from stars.apps.submissions.models import (SubmissionSet,
                                            DocumentationFieldSubmission)
 
 
+REPORTS_HOST = "reports.aashe.org"
+
+
+
 class UnicodeWriter:
     """
     A CSV writer which will write rows to CSV file "f",
@@ -183,3 +187,46 @@ def export_credit_csv(credit, ss_qs=None, outfilename=None):
         outfile.close()
         print "Closing file: %s" % outfile.name
         return outfile.name
+
+
+def export_submissionset_csv(submissionsets, outfilename=None):
+    """
+        Returns a NamedTemporaryFile with data from each submisisonset
+        in submissionsets.
+    """
+    if not outfilename:
+        outfile = NamedTemporaryFile(suffix='.csv', delete=False)
+    else:
+        path = os.path.dirname(outfilename)
+        if not os.path.exists(path):
+            os.makedirs(path)
+        outfile = open(outfilename, 'wb')
+
+    csvWriter = UnicodeWriter(outfile)
+
+    columns = ["Institution",
+               "Type",
+               "Date Submitted",
+               "Version",
+               "Rating",
+               "Link"]
+
+    csvWriter.writerow(columns)
+
+    for submissionset in submissionsets:
+
+        scorecard_url = ("https://" +
+                         REPORTS_HOST +
+                         submissionset.get_scorecard_url())
+
+        csvWriter.writerow([submissionset.institution.name,
+                            (submissionset.institution.institution_type or
+                             "Unknown"),
+                            unicode(submissionset.date_submitted),
+                            submissionset.creditset.version,
+                            submissionset.rating.name,
+                            scorecard_url])
+
+    outfile.close()
+    print "Closing file: %s" % outfile.name
+    return outfile.name

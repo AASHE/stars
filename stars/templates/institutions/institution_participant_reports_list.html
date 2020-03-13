@@ -17,15 +17,10 @@
       <b>
         {{ inst_count }} institutions
       </b>
-      have registered to use the STARS Reporting Tool. Of these institutions
-      <b>
-        {{ member_count }} are AASHE members
-      </b>
-      (<sup class='symbol'>m</sup>).
+      have registered to use the STARS Reporting Tool.
       Each institution's most recent report is listed below. Ratings
-      that have not been updated in more than three years are
-      considered to be expired (*).  Click on an institution's name to
-      view all STARS reports.
+      more than three years old are considered to be expired (*).
+      Click on an institution's name to view all STARS reports.
     </p>
   </span>
   {% load help %}
@@ -61,7 +56,6 @@
               {% else %}
                 {{ institution.name }}
               {% endif %}
-              {% include "institutions/inst_property_icons.html" %}
             </td>
             <td class="span3">
               {{ institution.country }}

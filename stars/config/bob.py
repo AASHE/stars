@@ -58,14 +58,9 @@ if ((('test' in sys.argv) or ('testserver' in sys.argv))
         os.environ.get('STARS_SQLITE_DB_URL',
                        'sqlite:///stars.sqlite.db'))
 
-    DATABASES['iss'] = dj_database_url.parse(
-        os.environ.get('ISS_SQLITE_DB_URL',
-                       'sqlite:///iss.sqlite.db'))
 else:
     DATABASES['default'] = dj_database_url.parse(
         os.environ.get('STARS_MYSQL_DB_URL'))
-    DATABASES['iss'] = dj_database_url.parse(
-        os.environ.get('ISS_MYSQL_DB_URL'))
     DATABASES['default']['OPTIONS'] = {'init_command':
                                        'SET default_storage_engine=MYISAM'}
 

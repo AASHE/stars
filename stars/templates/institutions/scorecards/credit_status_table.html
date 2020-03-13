@@ -46,21 +46,17 @@
       {% endif %}
     </td>
     <td>
-      {% if not submissionset.expired %}
-        {% if rating.publish_score %}
-          {% if category_submission.category.include_in_score %}
-            {{ credit_submission.assessed_points|floatformat:2 }} /
-            {% format_available_points credit_submission %}
-          {% else %}
-              N/A
-          {% endif %}
+      {% if rating.publish_score %}
+        {% if category_submission.category.include_in_score %}
+          {{ credit_submission.assessed_points|floatformat:2 }} /
+          {% format_available_points credit_submission %}
         {% else %}
-          Reporter
-          {% load help %}
-          {% show_help_context "reporter_status" %}
+            N/A
         {% endif %}
       {% else %}
-        Expired
+        Reporter
+        {% load help %}
+        {% show_help_context "reporter_status" %}
       {% endif %}
     </td>
     <td style='text-align: right;'>

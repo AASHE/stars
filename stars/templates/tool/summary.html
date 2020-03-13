@@ -142,16 +142,16 @@
                          width="{{ im.x }}"
                          height="{{ im.y }}"
                          alt='{{ ss.rating }}' />
-                                    {% endthumbnail %}
-                                    <br/>{{ ss.rating }}
-                                    {% thumbnail ss.rating.image_large "1650x1650" as large %}
-                                    <a href='{{ large.url }}'
-                                       title='Download larger logo'>
-                                      <i class='icon-download-alt'></i>
-                                    </a>
-                                    {% endthumbnail %}
+                    {% endthumbnail %}
+                    <br/>
+                    {{ ss.rating }}
+                    {% thumbnail ss.rating.image_large "1650x1650" as large %}
+                    <a href='{{ large.url }}' title='Download larger logo'>
+                      <i class='icon-download-alt'></i>
+                    </a>
+                    {% endthumbnail %}
                   {% else %}
-                                    <em>Expired</em>
+                    {{ ss.rating }} - expired
                   {% endif %}
                 </td>
               </tr>

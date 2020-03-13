@@ -305,9 +305,6 @@ class SubmissionSet(models.Model):
         return "%ssubmissionsets/%d/" % (self.institution.get_admin_url(),
                                          self.id)
 
-    def get_add_payment_url(self):
-        return "%sadd-payment/" % self.get_admin_url()
-
     def get_manage_url(self):
         return urlresolvers.reverse(
             'tool:my_submission:submission-summary',
@@ -1737,6 +1734,9 @@ class CreditUserSubmission(CreditSubmission):
 
     def save(self, calculate_points=True, *args, **kwargs):
         self.last_updated = datetime.now()
+        
+        if not self.submission_fields:
+            return super(CreditUserSubmission, self).save(*args, **kwargs)
 
         if calculate_points:
             self.assessed_points = float(self._calculate_points())

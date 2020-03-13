@@ -301,7 +301,6 @@ class Institution(models.Model):
         # Clear current_rating if it's expired.
         if self.rating_expires and self.rating_expires <= date.today():
             # if the rated submission has expired remove the rating
-            self.rated_submission = None
             self.current_rating = None
             self.rating_expires = None
         else:

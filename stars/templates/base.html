@@ -216,8 +216,13 @@
             </div>
 
             <div id="member-links">
-              <a href="https://{{ settings.STARS_REPORTS_HOST  }}/tool/" class="icon-portal"
-                 tabindex="1" target="_blank">Reporting Tool</a>
+              {% if user.is_authenticated %}
+                <a href="{% url 'accounts:logout' %}" class="icon-portal">Logout</a>  
+              {% else %}
+                <a href="https://{{ settings.STARS_REPORTS_HOST  }}/tool/" class="icon-portal"
+                   tabindex="1" target="_blank">Reporting Tool</a>
+              {% endif %}
+              
             </div>
 
           </div>

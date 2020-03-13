@@ -3,16 +3,16 @@
 """
     Tool to export all rated reports for AASHE
 """
+import csv
+import datetime
+import string
+
 
 from stars.apps.institutions.models import *
 from stars.apps.submissions.models import *
 from stars.apps.credits.models import Credit
 from stars.apps.third_parties.utils import export_credit_csv
 
-from django.utils.encoding import smart_unicode, smart_str
-
-import csv, string
-import datetime
 
 # - 2.0: IC 1, IC 2, IC 3, OP 18, OP 19, OP 20, and OP 21
 # - 2.1: IC 1, IC 2, IC 3, OP 15, OP 16, OP 17, and OP 18

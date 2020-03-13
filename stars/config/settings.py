@@ -35,7 +35,7 @@ LANGUAGE_CODE = 'en-us'
 SITE_ID = 1
 USE_I18N = True
 USE_L10N = True
-USE_THOUSAND_SEPARATOR = False
+USE_THOUSAND_SEPARATOR = True
 
 # Database
 DATABASES = {
@@ -157,7 +157,7 @@ AUTH_USER_MODEL = 'auth.User'
 
 LOGIN_URL = '/accounts/login/'
 LOGOUT_URL = 'logout'
-LOGIN_REDIRECT_URL = 'tool-landing-page'
+LOGIN_REDIRECT_URL = 'tool:tool-landing-page'
 ADMIN_URL = "/tool/admin/"
 MANAGE_INSTITUTION_URL = "/tool/"
 
@@ -497,9 +497,6 @@ if 'test' in sys.argv:
     DATABASES['default'] = dj_database_url.parse(
         os.environ.get('STARS_TEST_DB',
                        "sqlite:////tmp/stars_tests.db"))
-    DATABASES['default'] = dj_database_url.parse(
-        os.environ.get('ISS_TEST_DB',
-                       "sqlite:////tmp/iss_tests.db"))
 
     CACHES = {
         'default': django_cache_url.parse(
