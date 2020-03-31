@@ -11,46 +11,83 @@ from stars.apps.third_parties.utils import export_credit_csv
 tp = ThirdParty.objects.get(slug="princeton")
 
 summaries = {}
+institutions = []
+institutions_to_exclude = [
+    8217,  # AASHE Test Campus
+    427,  # University of Missouri, Kansas City
+    795,  # University of North Carolina, Wilmington
+]
 
+# Reports to force into export, by version
+hard_coded_reports = [
+    SubmissionSet.objects.get(pk=7315),  # Ball State University
+    SubmissionSet.objects.get(pk=6798),  # Baldwin Wallace University
+]
 
-for cs in [CreditSet.objects.get(version=2.0),
-           CreditSet.objects.get(version=2.1)]:
+# Add the hard coded report institutions to avoid duplicates
+for ss in hard_coded_reports:
+    institutions.append(ss.institution)
 
-    start_date = datetime.date(year=2016, month=3, day=2)
-    end_date = datetime.date(year=2019, month=3, day=11)
+for cs in [
+    CreditSet.objects.get(version=2.2),
+    CreditSet.objects.get(version=2.1),
+    CreditSet.objects.get(version=2.0),
+]:
 
-    reports = SubmissionSet.objects.filter(
-        institution__in=tp.access_to_institutions.all()).exclude(
-            rating__isnull=True).filter(
-                creditset=cs).filter(
-                    date_submitted__gte=start_date).filter(
-                        date_submitted__lte=end_date).order_by(
-                            "institution__name", "-date_submitted", "-id")
-
-    institutions = []
     latest_reports = []  # only use the latest report
+
+    def add_report(r):
+        latest_reports.append(r)
+        summaries[r.institution] = r
+
+    # add these reports in first
+    for ss in hard_coded_reports:
+        if ss.creditset.version == cs.version:
+            add_report(ss)
+
+    start_date = datetime.date(year=2017, month=3, day=8)
+    end_date = datetime.date(year=2020, month=3, day=25)
+
+    reports = (
+        SubmissionSet.objects.filter(institution__in=tp.access_to_institutions.all())
+        .exclude(rating__isnull=True)
+        .filter(creditset=cs)
+        .filter(date_submitted__gte=start_date)
+        .filter(date_submitted__lte=end_date)
+        .order_by("institution__name", "-date_submitted", "-id")
+    )
 
     for report in reports:
         # Just take first report for each institution.
-        if report.institution in institutions:
-            continue  # Not the first report for this institution.
-        latest_reports.append(report)
+        if (
+            report.institution in institutions
+            or report.institution.id in institutions_to_exclude
+        ):
+            continue  # Not the first report for this institution
+        add_report(report)
         institutions.append(report.institution)
-        summaries[report.institution] = report
 
     for cat in cs.category_set.all():
         for sub in cat.subcategory_set.all():
             for c in sub.credit_set.all():
-                filename = 'princeton/export/%s/%s.csv' % (
-                    cs.version, string.replace("%s" % c, "/", "-"))
+                filename = "princeton/export/%s/%s.csv" % (
+                    cs.version,
+                    string.replace("%s" % c, "/", "-"),
+                )
                 filename = string.replace(filename, ":", "")
                 filename = string.replace(filename, " ", "_")
 
-                export_credit_csv(c,
-                                  ss_qs=latest_reports,
-                                  outfilename=filename)
+                export_credit_csv(c, ss_qs=latest_reports, outfilename=filename)
 
 for institution, report in summaries.items():
-    print '\t'.join([institution.name, str(report.date_submitted),
-                     report.rating.name, report.creditset.version,
-                     institution.contact_email])
+    print(
+        "\t".join(
+            [
+                institution.name,
+                str(report.date_submitted),
+                report.rating.name,
+                report.creditset.version,
+                institution.contact_email,
+            ]
+        )
+    )
