@@ -13,7 +13,8 @@ tp = ThirdParty.objects.get(slug="princeton")
 summaries = {}
 institutions = []
 institutions_to_exclude = [
-    8217,  # AASHE Test Campus
+    1082,  # AASHE Test Campus
+    950,  # AASHE Test Campus
     427,  # University of Missouri, Kansas City
     795,  # University of North Carolina, Wilmington
 ]
