@@ -5,20 +5,6 @@ from django.views.generic.base import RedirectView, TemplateView
 from stars.apps.old_cms.models import Category, NewArticle, Subcategory
 
 
-class HomePageView(TemplateView):
-    template_name = 'home.html'
-
-    def get_context_data(self, *args, **kwargs):
-        """ Add/update any context variables """
-
-        context = super(HomePageView, self).get_context_data(*args, **kwargs)
-
-        context['categories'] = Category.objects.filter(
-            published=True).order_by('ordinal')
-
-        return context
-
-
 class CMSView(TemplateView):
     """
         A base context for all CMS views
