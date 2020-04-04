@@ -447,10 +447,10 @@ class ScorecardView(RulesMixin,
     def show_column_charts_or_not(self, submissionset):
         """Should we show the column charts for this SubmissionSet?
 
-        Only for preview reports for folks with FULL_ACCESS."""
+        Only for rated reports and for folks with FULL_ACCESS."""
         if (submissionset.creditset.has_basic_benchmarking_feature and
-            submissionset.institution.access_level ==
-                Subscription.FULL_ACCESS):
+            submissionset.institution.access_level == Subscription.FULL_ACCESS and
+            submissionset.rating != 'Reporter'):
             return True
         return False
 
