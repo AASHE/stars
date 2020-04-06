@@ -69,7 +69,7 @@
                 </td>
                 <td class="span2">
                 {{ institution.rated_submission.rating }}
-                {% if institution.older_than_three_years %}
+                {% if institution.rated_submission.expired %}
                     *
 	            {% endif %}
                 </td>

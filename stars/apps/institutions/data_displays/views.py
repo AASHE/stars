@@ -56,12 +56,13 @@ class Dashboard(TemplateView):
 
     def get_ratings_context(self):
         """Return a context for the Ratings graph."""
-        # if the institution's rating_expires == none,
-        # then their rating has expired
         ratings = collections.defaultdict(int)
-        for i in Institution.objects.filter(current_rating__isnull=False).select_related('current_rating__name'):
-            if i.rating_expires:
-                ratings[i.current_rating.name] += 1
+        inst = Institution.objects.get_participants_and_reports()
+        inst = inst.filter(rated_submission__isnull=False)
+        inst = inst.filter(rated_submission__expired=False)
+        inst = inst.select_related('rated_submission__rating__name')
+        for i in inst:
+            ratings[i.rated_submission.rating.name] += 1
         return ratings
 
     def get_participation_context(self):
@@ -187,25 +188,12 @@ class Dashboard(TemplateView):
 
     def get_context_data(self, **kwargs):
 
-        context = cache.get('stars_dashboard_context')
+        context = {}
+        context['display_version'] = "2.0"  # used in the tabs
 
-        if not context:
-
-            context = {}
-            context['display_version'] = "2.0"  # used in the tabs
-
-            context['ratings'] = self.get_ratings_context()
-
-            context.update(self.get_participation_context())
-
-            context.update(self.get_participants_context())
-
-            # Cache this for 24 hours.
-
-            twenty_four_hours = 60 * 60 * 24
-            cache.set('stars_dashboard_context',
-                      context,
-                      twenty_four_hours)
+        context['ratings'] = self.get_ratings_context()
+        context.update(self.get_participation_context())
+        context.update(self.get_participants_context())
 
         context.update(super(Dashboard, self).get_context_data(**kwargs))
 
