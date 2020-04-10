@@ -17,7 +17,7 @@ urlpatterns = [
         PieChartView.as_view(),
         name="piechart"),
     url(r'^dashboard/$',
-        Dashboard.as_view(),
+        never_cache(Dashboard.as_view()),
         name="dashboard"),
     url(r'^(?P<cs_version>[^\/]+)/categories/$',
         never_cache(AggregateFilter.as_view()),

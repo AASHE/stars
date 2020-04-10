@@ -3,7 +3,7 @@ import logging
 import logical_rules
 from django.conf import settings
 from django.conf.urls import include, url
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, RedirectView
 from django.views.static import serve
 from django.contrib import admin
 from django.contrib.auth.views import login, logout_then_login
@@ -11,7 +11,6 @@ from sorl.thumbnail.log import ThumbnailLogHandler
 
 from stars.apps.helpers.old_path_preserver import (OldPathPreserverView,
                                                    OLD_PATHS_TO_PRESERVE)
-from stars.apps.old_cms.views import (HomePageView)
 
 logical_rules.autodiscover()
 
@@ -32,9 +31,8 @@ urlpatterns = [
     # celery task status
     url('^tasks/', include('djcelery.urls')),
 
-    # tool:
-    # (r'^$', 'stars.apps.tool.views.stars_home_page'),
-    url(r'^$', HomePageView.as_view(), {'template_name': 'home.html'}),
+    # Base url redirects to /tool
+    url(r'^$', RedirectView.as_view(url='/tool')),
 
     # articles (cms):
     url(r'^pages/', include('stars.apps.old_cms.urls')),
