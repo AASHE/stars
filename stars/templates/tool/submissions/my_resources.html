@@ -38,14 +38,14 @@
             	{% endthumbnail %}
             {% endif %}
             {% if institution.charter_participant %}
-            	{% thumbnail "https://stars.aashe.org/media/static/images/seals/Stars_Seal_Charter_Particip_RGB_300.png" "300x300" as thumb %}
-            		{% thumbnail "https://stars.aashe.org/media/static/images/seals/Stars_Seal_Charter_Particip_RGB_300.png" "16500x1650" as large %}
+            	{% thumbnail "https://reports.aashe.org/media/static/images/seals/Stars_Seal_Charter_Particip_RGB_300.png" "300x300" as thumb %}
+            		{% thumbnail "https://reports.aashe.org/media/static/images/seals/Stars_Seal_Charter_Particip_RGB_300.png" "16500x1650" as large %}
             		<a href="{{ large.url }}">
             			<img src='{{ thumb.url }}' width="{{ thumb.width }}" height="{{ thumb.height }}"/></a>
             	{% endthumbnail %}{% endthumbnail %}
             {% else %}{% if institution.is_participant %}
-            	{% thumbnail "https://stars.aashe.org/media/static/images/seals/Stars_Seal_Participant_RGB_300.png" "300x300" as thumb %}
-            		{% thumbnail "https://stars.aashe.org/media/static/images/seals/Stars_Seal_Participant_RGB_300.png" "16500x1650" as large %}
+            	{% thumbnail "https://reports.aashe.org/media/static/images/seals/Stars_Seal_Participant_RGB_300.png" "300x300" as thumb %}
+            		{% thumbnail "https://reports.aashe.org/media/static/images/seals/Stars_Seal_Participant_RGB_300.png" "16500x1650" as large %}
             		<a href="{{ large.url }}">
             			<img src='{{ thumb.url }}' width="{{ thumb.width }}" height="{{ thumb.height }}"/></a>
             	{% endthumbnail %}{% endthumbnail %}
