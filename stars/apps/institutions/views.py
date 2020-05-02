@@ -448,11 +448,9 @@ class ScorecardView(RulesMixin,
         """Should we show the column charts for this SubmissionSet?
 
         Only for rated reports and for folks with FULL_ACCESS."""
-        if (submissionset.creditset.has_basic_benchmarking_feature and
+        return (submissionset.creditset.has_basic_benchmarking_feature and
             submissionset.institution.access_level == Subscription.FULL_ACCESS and
-            submissionset.rating != 'Reporter'):
-            return True
-        return False
+            submissionset.rating.name != 'Reporter')
 
     def get_category_url(self, category, url_prefix):
         """ The default link for a category. """
