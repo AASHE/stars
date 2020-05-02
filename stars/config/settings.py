@@ -14,8 +14,7 @@ from django.contrib.messages import constants as messages
 sys.path.append('../')
 
 ADMINS = [
-    ('Bob Erb', 'bob.erb@aashe.org'),
-    ('Tylor Dodge', 'tylor@aashe.org'),
+    ('Ro Zuniga Rubio', 'rogelio@aashe.org'),
     ('Chris Pelton', 'chris.pelton@aashe.org')
 ]
 MANAGERS = ADMINS
@@ -73,9 +72,6 @@ else:
 STATICFILES_DIRS = [
     os.path.join(os.path.dirname(__file__), "..", "static"),
 ]
-
-print "STATIC FILES"
-print STATICFILES_DIRS
 
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',

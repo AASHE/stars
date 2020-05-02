@@ -274,9 +274,9 @@ class Command(BaseCommand):
                 stars_subscription.institution.update_current_subscription()
                 stars_subscription.institution.save()
             else:
-                logger.error("no stars_subscription.institution for "
-                             "subscription with pk = " +
-                             str(stars_subscription.pk))
+                logger.error("stars Subscription with id " + str(stars_subscription.pk)
+                            + " has no associated Institution. Subscription "
+                            "membersuite_id = " + str(membersuite_subscription.membersuite_id))
 
         # if any id's remain in subscription_id_list they can be archived
         # as they don't exist in MemberSuite anymore
