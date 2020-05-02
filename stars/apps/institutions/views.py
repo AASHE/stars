@@ -453,8 +453,8 @@ class ScorecardView(RulesMixin,
             if (not submissionset.status == 'r'):
                 # its a preview and requires a subscription
                 return submissionset.institution.access_level == Subscription.FULL_ACCESS
-            else:
-                return rating != 'Reporter'
+            elif rating is not None:
+                return rating.name != 'Reporter'
         return False
 
     def get_category_url(self, category, url_prefix):
