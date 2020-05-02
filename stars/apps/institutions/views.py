@@ -440,17 +440,22 @@ class ScorecardView(RulesMixin,
         if not ss.status == 'r':
             _context['preview'] = True
 
-        _context['show_column_charts'] = self.show_column_charts_or_not(ss)
+        _context['show_column_charts'] = self.show_column_charts_or_not(ss, rating)
 
         return _context
 
-    def show_column_charts_or_not(self, submissionset):
-        """Should we show the column charts for this SubmissionSet?
-
-        Only for rated reports and for folks with FULL_ACCESS."""
-        return (submissionset.creditset.has_basic_benchmarking_feature and
-            submissionset.institution.access_level == Subscription.FULL_ACCESS and
-            submissionset.rating.name != 'Reporter')
+    def show_column_charts_or_not(self, submissionset, rating):
+        """
+            Should we show benchmarking charts? If in preview, requires 
+            subscription. If submitted, must not be Reporter.
+        """
+        if (submissionset.creditset.has_basic_benchmarking_feature):
+            if (not submissionset.status == 'r'):
+                # its a preview and requires a subscription
+                return submissionset.institution.access_level == Subscription.FULL_ACCESS
+            else:
+                return rating != 'Reporter'
+        return False
 
     def get_category_url(self, category, url_prefix):
         """ The default link for a category. """
