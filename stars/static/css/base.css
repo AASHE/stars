@@ -241,11 +241,11 @@ ul.nav-pills li.active a:hover {
 
 /* css spinner */
 .spinner {
-  width: 70px;
-  height: 70px;
+  width: 1.2rem;
+  height: 1.2rem;
 
-  border: 2px solid #f3f3f3;
-  border-top: 3px solid #f25a41;
+  border: .35rem solid #f3f3f3;
+  border-top: .35rem solid #f25a41;
   border-radius: 100%;
 
   position: static;
@@ -255,7 +255,6 @@ ul.nav-pills li.active a:hover {
   right: 0;
   margin: auto;
   display: none;
-
   animation: spin 1s infinite linear;
 }
 

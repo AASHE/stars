@@ -17,13 +17,14 @@
         </div>
       </div>
 
-
       <div class="row">
         <div class="span8 offset2">
           <div class="search-panel">
             <h3>Find your institution</h3>
-            <input class="span7" type="text" placeholder="Type here to begin search" id="school-finder">
+            <input class="span6" type="text" placeholder="Type here to begin search" id="school-finder">
+            <div class="pull-right spinner"></div>
           </div>
+          
         </div>
       </div>
 
@@ -36,7 +37,7 @@
       </div>
       <form action="" method="POST">
         {% csrf_token %}
-        <div class="span8 offset2">
+        <div class="span8 offset2" id="institution-selection">
           <h2>Institution Name</h2>
           <div class="input-append">
             <input readonly class="input-xxlarge" name="org-name" id="org-name" type="text">
