@@ -11,8 +11,12 @@
       <div class="row">
         <div class="offset2 span7">
           <h1>STARS Registration Form</h1>
-          <div class="offset1">
-            <h4>Begin typing the name of your institution in the search box and select the appropriate result. If your institution is not listed, please email <a href="mailto:stars@aashe.org">stars@aashe.org</a> and we will help you get started.</h4>
+          <div class="alert alert-info">
+            <p>Begin typing the name of your institution in the search box and select 
+                the appropriate result. If your institution is not listed, please 
+                email <a href="mailto:stars@aashe.org">stars@aashe.org</a> and we 
+                will help you get started.
+            </p>
           </div>
         </div>
       </div>
@@ -29,7 +33,7 @@
       </div>
 
       <div class="span7 offset2 org-list">
-        <ul class="nav nav-list nav-stacked">
+        <ul id="registration-ul">
         {% for org in orgs %}
           <a><li name="{{ org.account_num }}">{{ org.org_name }}{% if org.city %}, {{ org.city }} {% endif %}</li></a>
         {% endfor %}
@@ -38,8 +42,8 @@
       <form action="" method="POST">
         {% csrf_token %}
         <div class="span8 offset2" id="institution-selection">
-          <h2>Institution Name</h2>
           <div class="input-append">
+            <label class="fake-h3" for="org-name">Institution</label>
             <input readonly class="input-xxlarge" name="org-name" id="org-name" type="text">
             <span class="add-on">
               <div class="green-dot"></div>
@@ -48,7 +52,7 @@
           <input type="hidden" name="aashe_id" id="asshe_id">
           {{ form.non_field_errors }}
         </div>
-        <div class="span4 offset2">
+        <div class="span4 offset2 registration-column">
           <h3>STARS Liaison</h3>
           <p><small>The primary point of contact for your institution's STARS reporting.</small></p>
           <label for="form.contact_first_name">{{form.contact_first_name.label}}</label>
@@ -67,7 +71,7 @@
           {{ form.contact_email.errors }}
           {{ form.contact_email }}
         </div>
-        <div class="span4">
+        <div class="span4 registration-column">
           <h3>Executive Contact</h3>
           <p><small>President, chancellor, provost, or other executive to be copied on the registration confirmation e-mail.</small></p>
           <label for="form.executive_contact_first_name">{{form.executive_contact_first_name.label}}</label>
