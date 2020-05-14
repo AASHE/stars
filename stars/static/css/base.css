@@ -243,11 +243,9 @@ ul.nav-pills li.active a:hover {
 .spinner {
   width: 1.2rem;
   height: 1.2rem;
-
   border: .35rem solid #f3f3f3;
-  border-top: .35rem solid #f25a41;
+  border-top: .35rem solid #0084cb;
   border-radius: 100%;
-
   position: static;
   top: 0;
   bottom: 10;

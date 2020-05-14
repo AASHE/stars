@@ -41,13 +41,8 @@
       <form action="" method="POST">
         {% csrf_token %}
         <div class="span8 offset2" id="institution-selection">
-          <div class="input-append">
-            <label class="fake-h3" for="org-name">Institution</label>
-            <input readonly class="input-xxlarge" name="org-name" id="org-name" type="text">
-            <span class="add-on">
-              <div class="green-dot"></div>
-            </span>
-          </div>
+          <label class="fake-h3" for="org-name">Institution</label>
+          <input readonly class="input-xxlarge" name="org-name" id="org-name" type="text">
           <input type="hidden" name="aashe_id" id="asshe_id">
           {{ form.non_field_errors }}
         </div>
