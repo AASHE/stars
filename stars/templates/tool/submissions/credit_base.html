@@ -22,22 +22,22 @@
   <h2>{{ credit }}</h2>
 
   {% with credit_submission.subcategory_submission.category_submission.submissionset as submissionset %}
-    {% if submissionset.is_under_review %}
+    {% if submissionset.is_under_review and user.is_staff %}
       <div class="row span8 well">
         <div class="span5">
           <h5>
             Review Conclusion: {{ credit_submission.get_review_conclusion_display }}
           </h5>
         </div>
-        {% if user.is_staff and num_notations_to_send != None %}
+        {% if num_notations_to_send != None %}
           <div class="pull-right">
             {{ num_notations_to_send }} Notation(s) to Send
           </div>
           <div class="pull-right" style="padding-top: 5px">
             <a href="{% url 'tool:my_submission:send-credit-submission-review-notations-email' submissionset.institution.slug submissionset.id %}?next={{ request.get_full_path }}"
-               class="btn btn-primary"
-               data-toggle="tooltip"
-               title="{{ num_notations_to_send }} Notation Email(s) to Send">
+              class="btn btn-primary"
+              data-toggle="tooltip"
+              title="{{ num_notations_to_send }} Notation Email(s) to Send">
               <i class="icon-eye-open icon-white"></i>
               Preview/Send Review Notations Email
             </a>
