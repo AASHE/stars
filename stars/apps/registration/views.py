@@ -60,14 +60,8 @@ class InstitutionCreateView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super(InstitutionCreateView, self).get_context_data(**kwargs)
-        institution_ids = Institution.objects.values_list(
-            'aashe_id', flat=True)
-        institution_ids = [element for element in institution_ids
-                           if element is not None]
-
         orgs = Organization.objects.exclude(
             org_type_id__in=EXCLUDED_ORG_TYPE_ID)
-        orgs = orgs.exclude(account_num__in=institution_ids)
         orgs = (orgs.values('account_num', 'org_name', 'city')
                 .order_by('org_name'))
 
@@ -86,6 +80,8 @@ class InstitutionCreateView(CreateView):
 
         aashe_id = str(self.request.POST.get('aashe_id'))
         aashe_id = int(aashe_id.replace(',', ''))
+        if Institution.objects.filter(aashe_id=aashe_id).exists():
+            return HttpResponseRedirect(self.existing_institution_url(aashe_id))
         org = Organization.objects.get(account_num=aashe_id)
         institution = Institution(aashe_id=aashe_id,
                                   name=org.org_name,
@@ -143,6 +139,11 @@ class InstitutionCreateView(CreateView):
     def get_success_url(self):
         return reverse('tool:tool-summary',
                        kwargs={'institution_slug': self.return_slug})
+                       
+    def existing_institution_url(self, aashe_id):
+        institution = Institution.objects.get(aashe_id=aashe_id)
+        return reverse('tool:tool-summary',
+                        kwargs={'institution_slug': institution.slug})
 
     def set_up_account(self, person, institution):
         """

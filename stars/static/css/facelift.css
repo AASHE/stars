@@ -258,7 +258,7 @@ h2 {
   border-radius: 6px;
 }
 #school-finder {
-  margin: 5px;
+  margin: .25rem;
 }
 .green-dot {
   display: none;
@@ -270,7 +270,24 @@ h2 {
   background-color: #5bb75b;
 }
 #institution-submit-btn {
-  margin-top: 20px;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+#institution-selection {
+  margin-top: 1.35rem;
+}
+.fake-h3 {
+  color: #425968;
+  font-size: 1.5625em;
+  font-family: "Aller",sans-serif;
+  font-weight: 700;
+  line-height: 1.1;
+}
+.registration-column {
+  margin-top: 1rem;
+}
+#registration-ul {
+  margin-top: .75rem;
 }
 .errorlist {
   margin: 0 0 9px 0;
