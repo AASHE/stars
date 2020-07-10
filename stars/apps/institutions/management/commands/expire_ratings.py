@@ -14,7 +14,6 @@ logger = logging.getLogger()
 
 
 class Command(BaseCommand):
-
     def handle(self, *args, **options):
         logger.info("expire_ratings started")
         expire_ratings()
@@ -27,12 +26,16 @@ def expire_ratings():
     rating_good_for = datetime.timedelta(days=365 * 3)
 
     # all rated submissions that haven't already expired
-    for submissionset in SubmissionSet.objects.filter(
-            status="r").exclude(expired=True).order_by("-date_submitted"):
+    for submissionset in (
+        SubmissionSet.objects.filter(status="r")
+        .exclude(expired=True)
+        .order_by("-date_submitted")
+    ):
 
-        if submissionset.date_submitted + rating_good_for < today:
+        if submissionset.date_expiration < today:
             logger.info("Expired: %s" % submissionset)
             logger.info("Date Submitted: %s" % submissionset.date_submitted)
+            logger.info("Date Expiration: %s" % submissionset.date_expiration)
             submissionset.expired = True
             submissionset.save()
 

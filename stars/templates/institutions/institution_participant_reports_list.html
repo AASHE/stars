@@ -18,9 +18,9 @@
         {{ inst_count }} institutions
       </b>
       have registered to use the STARS Reporting Tool.
-      Each institution's most recent report is listed below. Ratings
+      Each institution's most recent rating is listed below. Ratings
       more than three years old are considered to be expired (*).
-      Click on an institution's name to view all STARS reports.
+      Click on an institution's name to view all of its STARS reports.
     </p>
   </span>
   {% load help %}
@@ -68,15 +68,15 @@
                   {{ institution.rated_submission.creditset.version }}
                 </td>
                 <td class="span2">
+                  <a href="{% url 'institutions:scorecard-summary' institution.slug institution.rated_submission.date_submitted %}">
                 {{ institution.rated_submission.rating }}
                 {% if institution.rated_submission.expired %}
                     *
 	            {% endif %}
+                  </a>
                 </td>
                 <td class="span2">
-                    <a href="{% url 'institutions:scorecard-summary' institution.slug institution.rated_submission.date_submitted %}">
-                      {{ institution.rated_submission.date_submitted }}
-                    </a>
+                      {{ institution.rated_submission.date_expiration }}
                 </td>
             {% else %}
                 <td class="span1"></td>

@@ -19,6 +19,8 @@
             <tr>
                 <th>STARS Version</th>
                 <th>Submission Date</th>
+								<th>Publication Date</th>
+								<th>Valid Through</th>
                 <th>Rating</th>
             </tr>
             </thead>
@@ -36,6 +38,20 @@
                                 Pending Submission
                             {% endif %}
                         </a>
+                    </td>
+										<td>
+                            {% if ss.date_published %}
+                                {{ ss.date_published }}
+                            {% else %}
+                                Pending Publication
+                            {% endif %}
+                    </td>
+										<td>
+                            {% if ss.date_expiration %}
+                                {{ ss.date_expiration }}
+                            {% else %}
+                                Pending Expiration
+                            {% endif %}
                     </td>
                     <td>
                         {% if ss.status == 'r' %}

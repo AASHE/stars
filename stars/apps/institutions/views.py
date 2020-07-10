@@ -1,8 +1,7 @@
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
 from django.http import Http404, HttpResponseRedirect
-from django.views.generic import (FormView, CreateView, TemplateView,
-                                  RedirectView)
+from django.views.generic import FormView, CreateView, TemplateView, RedirectView
 from django.template.response import TemplateResponse
 
 from extra_views import CreateWithInlinesView
@@ -10,20 +9,26 @@ from logical_rules.mixins import RulesMixin
 
 from stars.apps.credits.models import Category, Subcategory, Credit
 from stars.apps.credits.views import StructureMixin
-from stars.apps.institutions.forms import (SubmissionSelectForm,
-                                           SubmissionInquiryForm,
-                                           CreditSubmissionInquiryFormSet,
-                                           DataCorrectionRequestForm)
+from stars.apps.institutions.forms import (
+    SubmissionSelectForm,
+    SubmissionInquiryForm,
+    CreditSubmissionInquiryFormSet,
+    DataCorrectionRequestForm,
+)
 from stars.apps.institutions.models import Institution, Subscription
 from stars.apps.notifications.models import EmailTemplate
-from stars.apps.submissions.models import (DataCorrectionRequest,
-                                           SubmissionInquiry,
-                                           SUBMISSION_STATUSES)
+from stars.apps.submissions.models import (
+    DataCorrectionRequest,
+    SubmissionInquiry,
+    SUBMISSION_STATUSES,
+)
 from stars.apps.submissions.views import SubmissionStructureMixin
 from stars.apps.submissions.tasks import (
-    build_excel_export, build_pdf_export, build_certificate_export)
-from stars.apps.download_async_task.views import (StartExportView,
-                                                  DownloadExportView)
+    build_excel_export,
+    build_pdf_export,
+    build_certificate_export,
+)
+from stars.apps.download_async_task.views import StartExportView, DownloadExportView
 
 
 class InstitutionStructureMixin(StructureMixin):
@@ -47,11 +52,11 @@ class InstitutionStructureMixin(StructureMixin):
             Raises 404 if key in kwargs and not found.
         """
         return self.get_obj_or_call(
-            cache_key='institution',
-            kwargs_key='institution_slug',
+            cache_key="institution",
+            kwargs_key="institution_slug",
             klass=Institution,
             property="slug",
-            use_cache=use_cache
+            use_cache=use_cache,
         )
 
     def get_subscription(self, use_cache=True):
@@ -62,11 +67,12 @@ class InstitutionStructureMixin(StructureMixin):
         """
         if self.get_institution():
             return self.get_obj_or_call(
-                cache_key='subscription',
-                kwargs_key='subscription_id',
+                cache_key="subscription",
+                kwargs_key="subscription_id",
                 klass=self.get_institution().subscription_set.all(),
                 property="id",
-                use_cache=use_cache)
+                use_cache=use_cache,
+            )
         return None
 
     def get_payment(self, use_cache=True):
@@ -77,11 +83,12 @@ class InstitutionStructureMixin(StructureMixin):
         """
         if self.get_subscription():
             return self.get_obj_or_call(
-                cache_key='payment',
-                kwargs_key='payment_id',
+                cache_key="payment",
+                kwargs_key="payment_id",
                 klass=self.get_subscription().subscriptionpayment_set.all(),
                 property="id",
-                use_cache=use_cache)
+                use_cache=use_cache,
+            )
         return None
 
 
@@ -104,12 +111,13 @@ class SortableTableView(TemplateView):
         """ Add/update any context variables """
         _context = super(SortableTableView, self).get_context_data(**kwargs)
 
-        _context.update({'sort_columns': self.columns,
-                         'default_key': self.default_key})
+        _context.update({"sort_columns": self.columns, "default_key": self.default_key})
 
-        (_context['sort_key'],
-         _context['rev'],
-         _context['object_list']) = self.get_object_list()
+        (
+            _context["sort_key"],
+            _context["rev"],
+            _context["object_list"],
+        ) = self.get_object_list()
 
         return _context
 
@@ -129,34 +137,33 @@ class SortableTableView(TemplateView):
         rev = ""
         queryset = self.get_queryset()
 
-        if 'sort' in self.request.GET:
-            if self.request.GET['sort'][0] == '-':
-                asc = '-'
-                rev = ''
-                sort_key = self.request.GET['sort'][1:]
+        if "sort" in self.request.GET:
+            if self.request.GET["sort"][0] == "-":
+                asc = "-"
+                rev = ""
+                sort_key = self.request.GET["sort"][1:]
             else:
-                asc = ''
-                rev = '-'
-                sort_key = self.request.GET['sort']
+                asc = ""
+                rev = "-"
+                sort_key = self.request.GET["sort"]
         else:
             sort_key = self.default_key
             rev = self.default_rev
-            if rev == '':
-                asc = '-'
+            if rev == "":
+                asc = "-"
 
         for col in self.columns:
-            if col['key'] == sort_key:
-                if col['key'] == 'country':
+            if col["key"] == sort_key:
+                if col["key"] == "country":
                     queryset = queryset.order_by(
-                        "%s%s" %
-                        (asc, col['sort_field']),
-                        'ms_institution__state',
-                        self.secondary_order_field)
+                        "%s%s" % (asc, col["sort_field"]),
+                        "ms_institution__state",
+                        self.secondary_order_field,
+                    )
                 else:
                     queryset = queryset.order_by(
-                        "%s%s" %
-                        (asc, col['sort_field']),
-                        self.secondary_order_field)
+                        "%s%s" % (asc, col["sort_field"]), self.secondary_order_field
+                    )
                 break
 
         return (sort_key, rev, queryset)
@@ -173,8 +180,9 @@ class SortableTableViewWithInstProps(SortableTableView):
             update the context with the # of members and charter participants
         """
 
-        _context = super(SortableTableViewWithInstProps,
-                         self).get_context_data(**kwargs)
+        _context = super(SortableTableViewWithInstProps, self).get_context_data(
+            **kwargs
+        )
 
         inst_list = []
         inst_count = 0
@@ -195,12 +203,12 @@ class SortableTableViewWithInstProps(SortableTableView):
                 if i.international:
                     international_count += 1
 
-        _context['inst_count'] = inst_count
-        _context['member_count'] = member_count
-        _context['charter_count'] = charter_count
-        _context['pilot_count'] = pilot_count
-        _context['international_count'] = international_count
-        _context['display_version'] = "2.0"
+        _context["inst_count"] = inst_count
+        _context["member_count"] = member_count
+        _context["charter_count"] = charter_count
+        _context["pilot_count"] = pilot_count
+        _context["international_count"] = international_count
+        _context["display_version"] = "2.0"
         return _context
 
 
@@ -211,15 +219,13 @@ class ActiveInstitutions(SortableTableViewWithInstProps):
     """
 
     template_name = "institutions/institution_list_active.html"
-    default_key = 'name'
-    default_rev = '-'
-    secondary_order_field = 'name'
-    columns = [{'key': 'name',
-                'sort_field': 'name',
-                'title': 'Institution'},
-               {'key': 'rating',
-                'sort_field': 'current_rating',
-                'title': 'Current Rating'}]
+    default_key = "name"
+    default_rev = "-"
+    secondary_order_field = "name"
+    columns = [
+        {"key": "name", "sort_field": "name", "title": "Institution"},
+        {"key": "rating", "sort_field": "current_rating", "title": "Current Rating"},
+    ]
 
     def get_queryset(self):
         """
@@ -239,25 +245,30 @@ class RatedInstitutions(SortableTableViewWithInstProps):
     """
 
     template_name = "institutions/institution_list_rated.html"
-    default_key = 'name'
-    default_rev = '-'
-    secondary_order_field = 'name'
-    columns = [{'key': 'name',
-                'sort_field': 'name',
-                'title': 'Institution'},
-               {'key': 'version',
-                'sort_field': 'rated_submission__creditset__version',
-                'title': 'Version'},
-               {'key': 'rating',
-                'sort_field': 'current_rating',
-                'title': 'Rating'},
-               {'key': 'date_submitted',
-                'sort_field': 'rated_submission__date_submitted',
-                'title': 'Submission Date'}]
+    default_key = "name"
+    default_rev = "-"
+    secondary_order_field = "name"
+    columns = [
+        {"key": "name", "sort_field": "name", "title": "Institution"},
+        {
+            "key": "version",
+            "sort_field": "rated_submission__creditset__version",
+            "title": "STARS Version",
+        },
+        {"key": "rating", "sort_field": "current_rating", "title": "Rating"},
+        {
+            "key": "date_submitted",
+            "sort_field": "rated_submission__date_submitted",
+            "title": "Submission Date",
+        },
+    ]
 
     def get_queryset(self):
-        return Institution.objects.get_rated().select_related(
-            'rated_submission').select_related('rated_submission__creditset')
+        return (
+            Institution.objects.get_rated()
+            .select_related("rated_submission")
+            .select_related("rated_submission__creditset")
+        )
 
 
 class ParticipantReportsView(SortableTableViewWithInstProps):
@@ -267,30 +278,30 @@ class ParticipantReportsView(SortableTableViewWithInstProps):
     """
 
     template_name = "institutions/institution_participant_reports_list.html"
-    default_key = 'date_submitted'
-    default_rev = ''
-    secondary_order_field = 'name'
-    columns = [{'key': 'name',
-                'sort_field': 'name',
-                'title': 'Institution'},
-               {'key': 'country',
-                'sort_field': 'country',
-                'title': 'Location'},
-               {'key': 'version',
-                'sort_field': 'rated_submission__creditset__version',
-                'title': 'Version'},
-               {'key': 'rating',
-                'sort_field': 'current_rating',
-                'title': 'Rating'},
-               {'key': 'date_submitted',
-                'sort_field': 'rated_submission__date_submitted',
-                'title': 'Submission Date'}]
+    default_key = "rating"
+    default_rev = "-"
+    secondary_order_field = "name"
+    columns = [
+        {"key": "name", "sort_field": "name", "title": "Institution"},
+        {"key": "country", "sort_field": "country", "title": "Location"},
+        {
+            "key": "version",
+            "sort_field": "rated_submission__creditset__version",
+            "title": "STARS Version",
+        },
+        {"key": "rating", "sort_field": "current_rating", "title": "Rating"},
+        {
+            "key": "date_expiration",
+            "sort_field": "rated_submission__date_expiration",
+            "title": "Valid Through",
+        },
+    ]
 
     def get_queryset(self):
         qs = Institution.objects.get_participants_and_reports()
-        qs = qs.select_related('rated_submission')
-        qs = qs.select_related('rated_submission__creditset')
-        qs = qs.select_related('ms_institution__state')
+        qs = qs.select_related("rated_submission")
+        qs = qs.select_related("rated_submission__creditset")
+        qs = qs.select_related("ms_institution__state")
         return qs
 
 
@@ -303,22 +314,21 @@ class InstitutionScorecards(InstitutionStructureMixin, TemplateView):
 
     see submissions/rules.py: user_can_preview_submission
     """
-    template_name = 'institutions/scorecards/list.html'
+
+    template_name = "institutions/scorecards/list.html"
 
     def get_context_data(self, **kwargs):
-        _context = super(InstitutionScorecards,
-                         self).get_context_data(**kwargs)
+        _context = super(InstitutionScorecards, self).get_context_data(**kwargs)
 
         institution = self.get_institution()
 
         qs = institution.submissionset_set.filter(is_visible=True)
-        qs = qs.filter(status='r').order_by("-date_submitted")
+        qs = qs.filter(status="r").order_by("-date_submitted")
 
         if qs.count() < 1:
             raise Http404
 
-        _context.update({'submission_sets': qs,
-                         'institution': institution})
+        _context.update({"submission_sets": qs, "institution": institution})
 
         return _context
 
@@ -328,12 +338,14 @@ class InstitutionScorecards(InstitutionStructureMixin, TemplateView):
         to its scorecard rather than show a list with it as
         the only item in it.
         """
-        if len(context['submission_sets']) is 1:
+        if len(context["submission_sets"]) is 1:
             return HttpResponseRedirect(
-                context['submission_sets'][0].get_scorecard_url())
+                context["submission_sets"][0].get_scorecard_url()
+            )
         else:
             return super(InstitutionScorecards, self).render_to_response(
-                context, **response_kwargs)
+                context, **response_kwargs
+            )
 
 
 def get_submissions_for_scorecards(institution):
@@ -342,17 +354,15 @@ def get_submissions_for_scorecards(institution):
     under review.
     """
     return (
-        institution.submissionset_set.filter(
-            status=SUBMISSION_STATUSES["PENDING"]) |
-        institution.submissionset_set.filter(
-            status=SUBMISSION_STATUSES["RATED"]) |
-        institution.submissionset_set.filter(
-            status=SUBMISSION_STATUSES["REVIEW"]))
+        institution.submissionset_set.filter(status=SUBMISSION_STATUSES["PENDING"])
+        | institution.submissionset_set.filter(status=SUBMISSION_STATUSES["RATED"])
+        | institution.submissionset_set.filter(status=SUBMISSION_STATUSES["REVIEW"])
+    )
 
 
-class RedirectOldScorecardCreditURLsView(InstitutionStructureMixin,
-                                         SubmissionStructureMixin,
-                                         RedirectView):
+class RedirectOldScorecardCreditURLsView(
+    InstitutionStructureMixin, SubmissionStructureMixin, RedirectView
+):
     """
     Redirects old Scorecard Credit URLs to their new equivalent.
 
@@ -376,50 +386,48 @@ class RedirectOldScorecardCreditURLsView(InstitutionStructureMixin,
     def get_redirect_url(self, **kwargs):
         institution = self.get_institution()
         submissionset = self.get_submissionset()
-        category = get_object_or_404(Category, id=kwargs['category_id'])
-        subcategory = get_object_or_404(Subcategory,
-                                        id=kwargs['subcategory_id'])
-        credit = get_object_or_404(Credit, id=kwargs['credit_id'])
+        category = get_object_or_404(Category, id=kwargs["category_id"])
+        subcategory = get_object_or_404(Subcategory, id=kwargs["subcategory_id"])
+        credit = get_object_or_404(Credit, id=kwargs["credit_id"])
         return reverse(
-            'institutions:scorecard-credit',
+            "institutions:scorecard-credit",
             kwargs={
-                'institution_slug': institution.slug,
-                'submissionset': submissionset.date_submitted,
-                'category_abbreviation': category.abbreviation,
-                'subcategory_slug': subcategory.slug,
-                'credit_identifier': credit.identifier
-            }
+                "institution_slug": institution.slug,
+                "submissionset": submissionset.date_submitted,
+                "category_abbreviation": category.abbreviation,
+                "subcategory_slug": subcategory.slug,
+                "credit_identifier": credit.identifier,
+            },
         )
 
     def get_object_list(self):
-        return get_submissions_for_scorecards(
-            institution=self.get_institution())
+        return get_submissions_for_scorecards(institution=self.get_institution())
 
 
-class ScorecardView(RulesMixin,
-                    InstitutionStructureMixin,
-                    SubmissionStructureMixin,
-                    TemplateView):
+class ScorecardView(
+    RulesMixin, InstitutionStructureMixin, SubmissionStructureMixin, TemplateView
+):
     """
         Browse credits according to submission in the credit browsing view
     """
-    http_method_names = ['get']
+
+    http_method_names = ["get"]
 
     def get_object_list(self):
-        return get_submissions_for_scorecards(
-            institution=self.get_institution())
+        return get_submissions_for_scorecards(institution=self.get_institution())
 
     def update_logical_rules(self):
 
         super(ScorecardView, self).update_logical_rules()
-        self.add_logical_rule({
-            'name': 'user_can_view_submission',
-            'param_callbacks':
-            [
-                ('user', "get_request_user"),
-                ('submission', "get_submissionset")
-            ],
-        })
+        self.add_logical_rule(
+            {
+                "name": "user_can_view_submission",
+                "param_callbacks": [
+                    ("user", "get_request_user"),
+                    ("submission", "get_submissionset"),
+                ],
+            }
+        )
 
     def get_context_data(self, **kwargs):
         """ Expects arguments for category_id/subcategory_id/credit_id """
@@ -429,32 +437,34 @@ class ScorecardView(RulesMixin,
 
         url_prefix = ss.get_scorecard_url()
 
-        _context['outline'] = self.get_creditset_nav(url_prefix=url_prefix)
+        _context["outline"] = self.get_creditset_nav(url_prefix=url_prefix)
 
-        _context['score'] = ss.get_STARS_score()
+        _context["score"] = ss.get_STARS_score()
 
         rating = ss.get_STARS_rating()
-        _context['rating'] = rating
+        _context["rating"] = rating
 
-        _context['preview'] = False
-        if not ss.status == 'r':
-            _context['preview'] = True
+        _context["preview"] = False
+        if not ss.status == "r":
+            _context["preview"] = True
 
-        _context['show_column_charts'] = self.show_column_charts_or_not(ss, rating)
+        _context["show_column_charts"] = self.show_column_charts_or_not(ss, rating)
 
         return _context
 
     def show_column_charts_or_not(self, submissionset, rating):
         """
-            Should we show benchmarking charts? If in preview, requires 
+            Should we show benchmarking charts? If in preview, requires
             subscription. If submitted, must not be Reporter.
         """
-        if (submissionset.creditset.has_basic_benchmarking_feature):
-            if (not submissionset.status == 'r'):
+        if submissionset.creditset.has_basic_benchmarking_feature:
+            if not submissionset.status == "r":
                 # its a preview and requires a subscription
-                return submissionset.institution.access_level == Subscription.FULL_ACCESS
+                return (
+                    submissionset.institution.access_level == Subscription.FULL_ACCESS
+                )
             elif rating is not None:
-                return rating.name != 'Reporter'
+                return rating.name != "Reporter"
         return False
 
     def get_category_url(self, category, url_prefix):
@@ -471,38 +481,41 @@ class ScorecardView(RulesMixin,
 
 
 class ScorecardSummary(ScorecardView):
-    template_name = 'institutions/scorecards/summary.html'
+    template_name = "institutions/scorecards/summary.html"
 
 
 class ScorecardCredit(ScorecardView):
-    template_name = 'institutions/scorecards/credit.html'
+    template_name = "institutions/scorecards/credit.html"
 
 
 class ScorecardCreditDocumentation(ScorecardView):
-    template_name = 'institutions/scorecards/credit_documentation.html'
+    template_name = "institutions/scorecards/credit_documentation.html"
 
 
 class ExportRules(RulesMixin):
-
     def update_logical_rules(self):
 
         super(ExportRules, self).update_logical_rules()
-        self.add_logical_rule({
-            'name': 'user_can_view_export',
-            'param_callbacks': [('user', "get_request_user"),
-                                ('submission', "get_submissionset")]})
+        self.add_logical_rule(
+            {
+                "name": "user_can_view_export",
+                "param_callbacks": [
+                    ("user", "get_request_user"),
+                    ("submission", "get_submissionset"),
+                ],
+            }
+        )
 
     def get_object_list(self):
         """
             Prevents snapshots from being returned
         """
-        return self.get_institution().submissionset_set.exclude(status='f')
+        return self.get_institution().submissionset_set.exclude(status="f")
 
 
-class ExcelExportView(ExportRules,
-                      InstitutionStructureMixin,
-                      SubmissionStructureMixin,
-                      StartExportView):
+class ExcelExportView(
+    ExportRules, InstitutionStructureMixin, SubmissionStructureMixin, StartExportView
+):
 
     export_method = build_excel_export
     url_prefix = "excel/"
@@ -511,21 +524,19 @@ class ExcelExportView(ExportRules,
         return self.get_submissionset().id
 
 
-class ExcelDownloadView(ExportRules,
-                        InstitutionStructureMixin,
-                        SubmissionStructureMixin,
-                        DownloadExportView):
-    content_type = 'application/vnd.ms-excel'
+class ExcelDownloadView(
+    ExportRules, InstitutionStructureMixin, SubmissionStructureMixin, DownloadExportView
+):
+    content_type = "application/vnd.ms-excel"
     extension = "xls"
 
     def get_filename(self):
         return self.get_submissionset().institution.slug[:64]
 
 
-class PDFExportView(ExportRules,
-                    InstitutionStructureMixin,
-                    SubmissionStructureMixin,
-                    StartExportView):
+class PDFExportView(
+    ExportRules, InstitutionStructureMixin, SubmissionStructureMixin, StartExportView
+):
     """
         Displays an exported PDF version of the selected report.
     """
@@ -537,20 +548,19 @@ class PDFExportView(ExportRules,
         return self.get_submissionset().id
 
 
-class PDFDownloadView(ExportRules,
-                      InstitutionStructureMixin,
-                      SubmissionStructureMixin,
-                      DownloadExportView):
-    content_type = 'application/pdf'
+class PDFDownloadView(
+    ExportRules, InstitutionStructureMixin, SubmissionStructureMixin, DownloadExportView
+):
+    content_type = "application/pdf"
     extension = "pdf"
 
     def get_filename(self):
         return self.get_submissionset().institution.slug[:64]
 
 
-class CertificateExportView(InstitutionStructureMixin,
-                            SubmissionStructureMixin,
-                            StartExportView):
+class CertificateExportView(
+    InstitutionStructureMixin, SubmissionStructureMixin, StartExportView
+):
     """
         Displays an exported Certificate version of the selected report.
     """
@@ -569,26 +579,25 @@ class CertificateExportView(InstitutionStructureMixin,
 
 
 class ScorecardCertPreview(ScorecardView):
-    template_name = 'institutions/pdf/certificate.html'
+    template_name = "institutions/pdf/certificate.html"
 
     def get_context_data(self, **kwargs):
         """ Expects arguments for category_id/subcategory_id/credit_id """
-        _context = super(ScorecardCertPreview,
-                         self).get_context_data(**kwargs)
+        _context = super(ScorecardCertPreview, self).get_context_data(**kwargs)
 
         from django.conf import settings
 
         return {
-            'ss': self.get_submissionset(),
-            'project_path': settings.PROJECT_PATH,
-            'preview': True
+            "ss": self.get_submissionset(),
+            "project_path": settings.PROJECT_PATH,
+            "preview": True,
         }
 
 
-class CertificateDownloadView(InstitutionStructureMixin,
-                              SubmissionStructureMixin,
-                              DownloadExportView):
-    content_type = 'application/pdf'
+class CertificateDownloadView(
+    InstitutionStructureMixin, SubmissionStructureMixin, DownloadExportView
+):
+    content_type = "application/pdf"
     extension = "pdf"
 
     def get_filename(self):
@@ -609,66 +618,63 @@ class ScorecardInternalNotesView(ScorecardView):
     def update_logical_rules(self):
 
         super(ScorecardInternalNotesView, self).update_logical_rules()
-        self.add_logical_rule({
-            'name': 'user_has_view_access',
-                    'param_callbacks':
-                        [
-                            ('user', "get_request_user"),
-                            ('submission', "get_institution")
-                        ],
-        })
+        self.add_logical_rule(
+            {
+                "name": "user_has_view_access",
+                "param_callbacks": [
+                    ("user", "get_request_user"),
+                    ("submission", "get_institution"),
+                ],
+            }
+        )
 
-    template_name = 'institutions/scorecards/internal_notes.html'
+    template_name = "institutions/scorecards/internal_notes.html"
 
 
-class DataCorrectionView(RulesMixin,
-                         InstitutionStructureMixin,
-                         SubmissionStructureMixin,
-                         CreateView):
+class DataCorrectionView(
+    RulesMixin, InstitutionStructureMixin, SubmissionStructureMixin, CreateView
+):
     """
         Provides a form for institutions to request a data correction
     """
+
     template_name = "institutions/data_correction_request/new.html"
     form_class = DataCorrectionRequestForm
 
     def get_object_list(self):
-        return get_submissions_for_scorecards(
-            institution=self.get_institution())
+        return get_submissions_for_scorecards(institution=self.get_institution())
 
     def update_logical_rules(self):
         super(DataCorrectionView, self).update_logical_rules()
-        self.add_logical_rule({
-            'name': 'user_is_institution_admin',
-                    'param_callbacks':
-                        [
-                            ('user', "get_request_user"),
-                            ('submission', "get_institution")
-                        ],
-        })
+        self.add_logical_rule(
+            {
+                "name": "user_is_institution_admin",
+                "param_callbacks": [
+                    ("user", "get_request_user"),
+                    ("submission", "get_institution"),
+                ],
+            }
+        )
 
     def form_valid(self, form):
         self.object = form.save()
 
         et = EmailTemplate.objects.get(slug="data_correction_request")
-        context = {
-            "correction": self.object,
-            "submissionset": self.get_submissionset()
-        }
+        context = {"correction": self.object, "submissionset": self.get_submissionset()}
         et.send_email(["stars@aashe.org"], context)
 
         _context = self.get_context_data()
         _context.update(context)
 
         return TemplateResponse(
-            self.request,
-            "institutions/data_correction_request/success.html",
-            _context)
+            self.request, "institutions/data_correction_request/success.html", _context
+        )
 
     def get_form_kwargs(self):
         kwargs = super(DataCorrectionView, self).get_form_kwargs()
-        kwargs['instance'] = DataCorrectionRequest(
-            user=self.request.user,
-            reporting_field=self.get_fieldsubmission())
+        kwargs["instance"] = DataCorrectionRequest(
+            user=self.request.user, reporting_field=self.get_fieldsubmission()
+        )
         return kwargs
 
 
@@ -682,24 +688,24 @@ class SubmissionInquirySelectView(FormView):
     form_class = SubmissionSelectForm
 
     def form_valid(self, form):
-        ss = form.cleaned_data['institution']
+        ss = form.cleaned_data["institution"]
         return HttpResponseRedirect("%sinquiry/" % ss.get_scorecard_url())
 
 
-class SubmissionInquiryView(InstitutionStructureMixin,
-                            SubmissionStructureMixin,
-                            CreateWithInlinesView):
+class SubmissionInquiryView(
+    InstitutionStructureMixin, SubmissionStructureMixin, CreateWithInlinesView
+):
     """
         Allows a visitor to submit disputes for several credits at once
     """
+
     model = SubmissionInquiry
     form_class = SubmissionInquiryForm
     inlines = [CreditSubmissionInquiryFormSet]
     template_name = "institutions/inquiries/new.html"
 
     def get_object_list(self):
-        return get_submissions_for_scorecards(
-            institution=self.get_institution())
+        return get_submissions_for_scorecards(institution=self.get_institution())
 
     def get_context_data(self, **kwargs):
         _c = super(SubmissionInquiryView, self).get_context_data(**kwargs)
@@ -711,7 +717,7 @@ class SubmissionInquiryView(InstitutionStructureMixin,
         """
         kwargs = super(SubmissionInquiryView, self).get_form_kwargs()
         ss = self.get_submissionset()
-        kwargs.update({'instance': SubmissionInquiry(submissionset=ss)})
+        kwargs.update({"instance": SubmissionInquiry(submissionset=ss)})
         return kwargs
 
     def forms_invalid(self, form, inlines):
@@ -738,13 +744,13 @@ class SubmissionInquiryView(InstitutionStructureMixin,
         # to liaison.
         email_to = ["stars@aashe.org"]
 
-        et = EmailTemplate.objects.get(
-            slug="submission_accuracy_inquiry")
+        et = EmailTemplate.objects.get(slug="submission_accuracy_inquiry")
         email_context = {
             "inquiry": self.object,
-            "institution": self.object.submissionset.institution}
+            "institution": self.object.submissionset.institution,
+        }
         et.send_email(email_to, email_context)
 
-        return TemplateResponse(self.request,
-                                "institutions/inquiries/success.html",
-                                context=_context)
+        return TemplateResponse(
+            self.request, "institutions/inquiries/success.html", context=_context
+        )

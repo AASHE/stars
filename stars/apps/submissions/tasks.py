@@ -10,11 +10,17 @@ from django.core.cache import cache
 
 from stars.apps.credits.models import CreditSet, Subcategory
 from stars.apps.institutions.models import Institution, MigrationHistory
-from stars.apps.migrations.utils import (create_ss_mirror, migrate_ss_version,
-                                         migrate_submission)
+from stars.apps.migrations.utils import (
+    create_ss_mirror,
+    migrate_ss_version,
+    migrate_submission,
+)
 from stars.apps.notifications.models import EmailTemplate
-from stars.apps.submissions.api import (CategoryPieChart, SubategoryPieChart,
-                                        SummaryPieChart)
+from stars.apps.submissions.api import (
+    CategoryPieChart,
+    SubategoryPieChart,
+    SummaryPieChart,
+)
 from stars.apps.submissions.export.excel import build_report_export
 from stars.apps.submissions.export.pdf import build_certificate_pdf
 from stars.apps.submissions.models import SubmissionSet, SubcategoryQuartiles
@@ -54,14 +60,16 @@ def take_snapshot_task(ss, user):
     ss.take_snapshot(user=user)
     logger.info("snapshot completed: (%d) %s" % (ss.id, ss))
 
+
 @task()
 def build_certificate_export(id):
     logger.info("starting certificate export(ss: %d)" % id)
     ss = SubmissionSet.objects.get(pk=id)
     pdf = build_certificate_pdf(ss)
-    logger.info('cert build successful')
+    logger.info("cert build successful")
     from django.core.files.temp import NamedTemporaryFile
-    tempfile = NamedTemporaryFile(suffix='.pdf', delete=False)
+
+    tempfile = NamedTemporaryFile(suffix=".pdf", delete=False)
     pdf.write_pdf(target=tempfile)
     tempfile.close()
     logger.info("cert export done(ss: %d)" % ss.id)
@@ -77,21 +85,20 @@ def send_certificate_pdf(id):
 
     pdf = build_certificate_pdf(ss)
 
-    et = EmailTemplate.objects.get(slug='certificate_to_staff')
+    et = EmailTemplate.objects.get(slug="certificate_to_staff")
     email_context = {"ss": ss}
     et.send_email(
-        mail_to=['monika.urbanski@aashe.org'],
+        mail_to=["monika.urbanski@aashe.org"],
         context=email_context,
-        attachments=(
-            (ss.institution.slug, pdf.getvalue(), 'application/pdf'),),
-        title="New Certificate: %s" % ss)
+        attachments=((ss.institution.slug, pdf.getvalue(), "application/pdf"),),
+        title="New Certificate: %s" % ss,
+    )
 
 
 @task()
-def send_email_with_certificate_attachment(ss_id,
-                                           email_template,
-                                           email_context,
-                                           recipients):
+def send_email_with_certificate_attachment(
+    ss_id, email_template, email_context, recipients
+):
 
     ss = SubmissionSet.objects.get(pk=ss_id)
     certificate = build_certificate_pdf(submissionset)
@@ -99,9 +106,10 @@ def send_email_with_certificate_attachment(ss_id,
     email_template.send_email(
         mail_to=recipients,
         context=email_context,
-        attachments=((submissionset.institution.slug,
-                      certificate.getvalue(),
-                      'application/pdf'),))
+        attachments=(
+            (submissionset.institution.slug, certificate.getvalue(), "application/pdf"),
+        ),
+    )
 
 
 @task()
@@ -112,7 +120,6 @@ def perform_migration(old_ss_id, new_cs_id, user_email):
         (if the emails are different)
     """
     # logger = getLogger('stars.user')
-
 
     logger.info("Running migration for %d to %s" % (old_ss_id, new_cs_id))
 
@@ -128,17 +135,20 @@ def perform_migration(old_ss_id, new_cs_id, user_email):
         email_to.append(user_email)
 
     try:
-        et = EmailTemplate.objects.get(slug='migration_success')
+        et = EmailTemplate.objects.get(slug="migration_success")
         email_context = {"old_ss": old_ss, "new_ss": new_ss}
         et.send_email(email_to, email_context)
 
     except EmailTemplate.DoesNotExist:
-        logger.error('Migration email template missing',
-                     extra={'user_email': user_email}, exc_info=True)
+        logger.error(
+            "Migration email template missing",
+            extra={"user_email": user_email},
+            exc_info=True,
+        )
 
-    mh = MigrationHistory(institution=new_ss.institution,
-                          source_ss=old_ss,
-                          target_ss=new_ss)
+    mh = MigrationHistory(
+        institution=new_ss.institution, source_ss=old_ss, target_ss=new_ss
+    )
     mh.save()
 
     logger.info("Done migration for %d to %s" % (old_ss_id, new_cs_id))
@@ -164,39 +174,18 @@ def perform_data_migration(old_ss_id, user_id):
     new_ss = create_ss_mirror(
         old_submissionset=old_ss,
         new_creditset=old_ss.institution.current_submission.creditset,
-        registering_user=user)
+        registering_user=user,
+    )
     new_ss.is_locked = False
     new_ss.save()
 
     old_ss.institution.current_submission = new_ss
     old_ss.institution.save()
 
-    mh = MigrationHistory(institution=new_ss.institution,
-                          source_ss=old_ss,
-                          target_ss=new_ss)
+    mh = MigrationHistory(
+        institution=new_ss.institution, source_ss=old_ss, target_ss=new_ss
+    )
     mh.save()
-
-
-# No longer seems to be used
-# @task()
-# def migrate_purchased_submission(old_ss_id, new_ss_id):
-#     """
-#         Hide the submission, move the data from the old_ss
-#         and then unhide it
-#     """
-
-#     old_ss = SubmissionSet.objects.get(pk=old_ss_id)
-#     new_cs = CreditSet.objects.get(pk=new_cs_id)
-
-#     new_ss.is_visible = False
-#     new_ss.is_locked = True
-#     new_ss.save()
-
-#     migrate_submission(old_ss, new_ss)
-
-#     new_ss.is_visible = True
-#     new_ss.is_locked = False
-#     new_ss.save()
 
 
 @task()
@@ -223,7 +212,7 @@ def update_pie_api_cache():
 
     from tastypie.api import Api
 
-    v1_api = Api(api_name='v1')
+    v1_api = Api(api_name="v1")
     v1_api.register(SummaryPieChart())
     v1_api.register(CategoryPieChart())
     v1_api.register(SubategoryPieChart())
@@ -241,7 +230,7 @@ def update_pie_api_cache():
             s_view.obj_get(**kwargs)
 
 
-@shared_task(name='submissions.load_subcategory_quartiles')
+@shared_task(name="submissions.load_subcategory_quartiles")
 def load_subcategory_quartiles():
     """Load the SubcategoryQuartiles table.
 
@@ -255,12 +244,12 @@ def load_subcategory_quartiles():
         for subcategory in Subcategory.objects.all():
             try:
                 SubcategoryQuartiles.objects.get(
-                    institution_type=institution_type,
-                    subcategory=subcategory)
+                    institution_type=institution_type, subcategory=subcategory
+                )
             except SubcategoryQuartiles.DoesNotExist:
                 SubcategoryQuartiles.objects.create(
-                    institution_type=institution_type,
-                    subcategory=subcategory)
+                    institution_type=institution_type, subcategory=subcategory
+                )
     # Calculate the quartiles:
     for subcategory_quartiles in SubcategoryQuartiles.objects.all():
         subcategory_quartiles.calculate()

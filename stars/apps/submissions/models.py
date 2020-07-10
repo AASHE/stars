@@ -8,8 +8,7 @@ import math
 import numpy
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.contrib.contenttypes.fields import (GenericForeignKey,
-                                                GenericRelation)
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from localflavor.us.models import PhoneNumberField
 from django.core import urlresolvers
@@ -22,44 +21,49 @@ from django.db.models.signals import post_init, pre_delete
 from django.dispatch import receiver
 from django.utils.http import urlquote
 
-from stars.apps.credits.models import (ApplicabilityReason, Category, Choice,
-                                       Credit, CreditSet, DocumentationField,
-                                       Rating, Subcategory)
-from stars.apps.institutions.models import (ClimateZone,
-                                            Institution,
-                                            Subscription)
+from stars.apps.credits.models import (
+    ApplicabilityReason,
+    Category,
+    Choice,
+    Credit,
+    CreditSet,
+    DocumentationField,
+    Rating,
+    Subcategory,
+)
+from stars.apps.institutions.models import ClimateZone, Institution, Subscription
 from stars.apps.notifications.models import EmailTemplate
 from stars.apps.notifications.utils import build_message
 from stars.apps.submissions.export.pdf import build_report_pdf
 
 
-FINALIZED_SUBMISSION_STATUS = 'f'
-PENDING_SUBMISSION_STATUS = 'ps'
-PROCESSSING_SUBMISSION_STATUS = 'pr'
-RATED_SUBMISSION_STATUS = 'r'
-REVIEW_SUBMISSION_STATUS = 'rv'
+FINALIZED_SUBMISSION_STATUS = "f"
+PENDING_SUBMISSION_STATUS = "ps"
+PROCESSSING_SUBMISSION_STATUS = "pr"
+RATED_SUBMISSION_STATUS = "r"
+REVIEW_SUBMISSION_STATUS = "rv"
 
 SUBMISSION_STATUSES = {
     "FINALIZED": FINALIZED_SUBMISSION_STATUS,
     "PENDING": PENDING_SUBMISSION_STATUS,
     "PROCESSSING": PROCESSSING_SUBMISSION_STATUS,
     "RATED": RATED_SUBMISSION_STATUS,
-    "REVIEW": REVIEW_SUBMISSION_STATUS
+    "REVIEW": REVIEW_SUBMISSION_STATUS,
 }
 
 SUBMISSION_STATUS_CHOICES = (
-    (PENDING_SUBMISSION_STATUS, 'Pending Submission'),
-    (PROCESSSING_SUBMISSION_STATUS, 'Processing Submission'),
-    (REVIEW_SUBMISSION_STATUS, 'Review Submission'),
-    (RATED_SUBMISSION_STATUS, 'Rated'),
-    (FINALIZED_SUBMISSION_STATUS, 'Finalized'),
+    (PENDING_SUBMISSION_STATUS, "Pending Submission"),
+    (PROCESSSING_SUBMISSION_STATUS, "Processing Submission"),
+    (REVIEW_SUBMISSION_STATUS, "Review Submission"),
+    (RATED_SUBMISSION_STATUS, "Rated"),
+    (FINALIZED_SUBMISSION_STATUS, "Finalized"),
 )
 
 # Max # of extensions allowed per submission set
 MAX_EXTENSIONS = 1
 
 # Extension period
-EXTENSION_PERIOD = timedelta(days=366/2)
+EXTENSION_PERIOD = timedelta(days=366 / 2)
 
 # Rating valid for
 RATING_VALID_PERIOD = timedelta(days=365 * 3)
@@ -68,7 +72,7 @@ RATING_VALID_PERIOD = timedelta(days=365 * 3)
 # still published.
 REGISTRATION_PUBLISH_DEADLINE = date(2010, 5, 29)
 
-logger = getLogger('stars')
+logger = getLogger("stars")
 
 
 def submission_upload_path_callback(instance, filename):
@@ -84,15 +88,15 @@ class Flag(models.Model):
     """
         A flag that can be added by staff for a submission/credit/field
     """
+
     date = models.DateField(auto_now_add=True)
     description = models.TextField()
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
-    target = GenericForeignKey('content_type', 'object_id')
+    target = GenericForeignKey("content_type", "object_id")
 
     def get_admin_url(self):
-        return urlresolvers.reverse('admin:submissions_flag_change',
-                                    args=[self.id])
+        return urlresolvers.reverse("admin:submissions_flag_change", args=[self.id])
 
     def __unicode__(self):
         return "%s" % self.target
@@ -109,32 +113,40 @@ class SubmissionManager(models.Manager):
         """
 
         deadline = REGISTRATION_PUBLISH_DEADLINE
-        qs1 = SubmissionSet.objects.filter(institution__enabled=True).filter(
-            payment__isnull=False).filter(is_visible=True).filter(
-                is_locked=False)
+        qs1 = (
+            SubmissionSet.objects.filter(institution__enabled=True)
+            .filter(payment__isnull=False)
+            .filter(is_visible=True)
+            .filter(is_locked=False)
+        )
         qs2 = qs1.filter(
-            (Q(payment__type='later') &
-             Q(date_registered__lte=deadline)) | ~Q(payment__type='later'))
+            (Q(payment__type="later") & Q(date_registered__lte=deadline))
+            | ~Q(payment__type="later")
+        )
         return qs2.distinct()
 
     def get_rated(self):
         """ All submissionsets that have been rated (and are visible) """
-        return SubmissionSet.objects.filter(
-            institution__enabled=True).filter(
-                is_visible=True).filter(
-                    status=RATED_SUBMISSION_STATUS)
+        return (
+            SubmissionSet.objects.filter(institution__enabled=True)
+            .filter(is_visible=True)
+            .filter(status=RATED_SUBMISSION_STATUS)
+        )
 
     def get_snapshots(self, institution):
-        return SubmissionSet.objects.filter(
-            institution=institution).filter(
-                status=FINALIZED_SUBMISSION_STATUS).order_by(
-                    '-date_submitted').order_by('-id')
+        return (
+            SubmissionSet.objects.filter(institution=institution)
+            .filter(status=FINALIZED_SUBMISSION_STATUS)
+            .order_by("-date_submitted")
+            .order_by("-id")
+        )
 
 
 class SubmissionSet(models.Model):
     """
         A creditset (ex: 1.0) that is being submitted
     """
+
     objects = SubmissionManager()
     creditset = models.ForeignKey(CreditSet)
     institution = models.ForeignKey(Institution)
@@ -142,48 +154,57 @@ class SubmissionSet(models.Model):
     date_published = models.DateField(blank=True, null=True)
     date_reviewed = models.DateField(blank=True, null=True)
     date_submitted = models.DateField(blank=True, null=True)
+    date_expiration = models.DateField(blank=True, null=True)
     expired = models.BooleanField(default=False)
-    registering_user = models.ForeignKey(
-        User,
-        related_name='registered_submissions')
-    submitting_user = models.ForeignKey(User,
-                                        related_name='submitted_submissions',
-                                        blank=True,
-                                        null=True)
+    registering_user = models.ForeignKey(User, related_name="registered_submissions")
+    submitting_user = models.ForeignKey(
+        User, related_name="submitted_submissions", blank=True, null=True
+    )
     rating = models.ForeignKey(Rating, blank=True, null=True)
     status = models.CharField(max_length=8, choices=SUBMISSION_STATUS_CHOICES)
     submission_boundary = models.TextField(
         blank=True,
         null=True,
-        help_text=("The following is an example institutional boundary: "
-                   "This submission includes all of the the University's "
-                   "main campus as well as the downtown satellite campus. "
-                   "The University hospital and campus farm are excluded."))
+        help_text=(
+            "The following is an example institutional boundary: "
+            "This submission includes all of the the University's "
+            "main campus as well as the downtown satellite campus. "
+            "The University hospital and campus farm are excluded."
+        ),
+    )
     presidents_letter = models.FileField(
         "Executive Letter",
         upload_to=submission_upload_path_callback,
         blank=True,
         max_length=255,
         null=True,
-        help_text=("Please upload a letter from your institution's "
-                   "president, chancellor or other high ranking executive "
-                   "in PDF format."))
+        help_text=(
+            "Please upload a letter from your institution's "
+            "president, chancellor or other high ranking executive "
+            "in PDF format."
+        ),
+    )
     reporter_status = models.BooleanField(
-        help_text=("Check this box if you would like to be given "
-                   "reporter status and not receive a STARS rating "
-                   "from AASHE."), default=False)
-    pdf_report = models.FileField(upload_to=submission_upload_path_callback,
-                                  blank=True,
-                                  max_length=255,
-                                  null=True)
+        help_text=(
+            "Check this box if you would like to be given "
+            "reporter status and not receive a STARS rating "
+            "from AASHE."
+        ),
+        default=False,
+    )
+    pdf_report = models.FileField(
+        upload_to=submission_upload_path_callback, blank=True, max_length=255, null=True
+    )
     is_locked = models.BooleanField(default=False)
     is_visible = models.BooleanField(
         default=True,
-        help_text=("Is this submission visible to the institution? "
-                   "Often used with migrations."))
+        help_text=(
+            "Is this submission visible to the institution? "
+            "Often used with migrations."
+        ),
+    )
     score = models.FloatField(blank=True, null=True)
-    migrated_from = models.ForeignKey('self', null=True, blank=True,
-                                      related_name='+')
+    migrated_from = models.ForeignKey("self", null=True, blank=True, related_name="+")
     date_created = models.DateField(blank=True, null=True, auto_now_add=True)
 
     class Meta:
@@ -191,17 +212,19 @@ class SubmissionSet(models.Model):
 
     def __unicode__(self):
         if self.date_submitted:
-            return '%s -- %s (%s)' % (self.institution.name,
-                                      self.creditset.version,
-                                      self.date_submitted.strftime("%m/%d/%Y"))
-        return '%s -- %s' % (self.institution.name, self.creditset.version)
+            return "%s -- %s (%s)" % (
+                self.institution.name,
+                self.creditset.version,
+                self.date_submitted.strftime("%m/%d/%Y"),
+            )
+        return "%s -- %s" % (self.institution.name, self.creditset.version)
 
     def get_flag_url(self):
 
         link = "%s?content_type=%s&object_id=%d" % (
-            urlresolvers.reverse('admin:submissions_flag_add'),
+            urlresolvers.reverse("admin:submissions_flag_add"),
             ContentType.objects.get_for_model(self).id,
-            self.id
+            self.id,
         )
         return link
 
@@ -214,7 +237,7 @@ class SubmissionSet(models.Model):
         return not self.institution.is_participant
 
     def get_upload_path(self):
-        return 'secure/%d/submission-%d/' % (self.institution.id, self.id)
+        return "secure/%d/submission-%d/" % (self.institution.id, self.id)
 
     def get_pdf(self, template=None, refresh=False):
         """
@@ -239,7 +262,7 @@ class SubmissionSet(models.Model):
 
         pdf = build_report_pdf(self, template)
 
-        pdf_tempfile = NamedTemporaryFile(suffix='.pdf', delete=False)
+        pdf_tempfile = NamedTemporaryFile(suffix=".pdf", delete=False)
 
         # do not close pdf_tempfile, or boto will complain if django
         # tries to save it to s3 (if the report is rated).
@@ -259,7 +282,7 @@ class SubmissionSet(models.Model):
         # and always return the pdf tempfile.
 
         pdf_tempfile.close()  # delete this line when you uncomment the rest
-        return pdf_tempfile   # delete this line when you uncomment the rest
+        return pdf_tempfile  # delete this line when you uncomment the rest
 
         # # Rated institutions can have their pdf saved
         # if self.status == RATED_SUBMISSION_STATUS:
@@ -282,12 +305,12 @@ class SubmissionSet(models.Model):
         #     return pdf_tempfile
 
     def get_pdf_filename(self):
-        return '%s.pdf' % self.institution.slug[:64]
+        return "%s.pdf" % self.institution.slug[:64]
 
     def is_enabled(self):
         if self.is_visible:
             for payment in self.payment_set.all():
-                if payment.type == 'credit' or payment.type == 'check':
+                if payment.type == "credit" or payment.type == "check":
                     return True
         return False
 
@@ -302,29 +325,35 @@ class SubmissionSet(models.Model):
         return self.get_manage_url()
 
     def get_admin_url(self):
-        return "%ssubmissionsets/%d/" % (self.institution.get_admin_url(),
-                                         self.id)
+        return "%ssubmissionsets/%d/" % (self.institution.get_admin_url(), self.id)
 
     def get_manage_url(self):
         return urlresolvers.reverse(
-            'tool:my_submission:submission-summary',
-            kwargs={'institution_slug': self.institution.slug,
-                    'submissionset': self.id})
+            "tool:my_submission:submission-summary",
+            kwargs={
+                "institution_slug": self.institution.slug,
+                "submissionset": self.id,
+            },
+        )
 
     def get_submit_url(self):
         return urlresolvers.reverse(
-            'tool:my_submission:submission-submit',
-            kwargs={'institution_slug': self.institution.slug,
-                    'submissionset': self.id})
+            "tool:my_submission:submission-submit",
+            kwargs={
+                "institution_slug": self.institution.slug,
+                "submissionset": self.id,
+            },
+        )
 
     def get_scorecard_url(self):
 
         if self.date_submitted:
-            return '/institutions/%s/report/%s/' % (self.institution.slug,
-                                                    self.date_submitted)
+            return "/institutions/%s/report/%s/" % (
+                self.institution.slug,
+                self.date_submitted,
+            )
         else:
-            return '/institutions/%s/report/%s/' % (self.institution.slug,
-                                                    self.id)
+            return "/institutions/%s/report/%s/" % (self.institution.slug, self.id)
 
     def get_parent(self):
         """ Used for building crumbs """
@@ -363,11 +392,15 @@ class SubmissionSet(models.Model):
             @todo: this is inefficient - need to store or at least cache
             the STARS score.
         """
-        if (self.reporter_status or
-            self.status == FINALIZED_SUBMISSION_STATUS or
-            (not self.is_rated() and
-             self.institution.access_level == Subscription.BASIC_ACCESS)):
-            return self.creditset.rating_set.get(name='Reporter')
+        if (
+            self.reporter_status
+            or self.status == FINALIZED_SUBMISSION_STATUS
+            or (
+                not self.is_rated()
+                and self.institution.access_level == Subscription.BASIC_ACCESS
+            )
+        ):
+            return self.creditset.rating_set.get(name="Reporter")
 
         if self.is_rated() and not recalculate:
             return self.rating
@@ -398,8 +431,9 @@ class SubmissionSet(models.Model):
             return score(recalculate)
         else:
             logger.error(
-                "No method (%s) defined to score submission %s" %
-                (scoring_method, self.creditset.version))
+                "No method (%s) defined to score submission %s"
+                % (scoring_method, self.creditset.version)
+            )
             return 0
 
     def get_STARS_v1_0_score(self, recalculate=False):
@@ -419,7 +453,7 @@ class SubmissionSet(models.Model):
                 score += cat.get_STARS_v1_0_score()
                 non_inno_cats += 1
 
-        score = (score / non_inno_cats) if non_inno_cats > 0 else 0   # average
+        score = (score / non_inno_cats) if non_inno_cats > 0 else 0  # average
 
         score += innovation_score  # plus any innovation points
 
@@ -485,19 +519,19 @@ class SubmissionSet(models.Model):
         total_credits = self.get_total_credits()
         if total_credits == 0:
             return 0
-        return int(
-            (self.get_finished_credit_count() / float(total_credits)) * 100)
+        return int((self.get_finished_credit_count() / float(total_credits)) * 100)
 
     def get_progress_title(self):
         """ Returns a title for progress on the entire submission set """
-        return "Complete" if (
-            self.get_percent_complete() == 100) else "Reporting Status"
+        return (
+            "Complete" if (self.get_percent_complete() == 100) else "Reporting Status"
+        )
 
     def get_amount_due(self):
         """ Returns the amount of the total # of "later" payments tied to
             this submission """
         total = 0.0
-        for p in self.payment_set.filter(type='later'):
+        for p in self.payment_set.filter(type="later"):
             total += p.amount
 
         return total
@@ -510,54 +544,56 @@ class SubmissionSet(models.Model):
         for category in self.creditset.category_set.all():
             try:
                 categorysubmission = CategorySubmission.objects.get(
-                    category=category, submissionset=self)
+                    category=category, submissionset=self
+                )
             except:
                 categorysubmission = CategorySubmission(
-                    category=category, submissionset=self)
+                    category=category, submissionset=self
+                )
                 categorysubmission.save()
 
             # Create SubcategorySubmissions if necessary
-            for subcategory in (
-                    categorysubmission.category.subcategory_set.all()):
+            for subcategory in categorysubmission.category.subcategory_set.all():
                 try:
                     subcategorysubmission = SubcategorySubmission.objects.get(
-                        subcategory=subcategory,
-                        category_submission=categorysubmission)
+                        subcategory=subcategory, category_submission=categorysubmission
+                    )
                 except SubcategorySubmission.DoesNotExist:
                     subcategorysubmission = SubcategorySubmission(
-                        subcategory=subcategory,
-                        category_submission=categorysubmission)
+                        subcategory=subcategory, category_submission=categorysubmission
+                    )
                     subcategorysubmission.save()
 
                 # Create CreditUserSubmissions if necessary
                 for credit in subcategory.credit_set.all():
                     try:
                         creditsubmission = CreditUserSubmission.objects.get(
-                            credit=credit,
-                            subcategory_submission=subcategorysubmission)
+                            credit=credit, subcategory_submission=subcategorysubmission
+                        )
                     except CreditUserSubmission.DoesNotExist:
                         creditsubmission = CreditUserSubmission(
-                            credit=credit,
-                            subcategory_submission=subcategorysubmission)
+                            credit=credit, subcategory_submission=subcategorysubmission
+                        )
                         creditsubmission.save()
-                    if (credit.is_opt_in and
-                        creditsubmission.submission_status != NOT_APPLICABLE):  # noqa
+                    if (
+                        credit.is_opt_in
+                        and creditsubmission.submission_status != NOT_APPLICABLE
+                    ):  # noqa
 
                         creditsubmission.submission_status = NOT_APPLICABLE
                         creditsubmission.save()
 
     def get_credit_submissions(self):
         """Returns all the credit submissions for this SubmissionSet."""
-        category_subs = CategorySubmission.objects.filter(
-            submissionset=self)
+        category_subs = CategorySubmission.objects.filter(submissionset=self)
         subcategory_subs = SubcategorySubmission.objects.filter(
-            category_submission__in=category_subs)
+            category_submission__in=category_subs
+        )
         return CreditUserSubmission.objects.filter(
-            subcategory_submission__in=subcategory_subs)
+            subcategory_submission__in=subcategory_subs
+        )
 
-    def save(self,
-             skip_init_credit_submissions=False,
-             *args, **kwargs):
+    def save(self, skip_init_credit_submissions=False, *args, **kwargs):
         """If this is the first time save() has been called for this
         SubmissionSet, and `skip_init_credit_submissions` is False,
         initialize this SubmissionSet's CreditSubmissions.
@@ -570,8 +606,7 @@ class SubmissionSet(models.Model):
         file-based cache, a surprisingly expensive operation.
 
         """
-        run_init_credit_submissions = (
-            not skip_init_credit_submissions and not self.pk)
+        run_init_credit_submissions = not skip_init_credit_submissions and not self.pk
 
         super(SubmissionSet, self).save(*args, **kwargs)
 
@@ -589,11 +624,13 @@ class SubmissionSet(models.Model):
         from stars.apps.migrations.utils import create_ss_mirror
 
         # Participants keep their existing submission and save a duplicate
-        new_ss = create_ss_mirror(old_submissionset=self,
-                                  new_creditset=self.creditset,
-                                  registering_user=user,
-                                  keep_innovation=True,
-                                  keep_status=True)
+        new_ss = create_ss_mirror(
+            old_submissionset=self,
+            new_creditset=self.creditset,
+            registering_user=user,
+            keep_innovation=True,
+            keep_status=True,
+        )
 
         new_ss.registering_user = user
         new_ss.date_registered = date.today()
@@ -608,7 +645,7 @@ class SubmissionSet(models.Model):
         to_mail = [user.email]
         if user.email != self.institution.contact_email:
             to_mail.append(self.institution.contact_email)
-        et.send_email(to_mail, {'ss': self})
+        et.send_email(to_mail, {"ss": self})
 
     def get_institution_type(self):
         """Return the institution type for the institution associated with
@@ -617,41 +654,44 @@ class SubmissionSet(models.Model):
         For creditsets >= 2.0, pull the institution type off the institution
         boundary credit.  For others, pull from the institution record.
         """
-        if self.creditset.version > '2.':
+        if self.creditset.version > "2.":
             institutional_characteristics_category = Category.objects.get(
-                abbreviation='IC',
-                creditset=self.creditset)
-            institutional_characteristics_credit_submissions = (
-                self.get_credit_submissions().filter(
-                    subcategory_submission__category_submission__category=  # noqa
-                    institutional_characteristics_category))
-            boundary_credit_submission = (
-                institutional_characteristics_credit_submissions.get(
-                    credit__title='Institutional Boundary'))
+                abbreviation="IC", creditset=self.creditset
+            )
+            institutional_characteristics_credit_submissions = self.get_credit_submissions().filter(
+                subcategory_submission__category_submission__category=institutional_characteristics_category  # noqa
+            )
+            boundary_credit_submission = institutional_characteristics_credit_submissions.get(
+                credit__title="Institutional Boundary"
+            )
             boundary_credit_submission_fields = (
-                boundary_credit_submission.get_submission_fields())
+                boundary_credit_submission.get_submission_fields()
+            )
             institution_type_submission_field = filter(
-                lambda x: x.documentation_field.title.startswith(
-                    'Institution type'),
-                boundary_credit_submission_fields)[0]
+                lambda x: x.documentation_field.title.startswith("Institution type"),
+                boundary_credit_submission_fields,
+            )[0]
             return institution_type_submission_field.get_human_value()
         else:
             return self.institution.institution_type
 
 
-INSTITUTION_TYPE_CHOICES = (("associate", "Associate"),
-                            ("baccalaureate", "Baccalaureate"),
-                            ("master", "Master"),
-                            ("doctorate", "Doctorate"),
-                            ("special_focus", "Special Focus"),
-                            ("tribal", "Tribal"))
+INSTITUTION_TYPE_CHOICES = (
+    ("associate", "Associate"),
+    ("baccalaureate", "Baccalaureate"),
+    ("master", "Master"),
+    ("doctorate", "Doctorate"),
+    ("special_focus", "Special Focus"),
+    ("tribal", "Tribal"),
+)
 
-INSTITUTION_CONTROL_CHOICES = (("public", "Public"),
-                               ("private_profit", "Private for-profit"),
-                               ("private_nonprofit", "Private non-profit"))
+INSTITUTION_CONTROL_CHOICES = (
+    ("public", "Public"),
+    ("private_profit", "Private for-profit"),
+    ("private_nonprofit", "Private non-profit"),
+)
 
-FEATURES_CHOICES = ((True, 'Yes'),
-                    (False, 'No'))
+FEATURES_CHOICES = ((True, "Yes"), (False, "No"))
 
 
 class Boundary(models.Model):
@@ -662,143 +702,190 @@ class Boundary(models.Model):
     submissionset = models.OneToOneField(SubmissionSet)
 
     # Characteristics
-    fte_students = models.IntegerField("Full-time Equivalent Enrollment",
-                                       blank=True, null=True)
-    undergrad_count = models.IntegerField("Number of Undergraduate Students",
-                                          blank=True, null=True)
-    graduate_count = models.IntegerField("Number of Graduate Students",
-                                         blank=True, null=True)
-    fte_employmees = models.IntegerField("Full-time Equivalent Employees",
-                                         blank=True, null=True)
-    institution_type = models.CharField(max_length=32,
-                                        choices=INSTITUTION_TYPE_CHOICES,
-                                        blank=True, null=True)
+    fte_students = models.IntegerField(
+        "Full-time Equivalent Enrollment", blank=True, null=True
+    )
+    undergrad_count = models.IntegerField(
+        "Number of Undergraduate Students", blank=True, null=True
+    )
+    graduate_count = models.IntegerField(
+        "Number of Graduate Students", blank=True, null=True
+    )
+    fte_employmees = models.IntegerField(
+        "Full-time Equivalent Employees", blank=True, null=True
+    )
+    institution_type = models.CharField(
+        max_length=32, choices=INSTITUTION_TYPE_CHOICES, blank=True, null=True
+    )
     institutional_control = models.CharField(
-        max_length=32,
-        choices=INSTITUTION_CONTROL_CHOICES,
-        blank=True, null=True)
+        max_length=32, choices=INSTITUTION_CONTROL_CHOICES, blank=True, null=True
+    )
     endowment_size = models.BigIntegerField(blank=True, null=True)
     student_residential_percent = models.FloatField(
-        'Percentage of students that are Residential', blank=True, null=True)
+        "Percentage of students that are Residential", blank=True, null=True
+    )
     student_ftc_percent = models.FloatField(
-        'Percentage of students that are Full-time commuter',
-        blank=True, null=True,
-        help_text=("Please indicate the percentage of full-time enrolled "
-                   "students that commute to campus."))
+        "Percentage of students that are Full-time commuter",
+        blank=True,
+        null=True,
+        help_text=(
+            "Please indicate the percentage of full-time enrolled "
+            "students that commute to campus."
+        ),
+    )
     student_ptc_percent = models.FloatField(
-        'Percentage of students that are Part-time commuter',
-        blank=True, null=True,
-        help_text=('Please indicate the percentage of part-time enrolled '
-                   'students that commute to campus.'))
+        "Percentage of students that are Part-time commuter",
+        blank=True,
+        null=True,
+        help_text=(
+            "Please indicate the percentage of part-time enrolled "
+            "students that commute to campus."
+        ),
+    )
     student_online_percent = models.FloatField(
-        'Percentage of students that are On-line only', blank=True, null=True)
+        "Percentage of students that are On-line only", blank=True, null=True
+    )
     gsf_building_space = models.FloatField(
-        "Gross square feet of building space", blank=True, null=True,
-        help_text=("For guidance, consult <a href='http://nces.ed.gov/pubs2006"
-                   "/ficm/content.asp?ContentType=Section&chapter=3&section=2&"
-                   "subsection=1' target='_blank'>3.2.1 Gross Area (Gross "
-                   "Square Feet-GSF)</a> of the U.S. Department of "
-                   "Education's Postsecondary Education Facilities Inventory "
-                   "and Classification Manual."))
+        "Gross square feet of building space",
+        blank=True,
+        null=True,
+        help_text=(
+            "For guidance, consult <a href='http://nces.ed.gov/pubs2006"
+            "/ficm/content.asp?ContentType=Section&chapter=3&section=2&"
+            "subsection=1' target='_blank'>3.2.1 Gross Area (Gross "
+            "Square Feet-GSF)</a> of the U.S. Department of "
+            "Education's Postsecondary Education Facilities Inventory "
+            "and Classification Manual."
+        ),
+    )
     gsf_lab_space = models.FloatField(
         "Gross square feet of laboratory space",
-        help_text=('Scientific research labs and other high performance '
-                   'facilities eligible for <a href="http://'
-                   'www.labs21century.gov/index.htm" target="_blank">'
-                   'Labs21 Environmental Performance Criteria</a> (EPC).'),
-        blank=True, null=True)
+        help_text=(
+            "Scientific research labs and other high performance "
+            'facilities eligible for <a href="http://'
+            'www.labs21century.gov/index.htm" target="_blank">'
+            "Labs21 Environmental Performance Criteria</a> (EPC)."
+        ),
+        blank=True,
+        null=True,
+    )
     cultivated_grounds_acres = models.FloatField(
         "Acres of cultivated grounds",
-        help_text=("Areas that are landscaped, planted, and maintained "
-                   "(including athletic fields). If less than 5 acres, "
-                   "data not necessary."),
-        blank=True, null=True)
+        help_text=(
+            "Areas that are landscaped, planted, and maintained "
+            "(including athletic fields). If less than 5 acres, "
+            "data not necessary."
+        ),
+        blank=True,
+        null=True,
+    )
     undeveloped_land_acres = models.FloatField(
         "Acres of undeveloped land",
         help_text="Areas without any buildings or development. If less "
         "than 5 acres, data not necessary",
-        blank=True, null=True)
+        blank=True,
+        null=True,
+    )
     climate_region = models.ForeignKey(
         ClimateZone,
-        help_text=("See the <a href='http://apps1.eere.energy.gov/"
-                   "buildings/publications/pdfs/building_america/"
-                   "ba_climateguide_7_1.pdf'>USDOE</a> site and <a "
-                   "href='http://www.ashrae.org/File%20Library/"
-                   "docLib/Public/20081111_cztables.pdf'>ASHRAE</a>  "
-                   "(international) for more information."),
-        blank=True, null=True)
+        help_text=(
+            "See the <a href='http://apps1.eere.energy.gov/"
+            "buildings/publications/pdfs/building_america/"
+            "ba_climateguide_7_1.pdf'>USDOE</a> site and <a "
+            "href='http://www.ashrae.org/File%20Library/"
+            "docLib/Public/20081111_cztables.pdf'>ASHRAE</a>  "
+            "(international) for more information."
+        ),
+        blank=True,
+        null=True,
+    )
 
     # Features
     ag_school_present = models.NullBooleanField(
-        "Agricultural school is present", choices=FEATURES_CHOICES, null=True)
+        "Agricultural school is present", choices=FEATURES_CHOICES, null=True
+    )
     ag_school_included = models.NullBooleanField(
         "Agricultural school is included in submission",
-        choices=FEATURES_CHOICES, null=True)
-    ag_school_details = models.TextField("Reason for Exclusion", blank=True,
-                                         null=True)
-    med_school_present = models.NullBooleanField("Medical school is present",
-                                                 choices=FEATURES_CHOICES,
-                                                 null=True)
+        choices=FEATURES_CHOICES,
+        null=True,
+    )
+    ag_school_details = models.TextField("Reason for Exclusion", blank=True, null=True)
+    med_school_present = models.NullBooleanField(
+        "Medical school is present", choices=FEATURES_CHOICES, null=True
+    )
     med_school_included = models.NullBooleanField(
-        "Medical school is included in submission", choices=FEATURES_CHOICES,
-        null=True)
-    med_school_details = models.TextField("Reason for Exclusion",
-                                          blank=True, null=True)
+        "Medical school is included in submission", choices=FEATURES_CHOICES, null=True
+    )
+    med_school_details = models.TextField("Reason for Exclusion", blank=True, null=True)
     pharm_school_present = models.NullBooleanField(
-        "Pharmacy school is present", choices=FEATURES_CHOICES, null=True)
+        "Pharmacy school is present", choices=FEATURES_CHOICES, null=True
+    )
     pharm_school_included = models.NullBooleanField(
-        "Pharmacy school is included in submission", choices=FEATURES_CHOICES,
-        null=True)
-    pharm_school_details = models.TextField("Reason for Exclusion", blank=True,
-                                            null=True)
+        "Pharmacy school is included in submission", choices=FEATURES_CHOICES, null=True
+    )
+    pharm_school_details = models.TextField(
+        "Reason for Exclusion", blank=True, null=True
+    )
     pub_health_school_present = models.NullBooleanField(
-        "Public health school is present", choices=FEATURES_CHOICES, null=True)
+        "Public health school is present", choices=FEATURES_CHOICES, null=True
+    )
     pub_health_school_included = models.NullBooleanField(
         "Public health school is included in submission",
-        choices=FEATURES_CHOICES, null=True)
-    pub_health_school_details = models.TextField("Reason for Exclusion",
-                                                 blank=True, null=True)
+        choices=FEATURES_CHOICES,
+        null=True,
+    )
+    pub_health_school_details = models.TextField(
+        "Reason for Exclusion", blank=True, null=True
+    )
     vet_school_present = models.NullBooleanField(
-        "Veterinary school is present", choices=FEATURES_CHOICES, null=True)
+        "Veterinary school is present", choices=FEATURES_CHOICES, null=True
+    )
     vet_school_included = models.NullBooleanField(
         "Veterinary school is included in submission",
-        choices=FEATURES_CHOICES, null=True)
-    vet_school_details = models.TextField("Reason for Exclusion",
-                                          blank=True, null=True)
+        choices=FEATURES_CHOICES,
+        null=True,
+    )
+    vet_school_details = models.TextField("Reason for Exclusion", blank=True, null=True)
     sat_campus_present = models.NullBooleanField(
-        "Satellite campuses are present", choices=FEATURES_CHOICES, null=True)
+        "Satellite campuses are present", choices=FEATURES_CHOICES, null=True
+    )
     sat_campus_included = models.NullBooleanField(
         "Satellite campuses are included in submission",
-        choices=FEATURES_CHOICES, null=True)
-    sat_campus_details = models.TextField("Reason for Exclusion",
-                                          blank=True, null=True)
-    hospital_present = models.NullBooleanField("Hospital is present",
-                                               choices=FEATURES_CHOICES,
-                                               null=True)
+        choices=FEATURES_CHOICES,
+        null=True,
+    )
+    sat_campus_details = models.TextField("Reason for Exclusion", blank=True, null=True)
+    hospital_present = models.NullBooleanField(
+        "Hospital is present", choices=FEATURES_CHOICES, null=True
+    )
     hospital_included = models.NullBooleanField(
-        "Hospital is included in submission", choices=FEATURES_CHOICES,
-        null=True)
-    hospital_details = models.TextField("Reason for Exclusion",
-                                        blank=True, null=True)
-    farm_present = models.NullBooleanField("Farm is present",
-                                           help_text='Larger than 5 acres',
-                                           choices=FEATURES_CHOICES, null=True)
+        "Hospital is included in submission", choices=FEATURES_CHOICES, null=True
+    )
+    hospital_details = models.TextField("Reason for Exclusion", blank=True, null=True)
+    farm_present = models.NullBooleanField(
+        "Farm is present",
+        help_text="Larger than 5 acres",
+        choices=FEATURES_CHOICES,
+        null=True,
+    )
     farm_included = models.NullBooleanField(
-        "Farm is included in submission",
-        choices=FEATURES_CHOICES, null=True)
+        "Farm is included in submission", choices=FEATURES_CHOICES, null=True
+    )
     farm_acres = models.FloatField("Number of acres", blank=True, null=True)
-    farm_details = models.TextField("Reason for Exclusion", blank=True,
-                                    null=True)
+    farm_details = models.TextField("Reason for Exclusion", blank=True, null=True)
     agr_exp_present = models.NullBooleanField(
         "Agricultural experiment station is present",
-        help_text='Larger than 5 acres', choices=FEATURES_CHOICES, null=True)
+        help_text="Larger than 5 acres",
+        choices=FEATURES_CHOICES,
+        null=True,
+    )
     agr_exp_included = models.NullBooleanField(
         "Agricultural experiment station is included in submission",
-        choices=FEATURES_CHOICES, null=True)
-    agr_exp_acres = models.IntegerField("Number of acres", blank=True,
-                                        null=True)
-    agr_exp_details = models.TextField("Reason for Exclusion", blank=True,
-                                       null=True)
+        choices=FEATURES_CHOICES,
+        null=True,
+    )
+    agr_exp_acres = models.IntegerField("Number of acres", blank=True, null=True)
+    agr_exp_details = models.TextField("Reason for Exclusion", blank=True, null=True)
 
     # Narrative
     additional_details = models.TextField(blank=True, null=True)
@@ -815,11 +902,11 @@ class Boundary(models.Model):
         """
         f_set = []
         for field_name in self.__class__.get_characteristic_field_names():
-            d = {'title': self._meta.get_field(field_name).verbose_name}
+            d = {"title": self._meta.get_field(field_name).verbose_name}
             if hasattr(self, "get_%s_display" % field_name):
-                d['value'] = getattr(self, "get_%s_display" % field_name)
+                d["value"] = getattr(self, "get_%s_display" % field_name)
             else:
-                d['value'] = getattr(self, field_name)
+                d["value"] = getattr(self, field_name)
 
             f_set.append(d)
 
@@ -828,29 +915,28 @@ class Boundary(models.Model):
     @classmethod
     def get_characteristic_field_names(cls):
         return [
-            'fte_students',
-            'undergrad_count',
-            'graduate_count',
-            'fte_employmees',
-            'institution_type',
-            'institutional_control',
-            'endowment_size',
-            'student_residential_percent',
-            'student_ftc_percent',
-            'student_ptc_percent',
-            'student_online_percent',
-            'gsf_building_space',
-            'gsf_lab_space',
-            'cultivated_grounds_acres',
-            'undeveloped_land_acres',
-            'climate_region',
+            "fte_students",
+            "undergrad_count",
+            "graduate_count",
+            "fte_employmees",
+            "institution_type",
+            "institutional_control",
+            "endowment_size",
+            "student_residential_percent",
+            "student_ftc_percent",
+            "student_ptc_percent",
+            "student_online_percent",
+            "gsf_building_space",
+            "gsf_lab_space",
+            "cultivated_grounds_acres",
+            "undeveloped_land_acres",
+            "climate_region",
         ]
 
 
-def get_active_submissions(creditset=None,
-                           category=None,
-                           subcategory=None,
-                           credit=None):
+def get_active_submissions(
+    creditset=None, category=None, subcategory=None, credit=None
+):
     """
         Return a queryset for ALL active (started / finished) credit
         submissions that meet the given criteria.  Only ZERO or ONE
@@ -881,28 +967,24 @@ def get_active_submissions(creditset=None,
     return submissions.exclude(submission_status=NOT_STARTED)
 
 
-def get_complete_submissions(creditset=None,
-                             category=None,
-                             subcategory=None,
-                             credit=None):
+def get_complete_submissions(
+    creditset=None, category=None, subcategory=None, credit=None
+):
     """ See get_active_submission above - except only returns those marked
         as complete """
-    submissions = get_active_submissions(creditset,
-                                         category,
-                                         subcategory,
-                                         credit)
-    return submissions.filter(submission_status='c')
+    submissions = get_active_submissions(creditset, category, subcategory, credit)
+    return submissions.filter(submission_status="c")
 
 
 def get_active_field_submissions(field):
     """ Return a queryset for ALL active (non-empty) submissions for the
         given documentations field. """
     FieldClass = DocumentationFieldSubmission.get_field_class(field)
-    submissions = FieldClass.objects.filter(
-        documentation_field=field).exclude(
-            value=None)
+    submissions = FieldClass.objects.filter(documentation_field=field).exclude(
+        value=None
+    )
     if FieldClass is TextSubmission or FieldClass is LongTextSubmission:
-        submissions = submissions.exclude(value='')
+        submissions = submissions.exclude(value="")
     return submissions
 
 
@@ -910,8 +992,8 @@ def get_na_submissions(applicability_reason):
     """ Return a queryset for all n/a submissions that cite the given
         applicability_reason """
     return CreditUserSubmission.objects.filter(
-        applicability_reason=applicability_reason).filter(
-            submission_status=NOT_APPLICABLE)
+        applicability_reason=applicability_reason
+    ).filter(submission_status=NOT_APPLICABLE)
 
 
 def get_id(object):
@@ -923,6 +1005,7 @@ class CategorySubmission(models.Model):
     """
         A Category from a credit set that is being submitted
     """
+
     submissionset = models.ForeignKey(SubmissionSet)
     category = models.ForeignKey(Category)
     score = models.FloatField(blank=True, null=True)
@@ -964,8 +1047,10 @@ class CategorySubmission(models.Model):
         return self.submissionset
 
     def get_scorecard_url(self):
-        return '%s%s' % (self.submissionset.get_scorecard_url(),
-                         self.category.get_browse_url())
+        return "%s%s" % (
+            self.submissionset.get_scorecard_url(),
+            self.category.get_browse_url(),
+        )
 
     def get_STARS_score(self):
         """
@@ -984,8 +1069,7 @@ class CategorySubmission(models.Model):
         scoring_method = self.submissionset.creditset.scoring_method
         if hasattr(self, scoring_method):
             score = getattr(self, scoring_method)
-            if (self.submissionset.is_rated or
-                    self.submissionset.is_under_review()):
+            if self.submissionset.is_rated or self.submissionset.is_under_review():
 
                 self.score = score()
                 if type(self.score) == tuple:
@@ -994,8 +1078,9 @@ class CategorySubmission(models.Model):
             return self.score
         else:
             logger.error(
-                "No method (%s) defined to score category submission %s" %
-                (scoring_method, self.submissionset.creditset.version))
+                "No method (%s) defined to score category submission %s"
+                % (scoring_method, self.submissionset.creditset.version)
+            )
             return 0
 
     def get_STARS_v1_0_score(self):
@@ -1025,7 +1110,7 @@ class CategorySubmission(models.Model):
         score = 0
         for sub in self.subcategorysubmission_set.all().select_related():
             score += sub.get_available_points()
-        if self.category.abbreviation == 'IN':
+        if self.category.abbreviation == "IN":
             score = 4
         return score
 
@@ -1074,17 +1159,15 @@ class CategorySubmission(models.Model):
         total_credits = self.get_total_credits()
         if total_credits == 0:
             return 0
-        return int(
-            (self.get_finished_credit_count() / float(total_credits)) * 100)
+        return int((self.get_finished_credit_count() / float(total_credits)) * 100)
 
     def get_status(self):
         """Returns a status label for this category or None if not
            started."""
         complete = self.get_percent_complete()
-        return (None
-                if complete == 0
-                else "Complete" if complete == 100
-                else "In Progress")
+        return (
+            None if complete == 0 else "Complete" if complete == 100 else "In Progress"
+        )
 
     def get_progress_title(self):
         """ Returns a title for a progress summary on this category """
@@ -1098,14 +1181,14 @@ class SubcategorySubmission(models.Model):
     """
         A Category from a credit set that is being submitted
     """
+
     category_submission = models.ForeignKey(CategorySubmission)
     subcategory = models.ForeignKey(Subcategory)
     description = models.TextField(blank=True, null=True)
     points = models.FloatField(blank=True, null=True)
     # caching for the data displays
     percentage_score = models.FloatField(blank=True, null=True, default=0.0)
-    adjusted_available_points = models.FloatField(blank=True, null=True,
-                                                  default=0.0)
+    adjusted_available_points = models.FloatField(blank=True, null=True, default=0.0)
 
     class Meta:
         unique_together = ("category_submission", "subcategory")
@@ -1142,14 +1225,14 @@ class SubcategorySubmission(models.Model):
             else:
                 try:
                     cus = CreditUserSubmission.objects.get(
-                        subcategory_submission=self,
-                        credit=credit)
+                        subcategory_submission=self, credit=credit
+                    )
                 except CreditUserSubmission.DoesNotExist:
                     # I don't know why this would happen
                     # but it's happening.
                     logger.error(
-                        "Credit pk={} has no CreditUserSubmission ".format(
-                            credit.pk))
+                        "Credit pk={} has no CreditUserSubmission ".format(credit.pk)
+                    )
                 else:
                     if cus.submission_status != NOT_APPLICABLE:
                         total += 1
@@ -1160,46 +1243,48 @@ class SubcategorySubmission(models.Model):
 
     def get_submit_url(self):
         return self.subcategory.get_submit_url(
-            submissionset=self.category_submission.submissionset)
+            submissionset=self.category_submission.submissionset
+        )
 
     def get_submit_edit_url(self):
         return self.subcategory.get_submit_edit_url(
-            submissionset=self.category_submission.submissionset)
+            submissionset=self.category_submission.submissionset
+        )
 
     def get_scorecard_url(self):
-        return '%s%s' % (
+        return "%s%s" % (
             self.category_submission.submissionset.get_scorecard_url(),
-            self.subcategory.get_browse_url())
+            self.subcategory.get_browse_url(),
+        )
 
     def get_complete_credit_count(self):
         """ Find all CreditSubmissions in this subcategory
             that are complete """
-        return self.creditusersubmission_set.filter(
-            submission_status='c').count()
+        return self.creditusersubmission_set.filter(submission_status="c").count()
 
     def get_pending_credit_count(self):
-        return self.creditusersubmission_set.filter(
-            submission_status='p').count()
+        return self.creditusersubmission_set.filter(submission_status="p").count()
 
     def get_not_pursuing_credit_count(self):
-        return self.creditusersubmission_set.filter(
-            submission_status='np').count()
+        return self.creditusersubmission_set.filter(submission_status="np").count()
 
     def get_not_applicable_credit_count(self):
         return self.creditusersubmission_set.filter(
-            submission_status=NOT_APPLICABLE).count()
+            submission_status=NOT_APPLICABLE
+        ).count()
 
     def get_not_started_credit_count(self):
         return self.creditusersubmission_set.filter(
-            submission_status=NOT_STARTED).count()
+            submission_status=NOT_STARTED
+        ).count()
 
     def get_finished_credit_count(self):
         """ Get the number of credits that have been marked
         complete, not pursuing, or not applicable """
         total = 0
         for cus in self.creditusersubmission_set.exclude(
-                submission_status=NOT_STARTED).exclude(
-                    submission_status='p'):
+            submission_status=NOT_STARTED
+        ).exclude(submission_status="p"):
             if not cus.credit.is_opt_in:
                 total += 1
             else:
@@ -1214,8 +1299,7 @@ class SubcategorySubmission(models.Model):
             return self.points
 
         score = 0
-        for credit in self.creditusersubmission_set.filter(
-                submission_status='c'):
+        for credit in self.creditusersubmission_set.filter(submission_status="c"):
             score += credit.assessed_points
 
         if self.category_submission.submissionset.is_rated():
@@ -1261,17 +1345,15 @@ class SubcategorySubmission(models.Model):
         total_credits = self.subcategory.credit_set.count()
         if total_credits == 0:
             return 0
-        return int(
-            (self.get_finished_credit_count() / float(total_credits)) * 100)
+        return int((self.get_finished_credit_count() / float(total_credits)) * 100)
 
     def get_status(self):
         """Returns a status label for this subcatogory or None if not
            started."""
         complete = self.get_percent_complete()
-        return (None
-                if complete == 0
-                else "Complete" if complete == 100
-                else "In Progress")
+        return (
+            None if complete == 0 else "Complete" if complete == 100 else "In Progress"
+        )
 
     def get_progress_title(self):
         """ Returns a title for a progress summary on this subcatogory """
@@ -1285,6 +1367,7 @@ class ResponsibleParty(models.Model):
     """
         Stores responsible parties for institutions
     """
+
     institution = models.ForeignKey(Institution)
     first_name = models.CharField(max_length=32)
     last_name = models.CharField(max_length=32)
@@ -1294,7 +1377,7 @@ class ResponsibleParty(models.Model):
     phone = PhoneNumberField()
 
     class Meta:
-        ordering = ('last_name', 'first_name')
+        ordering = ("last_name", "first_name")
         verbose_name_plural = "Responsible Parties"
 
     def __unicode__(self):
@@ -1302,7 +1385,8 @@ class ResponsibleParty(models.Model):
 
     def get_manage_url(self):
         return "/tool/{slug}/manage/responsible-party/{id}/".format(
-            slug=self.institution.slug, id=self.id)
+            slug=self.institution.slug, id=self.id
+        )
 
     def get_creditusersubmissions(self, order_by=None):
         """
@@ -1311,11 +1395,15 @@ class ResponsibleParty(models.Model):
 
             order_by arg is a tuple passed to queryset.order_by.
         """
-        order_by = order_by or ('credit__subcategory__category__creditset',
-                                'credit__subcategory')
+        order_by = order_by or (
+            "credit__subcategory__category__creditset",
+            "credit__subcategory",
+        )
         qs = self.creditusersubmission_set
         qs = qs.order_by(*order_by)
-        qs = qs.exclude(subcategory_submission__category_submission__submissionset__is_visible=False)  # noqa
+        qs = qs.exclude(
+            subcategory_submission__category_submission__submissionset__is_visible=False
+        )  # noqa
         return qs
 
 
@@ -1330,18 +1418,23 @@ class CreditSubmission(models.Model):
          - a Test Submission (a test case used to validate formulae in
            the Credit Editor)
     """
+
     credit = models.ForeignKey(Credit)
     available_point_cache = models.FloatField(blank=True, null=True)
     is_unlocked_for_review = models.BooleanField(blank=True, default=False)
 
     class Meta:
-        ordering = ("credit__type", "credit__ordinal",)
+        ordering = (
+            "credit__type",
+            "credit__ordinal",
+        )
 
     def __unicode__(self):
         return self.credit.title
 
     def model_name():
         return u"Credit Submission"
+
     model_name = staticmethod(model_name)
 
     def __init__(self, *args, **kwargs):
@@ -1371,33 +1464,35 @@ class CreditSubmission(models.Model):
             sub-class objects related to this CreditSubmission
         """
         if not self.submission_fields:  # cache.
-            self.submission_fields = (
-                self._submission_fields_for_documentation_fields(
-                    documentation_field_list=self.credit.documentationfield_set.all(),  # noqa
-                    using=using))
+            self.submission_fields = self._submission_fields_for_documentation_fields(
+                documentation_field_list=self.credit.documentationfield_set.all(),  # noqa
+                using=using,
+            )
 
         return self.submission_fields
 
     def get_public_submission_fields(self):
 
         return self._submission_fields_for_documentation_fields(
-            self.credit.documentationfield_set.filter(is_published=True))
+            self.credit.documentationfield_set.filter(is_published=True)
+        )
 
     def _submission_fields_for_documentation_fields(
-            self,
-            documentation_field_list,
-            using="default"):
+        self, documentation_field_list, using="default"
+    ):
         """Return the list of DocumentationFieldSubmissions for this
         CreditSubmission, creating them if they don't already exist.
         """
         submission_field_list = []
         for field in documentation_field_list:
-            SubmissionFieldModelClass = (
-                DocumentationFieldSubmission.get_field_class(field))
+            SubmissionFieldModelClass = DocumentationFieldSubmission.get_field_class(
+                field
+            )
             if SubmissionFieldModelClass:
                 try:
                     submission_field = SubmissionFieldModelClass.objects.get(
-                        documentation_field=field, credit_submission=self)
+                        documentation_field=field, credit_submission=self
+                    )
                     # ORM / Model Inheritance issue:
                     #
                     #   DocumentationFieldSubmission has a foreign key to
@@ -1410,19 +1505,21 @@ class CreditSubmission(models.Model):
 
                 except SubmissionFieldModelClass.DoesNotExist:
                     credit_submission = (
-                        self if using == "default" else
-                        CreditSubmission.objects.using(using).get(pk=self.pk))
+                        self
+                        if using == "default"
+                        else CreditSubmission.objects.using(using).get(pk=self.pk)
+                    )
 
                     submission_field = SubmissionFieldModelClass(
-                        documentation_field=field,
-                        credit_submission=credit_submission)
+                        documentation_field=field, credit_submission=credit_submission
+                    )
 
                     submission_field.save(using=using)
 
                 submission_field_list.append(submission_field)
             else:
                 # use a dummy submission_field for tabular
-                class TabularSubmissionField():
+                class TabularSubmissionField:
                     def __init__(self, credit_submission, documentation_field):
 
                         self.credit_submission = credit_submission
@@ -1437,12 +1534,16 @@ class CreditSubmission(models.Model):
                         return ""
 
                     def __unicode__(self):
-                        return ("TabularSubmissionField for " +
-                                self.credit_submission.credit.title)
+                        return (
+                            "TabularSubmissionField for "
+                            + self.credit_submission.credit.title
+                        )
 
-                submission_field_list.append(TabularSubmissionField(
-                    credit_submission=self,
-                    documentation_field=field))
+                submission_field_list.append(
+                    TabularSubmissionField(
+                        credit_submission=self, documentation_field=field
+                    )
+                )
 
         self.submission_fields = submission_field_list
         return self.submission_fields
@@ -1451,10 +1552,9 @@ class CreditSubmission(models.Model):
         """ Returns the list of documentation field values for this
             submission
         """
-        return [field.get_value() for field
-                in self.get_submission_fields()]
+        return [field.get_value() for field in self.get_submission_fields()]
 
-    def get_submission_field_key(self, metric = False):
+    def get_submission_field_key(self, metric=False):
         """ Returns a dictionary with identifier:value for each submission
             field
         """
@@ -1468,10 +1568,10 @@ class CreditSubmission(models.Model):
         return key
 
     def print_submission_fields(self):
-        print >> sys.stderr, "Fields for CreditSubmission: %s" % self
+        print >>sys.stderr, "Fields for CreditSubmission: %s" % self
         fields = self.get_submission_fields()
         for field in fields:
-            print >> sys.stderr, field
+            print >>sys.stderr, field
 
     # @todo: rename or remove this - potential confusion b/c name conflict
     #        with CreditUserSubmission!!
@@ -1516,8 +1616,12 @@ class CreditSubmission(models.Model):
             return self.credit.point_value
 
         # but if there's not then we need to execute the formula
-        (ran, message, exception, available_points) = (
-            self.credit.execute_point_value_formula(self))
+        (
+            ran,
+            message,
+            exception,
+            available_points,
+        ) = self.credit.execute_point_value_formula(self)
         self.available_point_cache = available_points
         return available_points
 
@@ -1539,9 +1643,10 @@ class CreditSubmission(models.Model):
             if log_error:
                 logger.error(
                     "Error converting formula result (%s) to numeric type: %s"
-                    % (points, e), exc_info=True)
-            return (0,
-                    "Non-numeric result calculated for points: %s" % points)
+                    % (points, e),
+                    exc_info=True,
+                )
+            return (0, "Non-numeric result calculated for points: %s" % points)
 
     def validate_points(self, points, log_error=True):
         """
@@ -1567,9 +1672,12 @@ class CreditSubmission(models.Model):
             range_error = (
                 "Points ({points}) are out of range (0 - {limit}) "
                 "(Institution: {institution}; credit: {credit}.)".format(
-                    points=points, limit=self.credit.point_value,
+                    points=points,
+                    limit=self.credit.point_value,
                     institution=error_institution,
-                    credit=str(self.credit).strip()))
+                    credit=str(self.credit).strip(),
+                )
+            )
             if log_error:
                 logger.error(range_error)
             messages.append(range_error)
@@ -1578,11 +1686,14 @@ class CreditSubmission(models.Model):
         return points, messages
 
     def get_status_update_url(self):
-        return urlresolvers.reverse('institutions:credit-submission-status-update',
-                                    kwargs={'pk': self.id})
+        return urlresolvers.reverse(
+            "institutions:credit-submission-status-update", kwargs={"pk": self.id}
+        )
 
     def get_help_center_search_url(self):
-        return "https://{}/resources-support/help-center/search/{}".format(settings.STARS_BROCHURE_HOST, self.credit.title)
+        return "https://{}/resources-support/help-center/search/{}".format(
+            settings.STARS_BROCHURE_HOST, self.credit.title
+        )
 
 
 COMPLETE = "c"
@@ -1596,43 +1707,43 @@ CREDIT_SUBMISSION_STATUSES = {
     "IN_PROGRESS": IN_PROGRESS,
     "NOT_PURSUING": NOT_PURSUING,
     "NOT_APPLICABLE": NOT_APPLICABLE,
-    "NOT_STARTED": NOT_STARTED
+    "NOT_STARTED": NOT_STARTED,
 }
 
 CREDIT_SUBMISSION_STATUS_CHOICES_LIMITED = [
-    (COMPLETE, 'Complete'),
-    (IN_PROGRESS, 'In Progress'),
-    (NOT_PURSUING, 'Not Pursuing'),
+    (COMPLETE, "Complete"),
+    (IN_PROGRESS, "In Progress"),
+    (NOT_PURSUING, "Not Pursuing"),
 ]
 
 # The NOT_STARTED option isn't accessible in forms and NOT_APPLICABLE
 # only sometimes, so we have 3 different lists.
-CREDIT_SUBMISSION_STATUS_CHOICES_W_NA = list(
-    CREDIT_SUBMISSION_STATUS_CHOICES_LIMITED)
-CREDIT_SUBMISSION_STATUS_CHOICES_W_NA.append((NOT_APPLICABLE,
-                                              'Not Applicable'))
+CREDIT_SUBMISSION_STATUS_CHOICES_W_NA = list(CREDIT_SUBMISSION_STATUS_CHOICES_LIMITED)
+CREDIT_SUBMISSION_STATUS_CHOICES_W_NA.append((NOT_APPLICABLE, "Not Applicable"))
 CREDIT_SUBMISSION_STATUS_CHOICES = list(CREDIT_SUBMISSION_STATUS_CHOICES_W_NA)
-CREDIT_SUBMISSION_STATUS_CHOICES.append((NOT_STARTED, 'Not Started'))
+CREDIT_SUBMISSION_STATUS_CHOICES.append((NOT_STARTED, "Not Started"))
 
 # used by template tag to create iconic representation of status:
 CREDIT_SUBMISSION_STATUS_ICONS = {
-    COMPLETE: ('icon-ok', 'c'),
-    IN_PROGRESS: ('icon-pencil', '...'),
-    NOT_PURSUING: ('icon-remove', '-'),
-    NOT_APPLICABLE: ('icon-tag', '-')
+    COMPLETE: ("icon-ok", "c"),
+    IN_PROGRESS: ("icon-pencil", "..."),
+    NOT_PURSUING: ("icon-remove", "-"),
+    NOT_APPLICABLE: ("icon-tag", "-"),
 }
 
 REVIEW_CONCLUSIONS = {
     "NOT_REVIEWED": "not-reviewed",
     "MEETS_CRITERIA": "meets-criteria",
     "DOES_NOT_MEET_CRITERIA": "does-not-meet-criteria",
-    "NOT_REALLY_PURSUING": "not-really-pursuing"}
+    "NOT_REALLY_PURSUING": "not-really-pursuing",
+}
 
 REVIEW_CONCLUSION_CHOICES = (
     (REVIEW_CONCLUSIONS["NOT_REVIEWED"], "Not Reviewed"),
     (REVIEW_CONCLUSIONS["MEETS_CRITERIA"], "Meets Criteria"),
     (REVIEW_CONCLUSIONS["DOES_NOT_MEET_CRITERIA"], "Does Not Meet Criteria"),
-    (REVIEW_CONCLUSIONS["NOT_REALLY_PURSUING"], "Not Really Pursuing"))
+    (REVIEW_CONCLUSIONS["NOT_REALLY_PURSUING"], "Not Really Pursuing"),
+)
 
 
 class CreditUserSubmission(CreditSubmission):
@@ -1640,38 +1751,42 @@ class CreditUserSubmission(CreditSubmission):
         An individual submitted credit for an institutions STARS submission
         set
     """
+
     subcategory_submission = models.ForeignKey(SubcategorySubmission)
     assessed_points = models.FloatField(blank=True, null=True)
     last_updated = models.DateTimeField(blank=True, null=True)
     submission_status = models.CharField(
-        max_length=8,
-        choices=CREDIT_SUBMISSION_STATUS_CHOICES,
-        default=NOT_STARTED)
-    applicability_reason = models.ForeignKey(ApplicabilityReason,
-                                             blank=True,
-                                             null=True)
+        max_length=8, choices=CREDIT_SUBMISSION_STATUS_CHOICES, default=NOT_STARTED
+    )
+    applicability_reason = models.ForeignKey(ApplicabilityReason, blank=True, null=True)
     user = models.ForeignKey(User, blank=True, null=True)
     internal_notes = models.TextField(
-        help_text=('This field is useful if you want to store notes for '
-                   'other people in your organization regarding this credit. '
-                   'They will not be published.'),
+        help_text=(
+            "This field is useful if you want to store notes for "
+            "other people in your organization regarding this credit. "
+            "They will not be published."
+        ),
         blank=True,
-        null=True)
+        null=True,
+    )
     submission_notes = models.TextField(
-        help_text=('Use this space to add any additional information '
-                   'you may have about this credit. This will be published '
-                   'along with your submission.'),
+        help_text=(
+            "Use this space to add any additional information "
+            "you may have about this credit. This will be published "
+            "along with your submission."
+        ),
         blank=True,
-        null=True)
+        null=True,
+    )
     responsible_party_confirm = models.BooleanField(default=False)
-    responsible_party = models.ForeignKey(ResponsibleParty,
-                                          blank=True,
-                                          null=True,
-                                          on_delete=models.SET_NULL)
+    responsible_party = models.ForeignKey(
+        ResponsibleParty, blank=True, null=True, on_delete=models.SET_NULL
+    )
     review_conclusion = models.CharField(
         max_length=32,
         choices=REVIEW_CONCLUSION_CHOICES,
-        default=REVIEW_CONCLUSIONS["NOT_REVIEWED"])
+        default=REVIEW_CONCLUSIONS["NOT_REVIEWED"],
+    )
 
     class Meta:
         # @todo: the unique clause needs to be added at the DB level now :-(
@@ -1681,9 +1796,9 @@ class CreditUserSubmission(CreditSubmission):
     def get_flag_url(self):
 
         link = "%s?content_type=%s&object_id=%d" % (
-            urlresolvers.reverse('admin:submissions_flag_add'),
+            urlresolvers.reverse("admin:submissions_flag_add"),
             ContentType.objects.get_for_model(self).id,
-            self.id
+            self.id,
         )
         return link
 
@@ -1693,26 +1808,29 @@ class CreditUserSubmission(CreditSubmission):
         return Flag.objects.filter(content_type__pk=type.id, object_id=self.id)
 
     def get_institution(self):
-        return self.subcategory_submission.category_submission.submissionset.institution  # noqa
+        return (
+            self.subcategory_submission.category_submission.submissionset.institution
+        )  # noqa
 
     def get_submit_url(self):
         category_submission = self.subcategory_submission.category_submission
         submissionset = category_submission.submissionset
         url = urlresolvers.reverse(
-            'tool:my_submission:creditsubmission-submit',
+            "tool:my_submission:creditsubmission-submit",
             kwargs={
-                'institution_slug': submissionset.institution.slug,
-                'submissionset': submissionset.id,
-                'category_abbreviation':
-                    category_submission.category.abbreviation,
-                'subcategory_slug':
-                    self.subcategory_submission.subcategory.slug,
-                'credit_identifier': self.credit.identifier})
+                "institution_slug": submissionset.institution.slug,
+                "submissionset": submissionset.id,
+                "category_abbreviation": category_submission.category.abbreviation,
+                "subcategory_slug": self.subcategory_submission.subcategory.slug,
+                "credit_identifier": self.credit.identifier,
+            },
+        )
         return url
 
     def get_scorecard_url(self):
         return self.credit.get_scorecard_url(
-            self.subcategory_submission.category_submission.submissionset)
+            self.subcategory_submission.category_submission.submissionset
+        )
 
     def get_parent(self):
         """ Used for building crumbs """
@@ -1728,13 +1846,15 @@ class CreditUserSubmission(CreditSubmission):
         """ Indicate if this credit has been marked anything other than
             in progress or not started
         """
-        return (self.submission_status != IN_PROGRESS and
-                self.submission_status != NOT_STARTED and
-                self.submission_status is not None)
+        return (
+            self.submission_status != IN_PROGRESS
+            and self.submission_status != NOT_STARTED
+            and self.submission_status is not None
+        )
 
     def save(self, calculate_points=True, *args, **kwargs):
         self.last_updated = datetime.now()
-        
+
         if not self.submission_fields:
             return super(CreditUserSubmission, self).save(*args, **kwargs)
 
@@ -1757,26 +1877,29 @@ class CreditUserSubmission(CreditSubmission):
         # its submission_status is updated, we need to send some
         # mail. So we need to know what's in the db before we save.
         try:
-            before_image = (CreditUserSubmission.objects.get(pk=self.pk)
-                            if self.pk else None)
+            before_image = (
+                CreditUserSubmission.objects.get(pk=self.pk) if self.pk else None
+            )
         except CreditUserSubmission.DoesNotExist:
             before_image = None
 
         # If this CreditUserSubmission is unlocked for review,
         # we want to lock it up if the new submission_status is
         # COMPLETE or NOT_PURSUING or NOT_APPLICABLE.
-        if (before_image is not None and
-            before_image.is_unlocked_for_review and
-            self.submission_status in (COMPLETE,
-                                       NOT_PURSUING,
-                                       NOT_APPLICABLE)):
+        if (
+            before_image is not None
+            and before_image.is_unlocked_for_review
+            and self.submission_status in (COMPLETE, NOT_PURSUING, NOT_APPLICABLE)
+        ):
             self.is_unlocked_for_review = False
 
         super(CreditUserSubmission, self).save(*args, **kwargs)
 
-        if (before_image is not None and
-            before_image.is_unlocked_for_review and
-            not self.is_unlocked_for_review):  # noqa
+        if (
+            before_image is not None
+            and before_image.is_unlocked_for_review
+            and not self.is_unlocked_for_review
+        ):  # noqa
 
             self.send_unlocked_credit_submission_updated_email()
 
@@ -1789,8 +1912,10 @@ class CreditUserSubmission(CreditSubmission):
     def is_pursued(self):
         """ Returns False if this credit is marked NOT_APPLICABLE
             or NOT_PURSUING """
-        return (self.submission_status != NOT_APPLICABLE and
-                self.submission_status != NOT_PURSUING)
+        return (
+            self.submission_status != NOT_APPLICABLE
+            and self.submission_status != NOT_PURSUING
+        )
 
     def mark_as_in_progress(self):
         self.submission_status = IN_PROGRESS
@@ -1809,9 +1934,9 @@ class CreditUserSubmission(CreditSubmission):
         """
         # Run the calculation only when this credit submission is
         # complete or under review, and is being pursued.
-        if ((not self.is_complete() and
-             not self.get_submissionset().is_under_review()) or
-                not self.is_pursued()):
+        if (
+            not self.is_complete() and not self.get_submissionset().is_under_review()
+        ) or not self.is_pursued():
 
             return 0
 
@@ -1819,16 +1944,19 @@ class CreditUserSubmission(CreditSubmission):
         validation_error = False
 
         (ran, message, exception, points, d) = self.credit.execute_formula(
-            self, debug=True)
+            self, debug=True
+        )
 
         if ran:  # perform validation on points...
             (points, messages) = self.validate_points(points)
             validation_error = len(messages) > 0
 
         if not ran or validation_error:
-            logger.error("There was an error processing this credit. "
-                         "AASHE has noted the error and will work to "
-                         "resolve the issue.")
+            logger.error(
+                "There was an error processing this credit. "
+                "AASHE has noted the error and will work to "
+                "resolve the issue."
+            )
         else:
             assessed_points = points
 
@@ -1839,20 +1967,21 @@ class CreditUserSubmission(CreditSubmission):
             credit submission has been updated.
         """
         email_template = (
-            "/tool/submissions/unlocked_credit_submission_updated_email.html")
+            "/tool/submissions/unlocked_credit_submission_updated_email.html"
+        )
 
         institution = self.get_submissionset().institution
 
-        subject = ("Unlocked Credit Submission Updated: "
-                   "{institution}: {credit}".format(
-                       institution=institution,
-                       credit=self.credit))
+        subject = (
+            "Unlocked Credit Submission Updated: "
+            "{institution}: {credit}".format(
+                institution=institution, credit=self.credit
+            )
+        )
 
-        email_context = {"credit_user_submission": self,
-                         "institution": institution}
+        email_context = {"credit_user_submission": self, "institution": institution}
 
-        with open(settings.TEMPLATES[0]['DIRS'][0] + email_template,
-                  "rb") as template:
+        with open(settings.TEMPLATES[0]["DIRS"][0] + email_template, "rb") as template:
             email_content = build_message(template.read(), email_context)
 
         email_message = EmailMessage(
@@ -1860,18 +1989,22 @@ class CreditUserSubmission(CreditSubmission):
             body=email_content,
             from_email="stars-reviewers@aashe.org",
             to=["stars-reviewers@aashe.org"],
-            headers={"Reply-To": "stars-reviewers@aashe.org"})
+            headers={"Reply-To": "stars-reviewers@aashe.org"},
+        )
 
         email_message.content_subtype = "html"
 
         email_message.send()
 
     def get_available_points(self, use_cache=False):
-        '''
+        """
             Check if the credit is NP and if it has point_minimum.
             Otherwise return the parent's method for calculating available_points
-        '''
-        if self.credit.point_minimum is not None and self.submission_status == NOT_PURSUING:
+        """
+        if (
+            self.credit.point_minimum is not None
+            and self.submission_status == NOT_PURSUING
+        ):
             return math.ceil((self.credit.point_minimum + self.credit.point_value) / 2)
         return self.get_parent_available_points(use_cache=use_cache)
 
@@ -1880,13 +2013,16 @@ class CreditTestSubmission(CreditSubmission):
     """
         A test data set for a Credit formula - not part of any submission set
     """
+
     expected_value = models.FloatField(
         blank=True,
         null=True,
-        help_text="Point value expected from the formula for this test data")
+        help_text="Point value expected from the formula for this test data",
+    )
 
     def model_name():
         return u"Formula Test Case"
+
     model_name = staticmethod(model_name)
 
     def run_test(self):
@@ -1905,8 +2041,9 @@ class CreditTestSubmission(CreditSubmission):
 
         self.calculate_calculated_fields()
 
-        (ran, msg, exception, points, debugging) = (
-            self.credit.execute_formula(self, debug=True))
+        (ran, msg, exception, points, debugging) = self.credit.execute_formula(
+            self, debug=True
+        )
 
         if ran:
             try:
@@ -1914,8 +2051,7 @@ class CreditTestSubmission(CreditSubmission):
                 self.expected_value = float(self.expected_value)
                 (self.computed_value, messages) = self.validate_points(points)
                 # Floating point equality to 5rd decimal place
-                self.result = (
-                    abs(self.computed_value - self.expected_value) < 0.00001)
+                self.result = abs(self.computed_value - self.expected_value) < 0.00001
             # we're not expecting result to be numeric...
             except (TypeError, ValueError):
                 self.computed_value = points
@@ -1924,9 +2060,9 @@ class CreditTestSubmission(CreditSubmission):
             # Since this is test, substitute user-friendly
             # message for real error message.
             if isinstance(exception, AssertionError):
-                messages.append('Assertion Failed: %s' % exception)
+                messages.append("Assertion Failed: %s" % exception)
             elif exception:
-                messages.append('Formula Error: %s' % exception)
+                messages.append("Formula Error: %s" % exception)
             else:
                 messages.append(msg)
 
@@ -1935,7 +2071,7 @@ class CreditTestSubmission(CreditSubmission):
     def calculate_calculated_fields(self):
         submission_fields = self.get_submission_fields()
         for submission_field in submission_fields:
-            if submission_field.documentation_field.type == 'calculated':
+            if submission_field.documentation_field.type == "calculated":
                 submission_field.calculate()
 
     def reset_test(self):
@@ -1962,15 +2098,15 @@ class CreditTestSubmission(CreditSubmission):
         """ Returns a string with this submission's field values formatted as
             a parameter list.
         """
-        return ', '.join([field.__unicode__()
-                          for field
-                          in self.get_submission_fields()])
+        return ", ".join(
+            [field.__unicode__() for field in self.get_submission_fields()]
+        )
 
     def __unicode__(self):
         return "f( %s ) = %s" % (self.parameter_list(), self.expected_value)
 
     def get_available_points(self, use_cache=False):
-        '''Call CreditSubmission method for reduction of duplication'''
+        """Call CreditSubmission method for reduction of duplication"""
         return self.get_parent_available_points(use_cache=use_cache)
 
 
@@ -1978,14 +2114,18 @@ class DataCorrectionRequest(models.Model):
     """
         A request by an institution to make a change to their submission
     """
+
     date = models.DateTimeField(auto_now_add=True)
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
-    reporting_field = GenericForeignKey('content_type', 'object_id')
+    reporting_field = GenericForeignKey("content_type", "object_id")
     new_value = models.TextField(
-        help_text=("Note: if this is a numeric field, be sure to use the "
-                   "institution's preference for metric/imperial. You can "
-                   "find this in their settings."))
+        help_text=(
+            "Note: if this is a numeric field, be sure to use the "
+            "institution's preference for metric/imperial. You can "
+            "find this in their settings."
+        )
+    )
     explanation = models.TextField()
     user = models.ForeignKey(User, blank=True, null=True)
     approved = models.BooleanField(default=False)
@@ -1998,13 +2138,15 @@ class DataCorrectionRequest(models.Model):
             used to link back to the report from the admin
         """
         cus = CreditUserSubmission.objects.get(
-            pk=self.reporting_field.credit_submission.id)
+            pk=self.reporting_field.credit_submission.id
+        )
         return cus.get_scorecard_url()
 
     def get_submissionset(self):
         " used to display the submission set in the admin's list_display"
         cus = CreditUserSubmission.objects.get(
-            pk=self.reporting_field.credit_submission.id)
+            pk=self.reporting_field.credit_submission.id
+        )
         return cus.subcategory_submission.category_submission.submissionset
 
     def get_required_status(self):
@@ -2044,11 +2186,11 @@ class DataCorrectionRequest(models.Model):
             change_date=datetime.today(),
             reporting_field=self.reporting_field,
             explanation=self.explanation,
-            request=self)
+            request=self,
+        )
 
         if self.reporting_field.documentation_field.type == "choice":
-            self.reporting_field.value = Choice.objects.get(
-                pk=int(self.new_value))
+            self.reporting_field.value = Choice.objects.get(pk=int(self.new_value))
         elif self.reporting_field.documentation_field.type == "boolean":
             if self.new_value == "Yes":
                 self.reporting_field.value = True
@@ -2069,7 +2211,8 @@ class DataCorrectionRequest(models.Model):
                 if self.reporting_field.value is not None:
                     rfdc.previous_value = "%d %s" % (
                         self.reporting_field.metric_value,
-                        self.reporting_field.documentation_field.metric_units)
+                        self.reporting_field.documentation_field.metric_units,
+                    )
                 else:
                     rfdc.previous_value = "---"
                 self.reporting_field.metric_value = float(self.new_value)
@@ -2077,7 +2220,8 @@ class DataCorrectionRequest(models.Model):
                 if self.reporting_field.value is not None:
                     rfdc.previous_value = "%d %s" % (
                         self.reporting_field.value,
-                        self.reporting_field.documentation_field.us_units)
+                        self.reporting_field.documentation_field.us_units,
+                    )
                 else:
                     rfdc.previous_value = "---"
                 self.reporting_field.value = float(self.new_value)
@@ -2090,7 +2234,8 @@ class DataCorrectionRequest(models.Model):
 
         # Apply change to overall score.
         cus = CreditUserSubmission.objects.get(
-            pk=self.reporting_field.credit_submission.id)
+            pk=self.reporting_field.credit_submission.id
+        )
         ss = cus.subcategory_submission.category_submission.submissionset
         score_changed = False
         rating_changed = False
@@ -2105,12 +2250,14 @@ class DataCorrectionRequest(models.Model):
 
             cus.subcategory_submission.points = None
             cus.subcategory_submission.points = (
-                cus.subcategory_submission.get_claimed_points())
+                cus.subcategory_submission.get_claimed_points()
+            )
             cus.subcategory_submission.save()
 
             cus.subcategory_submission.category_submission.score = None
             cus.subcategory_submission.category_submission.score = (
-                cus.subcategory_submission.category_submission.get_STARS_score())  # noqa
+                cus.subcategory_submission.category_submission.get_STARS_score()
+            )  # noqa
             cus.subcategory_submission.category_submission.save()
 
             ss.score = None
@@ -2132,16 +2279,18 @@ class DataCorrectionRequest(models.Model):
             ss.save()
 
         # notify institution of approval
-        et = EmailTemplate.objects.get(slug='approved_data_correction')
+        et = EmailTemplate.objects.get(slug="approved_data_correction")
         mail_to = [ss.institution.contact_email]
         if ss.institution.contact_email != self.user.email:
             mail_to.append(self.user.email)
-        email_context = {"submissionset": ss,
-                         "credit_submission": cus,
-                         "score_changed": score_changed,
-                         "rating_changed": rating_changed,
-                         "old_rating": old_rating,
-                         "old_score": old_score}
+        email_context = {
+            "submissionset": ss,
+            "credit_submission": cus,
+            "score_changed": score_changed,
+            "rating_changed": rating_changed,
+            "old_rating": old_rating,
+            "old_score": old_score,
+        }
         et.send_email(mail_to, email_context)
 
 
@@ -2150,19 +2299,19 @@ class ReportingFieldDataCorrection(models.Model):
         Represents a change to a particular field in Credit Submission after
         an institution has received a rating.
     """
-    request = models.OneToOneField(DataCorrectionRequest,
-                                   related_name='applied_correction',
-                                   blank=True, null=True)
+
+    request = models.OneToOneField(
+        DataCorrectionRequest, related_name="applied_correction", blank=True, null=True
+    )
     previous_value = models.TextField()
     change_date = models.DateField()
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
-    reporting_field = GenericForeignKey('content_type', 'object_id')
+    reporting_field = GenericForeignKey("content_type", "object_id")
     explanation = models.TextField(blank=True, null=True)
 
 
 class DocumentationFieldSubmissionManager(models.Manager):
-
     def by_submissionset(self, ss):
         """
         Get all the DocumentationFieldSubmissions tied to a SubmissionSet
@@ -2177,12 +2326,16 @@ class DocumentationFieldSubmission(models.Model):
     """
         The submitted value for a documentation field (abstract).
     """
-    documentation_field = models.ForeignKey(DocumentationField,
-                                            related_name="%(class)s_set")
+
+    documentation_field = models.ForeignKey(
+        DocumentationField, related_name="%(class)s_set"
+    )
     credit_submission = models.ForeignKey(CreditSubmission)
-    corrections = GenericRelation(ReportingFieldDataCorrection,
-                                  content_type_field='content_type',
-                                  object_id_field='object_id')
+    corrections = GenericRelation(
+        ReportingFieldDataCorrection,
+        content_type_field="content_type",
+        object_id_field="object_id",
+    )
     objects = DocumentationFieldSubmissionManager()
 
     class Meta:
@@ -2196,9 +2349,9 @@ class DocumentationFieldSubmission(models.Model):
     def get_flag_url(self):
 
         link = "%s?content_type=%s&object_id=%d" % (
-            urlresolvers.reverse('admin:submissions_flag_add'),
+            urlresolvers.reverse("admin:submissions_flag_add"),
             ContentType.objects.get_for_model(self).id,
-            self.id
+            self.id,
         )
         return link
 
@@ -2212,8 +2365,7 @@ class DocumentationFieldSubmission(models.Model):
         return self.credit_submission
 
     def get_institution(self):
-        parent = CreditUserSubmission.objects.get(
-            pk=self.credit_submission.id)
+        parent = CreditUserSubmission.objects.get(pk=self.credit_submission.id)
         return parent.get_institution()
 
     def get_creditset(self):
@@ -2227,37 +2379,42 @@ class DocumentationFieldSubmission(models.Model):
 
     def persists(self):
         """Does this Submission object persist in the DB?"""
-        return (self.pk is not None)
+        return self.pk is not None
 
     def get_field_class(field):
         """
            Returns the related DocumentationFieldSubmission model class for a
            particular documentation field
         """
-        if field.type == 'text':
+        if field.type == "text":
             return TextSubmission
-        if field.type == 'long_text':
+        if field.type == "long_text":
             return LongTextSubmission
-        if field.type in ('numeric', 'calculated'):
+        if field.type in ("numeric", "calculated"):
             return NumericSubmission
-        if field.type == 'choice':
-            return (ChoiceWithOtherSubmission
-                    if field.has_other_choice()
-                    else ChoiceSubmission)
-        if field.type == 'multichoice':
-            return (MultiChoiceWithOtherSubmission
-                    if field.has_other_choice()
-                    else MultiChoiceSubmission)
-        if field.type == 'boolean':
+        if field.type == "choice":
+            return (
+                ChoiceWithOtherSubmission
+                if field.has_other_choice()
+                else ChoiceSubmission
+            )
+        if field.type == "multichoice":
+            return (
+                MultiChoiceWithOtherSubmission
+                if field.has_other_choice()
+                else MultiChoiceSubmission
+            )
+        if field.type == "boolean":
             return BooleanSubmission
-        if field.type == 'url':
+        if field.type == "url":
             return URLSubmission
-        if field.type == 'date':
+        if field.type == "date":
             return DateSubmission
-        if field.type == 'upload':
+        if field.type == "upload":
             return UploadSubmission
 
         return None
+
     get_field_class = staticmethod(get_field_class)
 
     def get_human_value(self, get_metric=False):
@@ -2267,9 +2424,9 @@ class DocumentationFieldSubmission(models.Model):
             Pass True as get_metric and for number fields,
             you'll get back a metric value.
         """
-        if self.documentation_field.type == 'tabluar':
+        if self.documentation_field.type == "tabluar":
             return ""
-        if self.documentation_field.type == 'upload':
+        if self.documentation_field.type == "upload":
             if self.value:
                 return "https://reports.aashe.org%s" % self.value.url
             else:
@@ -2279,21 +2436,22 @@ class DocumentationFieldSubmission(models.Model):
             if not self.value:
                 return ""
             else:
-                if self.documentation_field.type == 'long_text':
+                if self.documentation_field.type == "long_text":
                     str_val = self.value.replace("\r\n", "\n")
                     if len(str_val) > 32000:
                         str_val = "%s ... [TRUNCATED]" % str_val[:32000]
                     return str_val
 
-                elif self.documentation_field.type in ('numeric',
-                                                       'calculated'):
+                elif self.documentation_field.type in ("numeric", "calculated"):
                     value = self.metric_value if get_metric else self.value
-                    units = (self.documentation_field.metric_units
-                             if get_metric
-                             else self.documentation_field.units)
+                    units = (
+                        self.documentation_field.metric_units
+                        if get_metric
+                        else self.documentation_field.units
+                    )
 
-                    str_val = "%.2f" % value if value is not None else ''
-                    if str_val[-3:] == '.00':
+                    str_val = "%.2f" % value if value is not None else ""
+                    if str_val[-3:] == ".00":
                         str_val = str_val[:-3]
                     if units:
                         return "%s %s" % (str_val, units)
@@ -2339,8 +2497,10 @@ class DocumentationFieldSubmission(models.Model):
         return False
 
     def get_correction_url(self):
-        return "%s%d/" % (self.credit_submission.get_scorecard_url(),
-                          self.documentation_field.id)
+        return "%s%d/" % (
+            self.credit_submission.get_scorecard_url(),
+            self.documentation_field.id,
+        )
 
 
 class AbstractChoiceSubmission(DocumentationFieldSubmission):
@@ -2354,24 +2514,22 @@ class AbstractChoiceSubmission(DocumentationFieldSubmission):
 
     @staticmethod
     def _get_str(choice):
-        return ('<%d:%s>' % (choice.ordinal, choice.choice)
-                if choice
-                else '<None>')
+        return "<%d:%s>" % (choice.ordinal, choice.choice) if choice else "<None>"
 
     def get_choice_queryset(self):
         """Return the queryset used to define the choices for this
            submission"""
 
         return Choice.objects.filter(
-            documentation_field=self.documentation_field).filter(
-                is_bonafide=True)
+            documentation_field=self.documentation_field
+        ).filter(is_bonafide=True)
 
     def get_last_choice(self):
         """ Return the last Choice object in the list of choices for this
             submission """
         choices = self.get_choice_queryset()
         if len(choices) > 0:
-            return choices[len(choices)-1]  # no negative indexing on QuerySets
+            return choices[len(choices) - 1]  # no negative indexing on QuerySets
         else:
             return None
 
@@ -2380,6 +2538,7 @@ class ChoiceSubmission(AbstractChoiceSubmission):
     """
         The submitted value for a Single Choice Documentation Field
     """
+
     value = models.ForeignKey(Choice, blank=True, null=True)
 
     def get_value(self):
@@ -2409,14 +2568,18 @@ class AbstractChoiceWithOther(object):
             # search for the 'other' choice value first - try to
             # re-use an existing choice.
             find = Choice.objects.filter(
-                documentation_field=self.documentation_field).filter(
-                    choice=other_value)  # @todo: can this be case insensitive?
+                documentation_field=self.documentation_field
+            ).filter(
+                choice=other_value
+            )  # @todo: can this be case insensitive?
             if len(find) > 0:
                 choice = find[0]
             else:
-                choice = Choice(documentation_field=self.documentation_field,
-                                choice=other_value,
-                                is_bonafide=False)
+                choice = Choice(
+                    documentation_field=self.documentation_field,
+                    choice=other_value,
+                    is_bonafide=False,
+                )
                 choice.save()
 
         return choice
@@ -2427,6 +2590,7 @@ class ChoiceWithOtherSubmission(ChoiceSubmission, AbstractChoiceWithOther):
         A proxy model (does not create a new table) for a Choice
         Submission with an 'other' choice
     """
+
     class Meta:
         proxy = True
 
@@ -2451,13 +2615,15 @@ class ChoiceWithOtherSubmission(ChoiceSubmission, AbstractChoiceWithOther):
         try:
             choice = Choice.objects.get(id=value)
         except:
-            logger.error("Attempt to decompress non-existing Choice (id=%s)" %
-                         value, exc_info=True)
+            logger.error(
+                "Attempt to decompress non-existing Choice (id=%s)" % value,
+                exc_info=True,
+            )
             return [None, None]
         if choice.is_bonafide:  # One of the actual choices
             return [value, None]
-        else:                   # whereas non-bonafide choices
-                                # represent an 'other' choice.
+        else:  # whereas non-bonafide choices
+            # represent an 'other' choice.
 
             # value is not one of the bonafide choices - try to find
             # it in the DB.  The selection is the last choice, and the
@@ -2482,16 +2648,17 @@ class ChoiceWithOtherSubmission(ChoiceSubmission, AbstractChoiceWithOther):
         last_choice = self.get_last_choice()
         if other_value and choice != last_choice:
             logger.warning(
-                "'%s' will not be saved because '%s' was not selected." %
-                (other_value, last_choice.choice))
-        return super(ChoiceWithOtherSubmission, self).compress(choice,
-                                                               other_value)
+                "'%s' will not be saved because '%s' was not selected."
+                % (other_value, last_choice.choice)
+            )
+        return super(ChoiceWithOtherSubmission, self).compress(choice, other_value)
 
 
 class MultiChoiceSubmission(AbstractChoiceSubmission):
     """
         The submitted value for a Multi-Choice Documentation Field
     """
+
     # should be called values, really, since it potentially
     # represents multiple values
     value = models.ManyToManyField(Choice, blank=True)
@@ -2507,15 +2674,15 @@ class MultiChoiceSubmission(AbstractChoiceSubmission):
         choices = self.get_value()
         if not choices:
             return "[ ]"
-        return '[%s]' % ','.join([self._get_str(choice) for choice in choices])
+        return "[%s]" % ",".join([self._get_str(choice) for choice in choices])
 
 
-class MultiChoiceWithOtherSubmission(MultiChoiceSubmission,
-                                     AbstractChoiceWithOther):
+class MultiChoiceWithOtherSubmission(MultiChoiceSubmission, AbstractChoiceWithOther):
     """
         A proxy model (does not create a new table) for a MultiChoice
         Submission with an 'other' choice
     """
+
     class Meta:
         proxy = True
 
@@ -2545,18 +2712,20 @@ class MultiChoiceWithOtherSubmission(MultiChoiceSubmission,
                 choice = Choice.objects.get(id=choice_id)
             except:
                 logger.error(
-                    "Attempt to decompress non-existing Choice (id=%s)" %
-                    choice_id, exc_info=True)
+                    "Attempt to decompress non-existing Choice (id=%s)" % choice_id,
+                    exc_info=True,
+                )
                 return [[], None]
             if not choice.is_bonafide:  # An 'other' choice replace
-                                        # the choice with the last
-                                        # choice.
+                # the choice with the last
+                # choice.
                 if other:
                     logger.error(
                         "Found multiple 'other' choices "
                         "(%s and %s) associated with single "
-                        "MultiChoiceWithOtherSubmission (id=%s)" %
-                        (other, choice.choice, self.id))
+                        "MultiChoiceWithOtherSubmission (id=%s)"
+                        % (other, choice.choice, self.id)
+                    )
                 else:
                     choice_id = self.get_last_choice().pk
                     other = choice.choice
@@ -2578,15 +2747,19 @@ class MultiChoiceWithOtherSubmission(MultiChoiceSubmission,
         """
         choice_list = []
         for choice in choices:
-            choice_list.append(super(MultiChoiceWithOtherSubmission,
-                                     self).compress(choice, other_value))
+            choice_list.append(
+                super(MultiChoiceWithOtherSubmission, self).compress(
+                    choice, other_value
+                )
+            )
 
         # Warn the user about potentially lost data
         last_choice = self.get_last_choice()
         if other_value and last_choice not in choices:
             logger.warning(
-                "'%s' will not be saved because '%s' was not selected." %
-                (other_value, last_choice.choice))
+                "'%s' will not be saved because '%s' was not selected."
+                % (other_value, last_choice.choice)
+            )
 
         return choice_list
 
@@ -2595,6 +2768,7 @@ class URLSubmission(DocumentationFieldSubmission):
     """
         The submitted value for a URL Documentation Field
     """
+
     value = models.URLField(blank=True, null=True)
 
 
@@ -2602,6 +2776,7 @@ class DateSubmission(DocumentationFieldSubmission):
     """
         The submitted value for a Date Documentation Field
     """
+
     value = models.DateField(blank=True, null=True)
 
 
@@ -2662,12 +2837,13 @@ class NumericSubmission(DocumentationFieldSubmission):
 
             "then the" what?  I'm confused!
     """
+
     value = models.FloatField(blank=True, null=True)
     metric_value = models.FloatField(blank=True, null=True)
 
     @property
     def init_track_fields(self):
-        return ['value']
+        return ["value"]
 
     def requires_duplication(self):
         """
@@ -2682,7 +2858,7 @@ class NumericSubmission(DocumentationFieldSubmission):
             Logic to determine if the `metric_value` field should be used. This
             is shared with the form, so it makes sense to add it to the model
         """
-        if not hasattr(self, 'credit_submission'):
+        if not hasattr(self, "credit_submission"):
             # It's not a real submission, just an example in
             # the credit editor, just an in-memory, unbound
             # object, and so without a 'credit_submission'
@@ -2716,11 +2892,15 @@ class NumericSubmission(DocumentationFieldSubmission):
                         exception=str(exc),
                         documentation_field_edit_url=self.documentation_field.get_edit_url(),
                         documentation_field=self.documentation_field,
-                        locals={key: value for key, value in locals.items()
-                                if (type(value) in (int, float) or
-                                    value is None)}))
+                        locals={
+                            key: value
+                            for key, value in locals.items()
+                            if (type(value) in (int, float) or value is None)
+                        },
+                    )
+                )
             return None
-        return locals['value']
+        return locals["value"]
 
     def calculate(self, log_exceptions=True):
         """
@@ -2740,11 +2920,13 @@ class NumericSubmission(DocumentationFieldSubmission):
             metric_locals.update({"value": None})
             self.metric_value = self.run_formula(metric_locals, log_exceptions=True)
 
-
-    def save(self,
-             recalculate_related_calculated_fields=True,
-             log_calculation_exceptions=True,
-             *args, **kwargs):
+    def save(
+        self,
+        recalculate_related_calculated_fields=True,
+        log_calculation_exceptions=True,
+        *args,
+        **kwargs
+    ):
         """
             Override the save method to
                 1. generate the metric value, and
@@ -2767,49 +2949,53 @@ class NumericSubmission(DocumentationFieldSubmission):
 
         super(NumericSubmission, self).save(*args, **kwargs)
 
-        if (self.value != self._original_value and
-            recalculate_related_calculated_fields):  # noqa
+        if (
+            self.value != self._original_value and recalculate_related_calculated_fields
+        ):  # noqa
 
             # If this field is used in any calculated fields ...
-            for calculated_field in (
-                    self.documentation_field.calculated_fields.all()):
+            for calculated_field in self.documentation_field.calculated_fields.all():
                 # ... recalculate those fields:
 
-                for calculated_field_submission in (
-                        NumericSubmission.objects.filter(
-                            documentation_field=calculated_field,
-                            credit_submission=self.credit_submission).exclude(
-                                pk=self.pk)):
+                for calculated_field_submission in NumericSubmission.objects.filter(
+                    documentation_field=calculated_field,
+                    credit_submission=self.credit_submission,
+                ).exclude(pk=self.pk):
 
                     calculated_field_submission.calculate(
-                        log_exceptions=log_calculation_exceptions)
+                        log_exceptions=log_calculation_exceptions
+                    )
 
-                    if (calculated_field_submission.value !=
-                        calculated_field_submission._original_value):  # NOQA
+                    if (
+                        calculated_field_submission.value
+                        != calculated_field_submission._original_value
+                    ):  # NOQA
 
                         calculated_field_submission.save(
                             recalculate_related_calculated_fields,
                             log_calculation_exceptions,
-                            *args, **kwargs)
+                            *args,
+                            **kwargs
+                        )
 
 
 def numeric_submission_post_init(sender, instance, **kwargs):
     for field in instance.init_track_fields:
-        setattr(instance,
-                '_original_%s' % field,
-                getattr(instance, field, None))
+        setattr(instance, "_original_%s" % field, getattr(instance, field, None))
 
 
 post_init.connect(
     numeric_submission_post_init,
     sender=NumericSubmission,
-    dispatch_uid='stars.apps.submissions.models.numeric_submission_post_init')
+    dispatch_uid="stars.apps.submissions.models.numeric_submission_post_init",
+)
 
 
 class TextSubmission(DocumentationFieldSubmission):
     """
         The submitted value for a Text Documentation Field
     """
+
     value = models.CharField(max_length=255, blank=True, null=True)
 
 
@@ -2817,6 +3003,7 @@ class LongTextSubmission(DocumentationFieldSubmission):
     """
         The submitted value for Long Text Documentation Field
     """
+
     value = models.TextField(blank=True, null=True)
 
 
@@ -2831,8 +3018,13 @@ def upload_path_callback(instance, filename):
         credit = field.credit
         creditset = field.credit.subcategory.category.creditset
         institution = instance.get_institution()
-        path = "secure/%d/%d/%d/%d/%s" % (institution.id, creditset.id,
-                                          credit.id, field.id, filename)
+        path = "secure/%d/%d/%d/%d/%s" % (
+            institution.id,
+            creditset.id,
+            credit.id,
+            field.id,
+            filename,
+        )
         return path
     else:
         # if this is a test submission use a different URL
@@ -2844,11 +3036,10 @@ class UploadSubmission(DocumentationFieldSubmission):
         The submitted value for a File Upload Documentation Field
         @todo: custom storage engine to rename files
     """
+
     value = models.FileField(
-        upload_to=upload_path_callback,
-        blank=True,
-        max_length=255,
-        null=True)
+        upload_to=upload_path_callback, blank=True, max_length=255, null=True
+    )
 
     def get_filename(self):
         """ Returns the name of the file w/out the full path. """
@@ -2856,8 +3047,8 @@ class UploadSubmission(DocumentationFieldSubmission):
 
     def get_admin_url(self):
         url = urlresolvers.reverse(
-            'admin:submissions_uploadsubmission_change',
-            args=(self.id,))
+            "admin:submissions_uploadsubmission_change", args=(self.id,)
+        )
         return url
 
 
@@ -2865,6 +3056,7 @@ class BooleanSubmission(DocumentationFieldSubmission):
     """
         The submitted value for a Boolean Documentation Field
     """
+
     value = models.NullBooleanField(blank=True, null=True)
 
     def __unicode__(self):
@@ -2877,24 +3069,24 @@ class BooleanSubmission(DocumentationFieldSubmission):
 
 
 PAYMENT_REASON_CHOICES = (
-    ('member_reg', 'member_reg'),
-    ('nonmember_reg', 'nonmember_reg'),
-    ('member_renew', 'member_renew'),
-    ('nonmember_renew', 'nonmember_renew'),
-    ('international', 'international')
+    ("member_reg", "member_reg"),
+    ("nonmember_reg", "nonmember_reg"),
+    ("member_renew", "member_renew"),
+    ("nonmember_renew", "nonmember_renew"),
+    ("international", "international"),
 )
 
 PAYMENT_TYPE_CHOICES = (
-    ('credit', 'credit'),
-    ('check', 'check'),
-    ('later', 'pay later'),
+    ("credit", "credit"),
+    ("check", "check"),
+    ("later", "pay later"),
 )
 
 # used by template tag to create iconic representation of paymnet
 PAYMENT_TYPE_ICONS = {
-    'credit': ('creditcards.png', 'Paid by credit'),
-    'check': ('check.png', 'Paid by check'),
-    'later': ('flag_red.png', 'Awaiting payment'),
+    "credit": ("creditcards.png", "Paid by credit"),
+    "check": ("check.png", "Paid by check"),
+    "later": ("flag_red.png", "Awaiting payment"),
 }
 
 
@@ -2902,6 +3094,7 @@ class Payment(models.Model):
     """
         Any payment associated with submissions such as registration
     """
+
     submissionset = models.ForeignKey(SubmissionSet)
     date = models.DateTimeField()
     amount = models.FloatField()
@@ -2909,8 +3102,11 @@ class Payment(models.Model):
     reason = models.CharField(max_length=16, choices=PAYMENT_REASON_CHOICES)
     type = models.CharField(max_length=8, choices=PAYMENT_TYPE_CHOICES)
     confirmation = models.CharField(
-        max_length=16, blank=True, null=True,
-        help_text='The CC confirmation code or check number')
+        max_length=16,
+        blank=True,
+        null=True,
+        help_text="The CC confirmation code or check number",
+    )
 
     def __unicode__(self):
         return "%s $%.2f" % (self.date, self.amount)
@@ -2958,10 +3154,14 @@ class SubmissionInquiry(models.Model):
     email_address = models.EmailField(null=True, blank=True)
     phone_number = PhoneNumberField(null=True, blank=True)
     additional_comments = models.TextField(
-        blank=True, null=True,
-        help_text=("Include any other comments about the Submission, "
-                   "including the Submission Boundary and Subcategory "
-                   "Descriptions."))
+        blank=True,
+        null=True,
+        help_text=(
+            "Include any other comments about the Submission, "
+            "including the Submission Boundary and Subcategory "
+            "Descriptions."
+        ),
+    )
 
     class Meta:
         verbose_name_plural = "Submission Inquiries"
@@ -3009,9 +3209,9 @@ class SubcategoryQuartiles(models.Model):
     of each quartile.  The numbers represent the percentage of available
     points granted to a submission, not the number of points granted.
     """
+
     subcategory = models.ForeignKey(Subcategory)
-    institution_type = models.CharField(max_length=128,
-                                        default='')
+    institution_type = models.CharField(max_length=128, default="")
     first = models.FloatField(default=0)
     second = models.FloatField(default=0)
     third = models.FloatField(default=0)
@@ -3025,26 +3225,35 @@ class SubcategoryQuartiles(models.Model):
         """
         subcategory_submissions = SubcategorySubmission.objects.filter(
             subcategory=self.subcategory,
-            category_submission__submissionset__status=RATED_SUBMISSION_STATUS)
+            category_submission__submissionset__status=RATED_SUBMISSION_STATUS,
+        )
         points_percent = []
 
         for subcategory_submission in subcategory_submissions:
-            if (subcategory_submission.get_submissionset().get_institution_type() ==  # noqa
-                self.institution_type):  # noqa
+            if (
+                subcategory_submission.get_submissionset().get_institution_type()
+                == self.institution_type  # noqa
+            ):  # noqa
 
                 adjusted_available_points = (
-                    subcategory_submission.get_adjusted_available_points())
+                    subcategory_submission.get_adjusted_available_points()
+                )
 
                 if adjusted_available_points:
 
                     points_percent.append(
-                        (subcategory_submission.get_claimed_points() /
-                         adjusted_available_points) * 100)
+                        (
+                            subcategory_submission.get_claimed_points()
+                            / adjusted_available_points
+                        )
+                        * 100
+                    )
 
         if sum(points_percent):
             array = numpy.array(points_percent)
-            self.first, self.second, self.third, self.fourth = (
-                numpy.percentile(array, numpy.arange(25, 101, 25)))
+            self.first, self.second, self.third, self.fourth = numpy.percentile(
+                array, numpy.arange(25, 101, 25)
+            )
         else:
             self.first = self.second = self.third = self.fourth = 0
         self.save()
@@ -3053,41 +3262,40 @@ class SubcategoryQuartiles(models.Model):
 CREDIT_SUBMISSION_REVIEW_NOTATION_KINDS = {
     "BEST_PRACTICE": "best-practice",
     "REVISION_REQUEST": "revision-request",
-    "SUGGESTION_FOR_IMPROVEMENT": "suggestion-for-improvement"}
+    "SUGGESTION_FOR_IMPROVEMENT": "suggestion-for-improvement",
+}
 
 CREDIT_SUBMISSION_REVIEW_NOTATION_KIND_CHOICES = (
-    (CREDIT_SUBMISSION_REVIEW_NOTATION_KINDS["BEST_PRACTICE"],
-     "Best Practice"),
-    (CREDIT_SUBMISSION_REVIEW_NOTATION_KINDS["REVISION_REQUEST"],
-     "Revision Request"),
-    (CREDIT_SUBMISSION_REVIEW_NOTATION_KINDS["SUGGESTION_FOR_IMPROVEMENT"],
-     "Suggestion For Improvement"))
+    (CREDIT_SUBMISSION_REVIEW_NOTATION_KINDS["BEST_PRACTICE"], "Best Practice"),
+    (CREDIT_SUBMISSION_REVIEW_NOTATION_KINDS["REVISION_REQUEST"], "Revision Request"),
+    (
+        CREDIT_SUBMISSION_REVIEW_NOTATION_KINDS["SUGGESTION_FOR_IMPROVEMENT"],
+        "Suggestion For Improvement",
+    ),
+)
 
 
 class CreditSubmissionReviewNotation(models.Model):
 
     credit_user_submission = models.ForeignKey(CreditUserSubmission)
     kind = models.CharField(
-        max_length=32,
-        choices=CREDIT_SUBMISSION_REVIEW_NOTATION_KIND_CHOICES)
+        max_length=32, choices=CREDIT_SUBMISSION_REVIEW_NOTATION_KIND_CHOICES
+    )
     comment = models.TextField(blank=True, null=True)
     send_email = models.BooleanField(blank=True, default=True)
     email_sent = models.BooleanField(blank=True, default=False)
 
     class Meta:
-        ordering = ("kind",
-                    "credit_user_submission__credit__identifier",
-                    "id")
+        ordering = ("kind", "credit_user_submission__credit__identifier", "id")
 
     def is_unlocking_kind(self):
         """Is this a kind of Notation that should unlock a Credit Submission
            when it's under review?
         """
         unlocking_kinds = [
-            CREDIT_SUBMISSION_REVIEW_NOTATION_KINDS[
-                "REVISION_REQUEST"],
-            CREDIT_SUBMISSION_REVIEW_NOTATION_KINDS[
-                "SUGGESTION_FOR_IMPROVEMENT"]]
+            CREDIT_SUBMISSION_REVIEW_NOTATION_KINDS["REVISION_REQUEST"],
+            CREDIT_SUBMISSION_REVIEW_NOTATION_KINDS["SUGGESTION_FOR_IMPROVEMENT"],
+        ]
         return self.kind in unlocking_kinds
 
     def save(self, *args, **kwargs):
@@ -3095,14 +3303,15 @@ class CreditSubmissionReviewNotation(models.Model):
 
         if self.pk:
             # Don't let the kind of this CreditSubmissionReviewNotation change.
-            self.kind = (
-                CreditSubmissionReviewNotation.objects.get(pk=self.pk).kind)
+            self.kind = CreditSubmissionReviewNotation.objects.get(pk=self.pk).kind
 
         super(CreditSubmissionReviewNotation, self).save(*args, **kwargs)
 
-        if (new_credit_submission_review_notification and
-            self.is_unlocking_kind() and
-            not self.credit_user_submission.is_unlocked_for_review):  # noqa
+        if (
+            new_credit_submission_review_notification
+            and self.is_unlocking_kind()
+            and not self.credit_user_submission.is_unlocked_for_review
+        ):  # noqa
 
             self.credit_user_submission.is_unlocked_for_review = True
             self.credit_user_submission.save(calculate_points=False)
@@ -3117,9 +3326,11 @@ def pre_delete_credit_submission_review_notation(sender, instance, **kwargs):
     if sender == CreditSubmissionReviewNotation:
         credit_user_submission = instance.credit_user_submission
         if credit_user_submission.is_unlocked_for_review:
-            for review_notation in (
-                    credit_user_submission.creditsubmissionreviewnotation_set.
-                    exclude(pk=instance.pk)):
+            for (
+                review_notation
+            ) in credit_user_submission.creditsubmissionreviewnotation_set.exclude(
+                pk=instance.pk
+            ):
                 if review_notation.is_unlocking_kind():
                     return  # Keep the Credit Submission unlocked
         credit_user_submission.is_unlocked_for_review = False

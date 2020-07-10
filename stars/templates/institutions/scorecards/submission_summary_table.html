@@ -19,8 +19,10 @@
         Rating
       </th>
       <th>Score</th>
+      <th nowrap>Valid Through</th>
       <th>Liaison</th>
-      <th>Submission Date</th>
+      <th>Submitted</th>
+      <th>Published</th>
       {% if submissionset.creditset.has_president_letter_feature %}
           <th>Executive Letter</th>
       {% endif %}
@@ -64,8 +66,14 @@
         {% endif %}
       </td>
       <td>
+        {{ submissionset.date_expiration }}
+      </td>
+      <td>
         {{ submissionset.institution.contact_first_name }}
         {{ submissionset.institution.contact_last_name }}
+      </td>
+      <td>
+        {{ submissionset.date_published }}
       </td>
       <td>
         {% if preview %}
