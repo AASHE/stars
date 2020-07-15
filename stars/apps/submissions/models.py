@@ -148,6 +148,7 @@ class SubmissionSet(models.Model):
     """
 
     objects = SubmissionManager()
+    test_field_ro = models.BooleanField(default=False)
     creditset = models.ForeignKey(CreditSet)
     institution = models.ForeignKey(Institution)
     date_registered = models.DateField()

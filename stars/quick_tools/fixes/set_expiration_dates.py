@@ -18,11 +18,16 @@ from stars.apps.submissions.models import (
     NumericSubmission,
 )
 
+START_DATE = datetime.date(2017, 03, 01)
+END_DATE = datetime.date(2018, 07, 10)
+THREE_YEARS = 365 * 3
+EXTENSION_PERIOD_IN_DAYS = 180
+
 
 def set_expiration_on_rated_submissions():
     manager = SubmissionManager()
     report_headers = [
-        "Extended Applied?",
+        "Extendension Applied?",
         "Institution",
         "Report Submission Date",
         "Original Expiration Date",
@@ -34,16 +39,17 @@ def set_expiration_on_rated_submissions():
     submissions_processed.append(u"\t".join(report_headers))
 
     for nextRatedSubmission in manager.get_rated():
-        if nextRatedSubmission.date_submitted > datetime.date(
-            2017, 03, 01
-        ) and nextRatedSubmission.date_submitted < datetime.date(2017, 07, 10):
+        if (
+            nextRatedSubmission.date_submitted > START_DATE
+            and nextRatedSubmission.date_submitted < END_DATE
+        ):
             date_expiration = nextRatedSubmission.date_submitted + datetime.timedelta(
-                days=((365 * 3) + 180)
+                days=(THREE_YEARS + EXTENSION_PERIOD_IN_DAYS)
             )
             was_extended = True
         else:
             date_expiration = nextRatedSubmission.date_submitted + datetime.timedelta(
-                days=(365 * 3)
+                days=(THREE_YEARS)
             )
             was_extended = False
 
