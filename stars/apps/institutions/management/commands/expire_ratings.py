@@ -29,10 +29,11 @@ def expire_ratings():
     for submissionset in (
         SubmissionSet.objects.filter(status="r")
         .exclude(expired=True)
+        .exclude(date_expiration=None)
         .order_by("-date_submitted")
     ):
 
-        if submissionset.date_expiration < today:
+        if submissionset.date_expiration < datetime.date.today():
             logger.info("Expired: %s" % submissionset)
             logger.info("Date Submitted: %s" % submissionset.date_submitted)
             logger.info("Date Expiration: %s" % submissionset.date_expiration)

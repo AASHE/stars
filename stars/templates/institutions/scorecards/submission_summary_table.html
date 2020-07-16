@@ -22,7 +22,6 @@
       <th nowrap>Valid Through</th>
       <th>Liaison</th>
       <th>Submitted</th>
-      <th>Published</th>
       {% if submissionset.creditset.has_president_letter_feature %}
           <th>Executive Letter</th>
       {% endif %}
@@ -66,20 +65,21 @@
         {% endif %}
       </td>
       <td>
-        {{ submissionset.date_expiration }}
+        {% if submissionset.date_expiration %}
+          {{ submissionset.date_expiration }}
+        {% else %}
+          Pending
+        {% endif %}
       </td>
       <td>
         {{ submissionset.institution.contact_first_name }}
         {{ submissionset.institution.contact_last_name }}
       </td>
       <td>
-        {{ submissionset.date_published }}
-      </td>
-      <td>
-        {% if preview %}
-          <span class="label label-warning">Preview</span>
-        {% else %}
+        {% if submissionset.date_submitted %}
           {{ submissionset.date_submitted }}
+        {% else %}
+          Pending
         {% endif %}
       </td>
       {% if submissionset.creditset.has_president_letter_feature %}

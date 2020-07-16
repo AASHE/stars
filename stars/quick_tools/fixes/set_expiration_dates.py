@@ -54,6 +54,9 @@ def set_expiration_on_rated_submissions():
             was_extended = False
 
         nextRatedSubmission.date_expiration = date_expiration
+        if was_extended:
+            nextRatedSubmission.expired = False
+
         this_institution = Institution.objects.get(
             name=nextRatedSubmission.institution.name
         )
@@ -85,5 +88,6 @@ def set_expiration_on_rated_submissions():
 
 submissions_fixed = set_expiration_on_rated_submissions()
 
+
 for nextFixed in submissions_fixed:
-    print("\n %s" % nextFixed)
+    print("%s" % nextFixed)
