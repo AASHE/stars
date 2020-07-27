@@ -364,9 +364,6 @@ class ApproveSubmissionView(SubmissionToolMixin, IsStaffMixin, UpdateView):
         # Update the SubmissionSet.
         submissionset = self.get_submissionset(use_cache=False)
         submissionset.rating = submissionset.get_STARS_rating()
-        submissionset.date_published = date.today()
-        submissionset.date_expiration = date.today() + RATING_VALID_PERIOD
-        submissionset.save()
 
         response = super(ApproveSubmissionView, self).form_valid(form)
 
@@ -410,12 +407,18 @@ class ApproveSubmissionView(SubmissionToolMixin, IsStaffMixin, UpdateView):
             institution.current_rating = institution.get_relative_rating()
         else:
             institution.current_rating = submissionset.rating
+
         institution.rated_submission = submissionset
         institution.rating_expires = date.today() + RATING_VALID_PERIOD
         institution.save()
 
+        submissionset.date_published = date.today()
+        submissionset.date_expiration = date.today() + RATING_VALID_PERIOD
+        submissionset.save(update_fields=["date_published", "date_expiration"])
+
         # Update their current submission.
         rollover_submission.delay(submissionset.id)
+        # rollover_submission(submissionset.id)
 
         # If there are any CreditUserSubmissions for this SubmissionSet
         # that still have is_unlocked_for_review set to True, reset them.
