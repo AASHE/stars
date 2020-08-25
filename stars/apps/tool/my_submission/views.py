@@ -748,7 +748,7 @@ class SendCreditSubmissionReviewNotationEmailView(
             body=content,
             from_email="stars-reviewers@aashe.org",
             to=[institution.contact_email],
-            # cc=["stars-reviewers@aashe.org", "crystal@aashe.org"],
+            cc=["stars-reviewers@aashe.org"],
             headers={"Reply-To": "stars-reviewers@aashe.org"},
         )
         # We send HTML mail only.

@@ -55,22 +55,24 @@ def fix_submission(submission_to_fix):
 
         if calculated_fields:
             for cf in calculated_fields:
-                current_val = cf.metric_value
+                current_val = cf.metric_value if cf.metric_value is not None else 0
                 try:
                     cf.calculate()
                 except:
                     print("\tformula failed: %s" % cf)
-                calculated_val = cf.metric_value
 
-                # if calculated_val != current_val:
-                #     print("\t-------------------")
-                #     print("\t%s" % cus)
-                #     print("\t-------------------")
-                #     print("\t\t%s" % cf)
-                #     print(
-                #         "\t\t\tcurrent: %d\t calculated: %d"
-                #         % (current_val, calculated_val)
-                #     )
+                calculated_val = cf.metric_value if cf.metric_value is not None else 0
+
+                if calculated_val != current_val:
+                    print("\t-------------------")
+                    print("\t%s" % cus)
+                    print("\t-------------------")
+                    print("\t\t%s" % cf)
+                    print(
+                        "\t\t\tcurrent: %d\t calculated: %d"
+                        % (current_val, calculated_val)
+                    )
+
                 cf.save()
             current_points = cus.assessed_points
             cus.save()
