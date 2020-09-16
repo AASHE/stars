@@ -32,7 +32,7 @@
       <thead>
         <tr>
           {% for col in sort_columns %}
-            <th>
+            <th nowrap>
               {% ifequal col.key sort_key %}
                 <a href='?sort={{ rev }}{{ col.key }}' title='sort'>
                   {{ col.title }}</a>
