@@ -2938,13 +2938,15 @@ class NumericSubmission(DocumentationFieldSubmission):
             if self.use_metric():
                 if self.metric_value is not None:
                     units = self.documentation_field.metric_units
-                    self.value = units.convert(self.metric_value)
+                    if units is not None:
+                        self.value = units.convert(self.metric_value)
                 else:
                     self.value = None
             else:
                 if self.value:
                     units = self.documentation_field.us_units
-                    self.metric_value = units.convert(self.value)
+                    if units is not None:
+                        self.metric_value = units.convert(self.value)
                 else:
                     self.metric_value = None
 
