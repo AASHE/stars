@@ -304,9 +304,9 @@ class NumericSubmissionForm(SubmissionFieldForm):
             if metric_value is not None:
                 min = self.instance.documentation_field.min_range
                 max = self.instance.documentation_field.max_range
-                if min is not None:
+                if min is not None and self.units is not None:
                     min = self.units.convert(min)
-                if max is not None:
+                if max is not None and self.units is not None:
                     max = self.units.convert(max)
                 self._validate_min_max(metric_value, min, max)
         return metric_value
