@@ -17,77 +17,91 @@ from stars.apps.helpers.forms.util import WarningList
 from stars.apps.submissions.models import *
 
 
-logger = getLogger('stars')
+logger = getLogger("stars")
 
 
 class NewBoundaryForm(LocalizedModelFormMixin, BetterModelForm):
-
     class Meta:
         model = Boundary
         exclude = ("submissionset",)
 
-        fieldsets = [('Characteristics',
-                      {'fields': Boundary.get_characteristic_field_names(),
-                       'legend': "Characteristics",
-                       'description': 'boundary_characteristics'}),
-                     ('Features',
-                      {'fields': ['ag_school_present',
-                                  'ag_school_included',
-                                  'ag_school_details',
-                                  'med_school_present',
-                                  'med_school_included',
-                                  'med_school_details',
-                                  'pharm_school_present',
-                                  'pharm_school_included',
-                                  'pharm_school_details',
-                                  'pub_health_school_present',
-                                  'pub_health_school_included',
-                                  'pub_health_school_details',
-                                  'vet_school_present',
-                                  'vet_school_included',
-                                  'vet_school_details',
-                                  'sat_campus_present',
-                                  'sat_campus_included',
-                                  'sat_campus_details',
-                                  'hospital_present',
-                                  'hospital_included',
-                                  'hospital_details',
-                                  'farm_present',
-                                  'farm_included',
-                                  'farm_acres',
-                                  'farm_details',
-                                  'agr_exp_present',
-                                  'agr_exp_included',
-                                  'agr_exp_acres',
-                                  'agr_exp_details'],
-                       'legend': 'Features',
-                       'description': 'boundary_features'}),
-                     ('narrative',
-                      {'fields': ['additional_details'],
-                       'legend': "Narrative",
-                       "description": "boundary_narrative"})]
+        fieldsets = [
+            (
+                "Characteristics",
+                {
+                    "fields": Boundary.get_characteristic_field_names(),
+                    "legend": "Characteristics",
+                    "description": "boundary_characteristics",
+                },
+            ),
+            (
+                "Features",
+                {
+                    "fields": [
+                        "ag_school_present",
+                        "ag_school_included",
+                        "ag_school_details",
+                        "med_school_present",
+                        "med_school_included",
+                        "med_school_details",
+                        "pharm_school_present",
+                        "pharm_school_included",
+                        "pharm_school_details",
+                        "pub_health_school_present",
+                        "pub_health_school_included",
+                        "pub_health_school_details",
+                        "vet_school_present",
+                        "vet_school_included",
+                        "vet_school_details",
+                        "sat_campus_present",
+                        "sat_campus_included",
+                        "sat_campus_details",
+                        "hospital_present",
+                        "hospital_included",
+                        "hospital_details",
+                        "farm_present",
+                        "farm_included",
+                        "farm_acres",
+                        "farm_details",
+                        "agr_exp_present",
+                        "agr_exp_included",
+                        "agr_exp_acres",
+                        "agr_exp_details",
+                    ],
+                    "legend": "Features",
+                    "description": "boundary_features",
+                },
+            ),
+            (
+                "narrative",
+                {
+                    "fields": ["additional_details"],
+                    "legend": "Narrative",
+                    "description": "boundary_narrative",
+                },
+            ),
+        ]
 
     def __init__(self, *args, **kwargs):
         super(NewBoundaryForm, self).__init__(*args, **kwargs)
 
 
 class SubcategorySubmissionForm(ModelForm):
-
     class Meta:
         model = SubcategorySubmission
-        fields = ('description',)
+        fields = ("description",)
 
     def __init__(self, *args, **kwargs):
         super(SubcategorySubmissionForm, self).__init__(*args, **kwargs)
 
-        self.fields['description'].widget.attrs = {
-            'onkeydown': 'field_changed(this);',
-            'onchange': 'field_changed(this);',
-            'style': 'width: 35em;height: 15em;'}
+        self.fields["description"].widget.attrs = {
+            "onkeydown": "field_changed(this);",
+            "onchange": "field_changed(this);",
+            "style": "width: 35em;height: 15em;",
+        }
 
 
-class SubmissionFieldFormMixin():
-
+class SubmissionFieldFormMixin:
     def append_error(self, msg):
         """ Helper to append or add new error message to this form's
         value field error list"""
@@ -105,9 +119,7 @@ class SubmissionFieldFormMixin():
             self.warnings = WarningList([msg])
 
 
-class SubmissionFieldForm(SubmissionFieldFormMixin,
-                          LocalizedModelFormMixin,
-                          ModelForm):
+class SubmissionFieldForm(SubmissionFieldFormMixin, LocalizedModelFormMixin, ModelForm):
     """ Parent class for all submission fields to provide access to
     clean_value"""
 
@@ -119,28 +131,33 @@ class SubmissionFieldForm(SubmissionFieldFormMixin,
     def field_includes_units(self):
         """ Returns true if the form field contains its own units,
         false otherwise"""
-        return self.__class__ in (ChoiceWithOtherSubmissionForm,
-                                  MultiChoiceSubmissionForm,
-                                  MultiChoiceWithOtherSubmissionForm)
+        return self.__class__ in (
+            ChoiceWithOtherSubmissionForm,
+            MultiChoiceSubmissionForm,
+            MultiChoiceWithOtherSubmissionForm,
+        )
 
     def form_name():
         return u"Credit Submission Form"
+
     form_name = staticmethod(form_name)
 
     def get_form_class(submission_field):
         """Return the class for the Form matching the
         DocumentationFieldSubmission submission_field model"""
         SubmissionFormsModule = sys.modules[__name__]
-        FormClass = getattr(SubmissionFormsModule,
-                            "%sForm" % submission_field.__class__.__name__,
-                            None)
+        FormClass = getattr(
+            SubmissionFormsModule, "%sForm" % submission_field.__class__.__name__, None
+        )
         return FormClass
+
     get_form_class = staticmethod(get_form_class)
 
 
 class AbstractChoiceSubmissionForm(SubmissionFieldForm):
     """ An abstract base class to provide some of the baseline
     behaviour for choice-type field forms."""
+
     class Meta:
         abstract = True
 
@@ -157,12 +174,13 @@ class AbstractChoiceSubmissionForm(SubmissionFieldForm):
         """
         super(AbstractChoiceSubmissionForm, self).__init__(*args, **kwargs)
         if self.instance:
-            self.fields['value'].queryset = self.instance.get_choice_queryset()
+            self.fields["value"].queryset = self.instance.get_choice_queryset()
 
 
 class AbstractMultiFieldSubmissionForm(AbstractChoiceSubmissionForm):
     """ An abstract base class for choice-with-other-type and other
     multi-field submissionforms."""
+
     class Meta:
         abstract = True
 
@@ -170,15 +188,16 @@ class AbstractMultiFieldSubmissionForm(AbstractChoiceSubmissionForm):
         """  Hook up the compress / decompress logic for the multi-field """
         super(AbstractMultiFieldSubmissionForm, self).__init__(*args, **kwargs)
         if self.instance:
-            self.fields['value'].set_compress_methods(self.instance.compress,
-                                                      self.instance.decompress)
+            self.fields["value"].set_compress_methods(
+                self.instance.compress, self.instance.decompress
+            )
 
 
 class ChoiceSubmissionForm(AbstractChoiceSubmissionForm):
     # Uses the defaut ChoiceField and widget.
     class Meta:
         model = ChoiceSubmission
-        fields = ['value']
+        fields = ["value"]
 
 
 class ChoiceWithOtherSubmissionForm(AbstractMultiFieldSubmissionForm):
@@ -186,7 +205,7 @@ class ChoiceWithOtherSubmissionForm(AbstractMultiFieldSubmissionForm):
 
     class Meta:
         model = ChoiceSubmission
-        fields = ['value']
+        fields = ["value"]
 
 
 class MultiChoiceSubmissionForm(AbstractChoiceSubmissionForm):
@@ -194,7 +213,7 @@ class MultiChoiceSubmissionForm(AbstractChoiceSubmissionForm):
 
     class Meta:
         model = MultiChoiceSubmission
-        fields = ['value']
+        fields = ["value"]
 
 
 class MultiChoiceWithOtherSubmissionForm(AbstractMultiFieldSubmissionForm):
@@ -202,21 +221,21 @@ class MultiChoiceWithOtherSubmissionForm(AbstractMultiFieldSubmissionForm):
 
     class Meta:
         model = MultiChoiceSubmission
-        fields = ['value']
+        fields = ["value"]
 
 
 class URLSubmissionForm(SubmissionFieldForm):
-    value = forms.URLField(required=False,
-                           widget=TextInput(attrs={'style': 'width: 600px;'}))
+    value = forms.URLField(
+        required=False, widget=TextInput(attrs={"style": "width: 600px;"})
+    )
 
     class Meta:
         model = URLSubmission
-        fields = ['value']
+        fields = ["value"]
 
 
 class DateSubmissionForm(SubmissionFieldForm):
-    value = forms.DateField(widget=SelectDateWidget(),
-                            required=False)
+    value = forms.DateField(widget=SelectDateWidget(), required=False)
 
     def __init__(self, *args, **kwargs):
         """ If there is an instance, use the date range from that instance. """
@@ -225,19 +244,19 @@ class DateSubmissionForm(SubmissionFieldForm):
             min = self.instance.documentation_field.min_range
             max = self.instance.documentation_field.max_range
             if min is not None and max is not None:
-                self.fields['value'].widget = SelectDateWidget(
-                    years=range(min, max+1))
+                self.fields["value"].widget = SelectDateWidget(
+                    years=range(min, max + 1)
+                )
 
     class Meta:
         model = DateSubmission
-        fields = ['value']
+        fields = ["value"]
 
 
 class NumericSubmissionForm(SubmissionFieldForm):
-
     class Meta:
         model = NumericSubmission
-        fields = ['value', 'metric_value']
+        fields = ["value", "metric_value"]
 
     def __init__(self, *args, **kwargs):
         """
@@ -256,17 +275,17 @@ class NumericSubmissionForm(SubmissionFieldForm):
         # try:
         if self.instance.use_metric():
             self.units = self.instance.documentation_field.us_units
-            self.fields['value'].widget = forms.HiddenInput()
+            self.fields["value"].widget = forms.HiddenInput()
         else:
             self.units = self.instance.documentation_field.metric_units
-            self.fields['metric_value'].widget = forms.HiddenInput()
+            self.fields["metric_value"].widget = forms.HiddenInput()
         # except Institution.DoesNotExist:
-            # this will raise an error in credit editor
-            # pass
+        # this will raise an error in credit editor
+        # pass
         # If this is a calculated field, make the widgets read-only:
-        if self.instance.documentation_field.type == 'calculated':
+        if self.instance.documentation_field.type == "calculated":
             for field in self.fields.values():
-                field.widget.attrs['readonly'] = 'readonly'
+                field.widget.attrs["readonly"] = "readonly"
 
     def clean_value(self):
         """ validate the value field if they aren't using metric """
@@ -285,10 +304,20 @@ class NumericSubmissionForm(SubmissionFieldForm):
             if metric_value is not None:
                 min = self.instance.documentation_field.min_range
                 max = self.instance.documentation_field.max_range
+
                 if min is not None:
-                    min = self.units.convert(min)
+                    min = (
+                        self.units.convert(min)
+                        if self.units is not None
+                        else self.instance.documentation_field.min_range
+                    )
                 if max is not None:
-                    max = self.units.convert(max)
+                    max = (
+                        self.units.convert(max)
+                        if self.units is not None
+                        else self.instance.documentation_field.max_range
+                    )
+
                 self._validate_min_max(metric_value, min, max)
         return metric_value
 
@@ -300,21 +329,20 @@ class NumericSubmissionForm(SubmissionFieldForm):
 
             raises a validation error if necessary
         """
-        if (min is not None and
-            max is not None and
-            (value < min or
-             value > max)):
+
+        if min is not None and max is not None and (value < min or value > max):
             raise forms.ValidationError(
                 "The value is outside of the accepted range for this field "
-                "(range: %d - %d)." % (min, max))
-        elif (min is not None and
-              value < min):
+                "(range: %d - %d)." % (min, max)
+            )
+        elif min is not None and value < min:
             raise forms.ValidationError(
-                "The value is must be greater than or equal to %d." % min)
-        elif (max is not None and
-              value > max):
+                "The value is must be greater than or equal to %d." % min
+            )
+        elif max is not None and value > max:
             raise forms.ValidationError(
-                "The value is must be less than or equal to %d" % max)
+                "The value is must be less than or equal to %d" % max
+            )
 
     def clean(self):
         """
@@ -332,11 +360,12 @@ class NumericSubmissionForm(SubmissionFieldForm):
         if self.instance.use_metric():
             if metric_value is not None:
                 units = self.instance.documentation_field.metric_units
-                value = units.convert(metric_value)
+                if units is not None:
+                    value = units.convert(metric_value)
             else:
                 value = None
 
-        return {'value': value, 'metric_value': metric_value}
+        return {"value": value, "metric_value": metric_value}
 
     def raise_validation_error(self, error_message, min=None, max=None):
         """Raises forms.ValidationError, converting `min` and `max` in
@@ -352,16 +381,16 @@ class NumericSubmissionForm(SubmissionFieldForm):
 class TextSubmissionForm(SubmissionFieldForm):
     class Meta:
         model = TextSubmission
-        fields = ['value']
+        fields = ["value"]
 
     def __init__(self, *args, **kwargs):
         """ If there is an instance with choices, set up the choices. """
         super(TextSubmissionForm, self).__init__(*args, **kwargs)
-        self['value'].field.widget.attrs['style'] = "width: 600px;"
+        self["value"].field.widget.attrs["style"] = "width: 600px;"
         if self.instance:
             max = self.instance.documentation_field.max_range
             if max != None:
-                self['value'].field.widget.attrs['maxlength'] = max
+                self["value"].field.widget.attrs["maxlength"] = max
 
     def clean_value(self):
         """ Validate the character count """
@@ -375,7 +404,8 @@ class TextSubmissionForm(SubmissionFieldForm):
                 if chars > max:
                     raise forms.ValidationError(
                         "The text is too long for this field. "
-                        "Limit: %d characters" % max)
+                        "Limit: %d characters" % max
+                    )
         elif not self.instance:
             logger.info("No Instance")
         return value
@@ -383,13 +413,13 @@ class TextSubmissionForm(SubmissionFieldForm):
 
 class LongTextSubmissionForm(SubmissionFieldForm):
     value = forms.CharField(
-        widget=forms.Textarea(
-            attrs={'style': 'width: 600px;height:100px;'}),
-        required=False)  # don't use MCE for submissions!
+        widget=forms.Textarea(attrs={"style": "width: 600px;height:100px;"}),
+        required=False,
+    )  # don't use MCE for submissions!
 
     class Meta:
         model = LongTextSubmission
-        fields = ['value']
+        fields = ["value"]
 
     def clean_value(self):
         """ Validate the word count """
@@ -402,8 +432,8 @@ class LongTextSubmissionForm(SubmissionFieldForm):
             if max != None:
                 if words > max:
                     raise forms.ValidationError(
-                        "The text is too long for this field. "
-                        "Limit: %d words" % max)
+                        "The text is too long for this field. " "Limit: %d words" % max
+                    )
         elif not self.instance:
             logger.info("No Instance")
         return value
@@ -413,14 +443,15 @@ class UploadSubmissionForm(SubmissionFieldForm):
     """
         The submitted value for a File Upload Documentation Field
     """
+
     class Meta:
         model = UploadSubmission
-        fields = ['value']
+        fields = ["value"]
 
     def __init__(self, *args, **kwargs):
         """ Change the widget """
         super(UploadSubmissionForm, self).__init__(*args, **kwargs)
-        self.fields['value'].widget = ClearableFileInput()
+        self.fields["value"].widget = ClearableFileInput()
 
     def save(self, *args, **kwargs):
         instance = super(UploadSubmissionForm, self).save(*args, **kwargs)
@@ -429,6 +460,7 @@ class UploadSubmissionForm(SubmissionFieldForm):
         self.files = {}
         self.data = {}
         from django.forms import model_to_dict
+
         self.initial.update(model_to_dict(instance))
         return instance
 
@@ -436,7 +468,7 @@ class UploadSubmissionForm(SubmissionFieldForm):
 class BooleanSubmissionForm(SubmissionFieldForm):
     class Meta:
         model = BooleanSubmission
-        fields = ['value']
+        fields = ["value"]
 
 
 class CreditSubmissionForm(LocalizedModelFormMixin, ModelForm):
@@ -455,9 +487,10 @@ class CreditSubmissionForm(LocalizedModelFormMixin, ModelForm):
             Construct a form to edit a CreditSubmission instance
             @param instance: CreditSubmission (or sub-class) object is REQUIRED
         """
-        if not kwargs.has_key('instance') or not kwargs['instance']:
-            raise Exception('CreditSubmission object is required '
-                            'for CreditSubmissionForm')
+        if not kwargs.has_key("instance") or not kwargs["instance"]:
+            raise Exception(
+                "CreditSubmission object is required " "for CreditSubmissionForm"
+            )
         super(CreditSubmissionForm, self).__init__(*args, **kwargs)
 
         self.warnings = None  # Top-level warnings for this form
@@ -467,6 +500,7 @@ class CreditSubmissionForm(LocalizedModelFormMixin, ModelForm):
 
     def form_name():
         return u"Credit Submission Form"
+
     form_name = staticmethod(form_name)
 
     def get_submission_fields_and_forms(self):
@@ -505,20 +539,23 @@ class CreditSubmissionForm(LocalizedModelFormMixin, ModelForm):
 
         for field in self.instance.get_submission_fields():
             prefix += 1
-            SubmissionFieldFormClass = SubmissionFieldForm.get_form_class(
-                field)
+            SubmissionFieldFormClass = SubmissionFieldForm.get_form_class(field)
             if SubmissionFieldFormClass:
                 # bind the field form to the data (if there was any)
                 form = SubmissionFieldFormClass(
-                    data, files, instance=field,
-                    prefix="%s_%s" % (field.__class__.__name__, prefix))
-                form['value'].field.widget.attrs['onchange'] = (
-                    'field_changed(this);')  # see include.js
+                    data,
+                    files,
+                    instance=field,
+                    prefix="%s_%s" % (field.__class__.__name__, prefix),
+                )
+                form["value"].field.widget.attrs[
+                    "onchange"
+                ] = "field_changed(this);"  # see include.js
             else:
                 # Dummy Tabular form class
                 class DummyTabularForm(SubmissionFieldFormMixin):
                     def __init__(self, value):
-                        self.cleaned_data = {'value': value}
+                        self.cleaned_data = {"value": value}
                         self.warnings = None
                         self._errors = {}
                         self.instance = None
@@ -535,7 +572,7 @@ class CreditSubmissionForm(LocalizedModelFormMixin, ModelForm):
                         pass
 
                 form = DummyTabularForm(value=None)
-            self._form_fields.append({'field': field, 'form': form})
+            self._form_fields.append({"field": field, "form": form})
 
         return self._form_fields
 
@@ -551,17 +588,17 @@ class CreditSubmissionForm(LocalizedModelFormMixin, ModelForm):
         # need the CS objet to be saved so they can store a foreign
         # key to it...
         for field in self.get_submission_fields_and_forms():
-            field['field'] = field['form'].save(False)
+            field["field"] = field["form"].save(False)
 
         self.instance = super(CreditSubmissionForm, self).save(commit)
 
         for field in self.get_submission_fields_and_forms():
             # Ensure field form has the newly saved instance of the
             # CreditSubmission object
-            if field['form'].__class__.__name__ != "DummyTabularForm":
-                field['form'].instance.credit_submission = self.instance
-                if field['field'].documentation_field.type != 'calculated':
-                    field['form'].save(commit)
+            if field["form"].__class__.__name__ != "DummyTabularForm":
+                field["form"].instance.credit_submission = self.instance
+                if field["field"].documentation_field.type != "calculated":
+                    field["form"].save(commit)
 
         return self.instance
 
@@ -574,7 +611,7 @@ class CreditSubmissionForm(LocalizedModelFormMixin, ModelForm):
         #  the Submission Fields are validated fist, so their cleaned_data
         #  is available when we validate, and thus clean(), the Form itself.
         for field in self.get_submission_fields_and_forms():
-            if not field['form'].is_valid():
+            if not field["form"].is_valid():
                 is_valid = False
 
         # use short-cut evaluation here so Form is not validated if
@@ -585,7 +622,7 @@ class CreditSubmissionForm(LocalizedModelFormMixin, ModelForm):
         """ Returns True if this submission generated any warning
         messages during clean"""
         for field in self.get_submission_fields_and_forms():
-            if field['form'].warnings:
+            if field["form"].warnings:
                 return True
         # assert:  none of the fields had warnings defined.
         return self.warnings
@@ -593,7 +630,7 @@ class CreditSubmissionForm(LocalizedModelFormMixin, ModelForm):
     def non_field_warnings(self):
         """ Returns formatted 'top-level' warnings (not associated
         with any field) for this form"""
-        return self.warnings.as_ul() if self.warnings else u''
+        return self.warnings.as_ul() if self.warnings else u""
 
     def _validate_required_fields(self):
         """ Helper to do required field validation.  Should only be
@@ -604,19 +641,22 @@ class CreditSubmissionForm(LocalizedModelFormMixin, ModelForm):
         for field in self.get_submission_fields_and_forms():
             # only try to evaluate the requirement if the field doesn't already
             # have errors
-            if field['form'].is_valid():
+            if field["form"].is_valid():
                 try:
-                    form_value = field['form'].cleaned_data.get("value")
-                    doc_field = field['field'].documentation_field
-                    if doc_field.is_upload():   # require upload fields can be
-                                                # blank so long as a file has
-                                                # been previously uploaded
-                        form_value = form_value or field['field'].get_value()
-                    if (doc_field.is_required() and
-                        form_value in (None, "", []) and
-                            doc_field.type != 'tabular'):
-                        field['form'].append_error(u"This field is required to "
-                                                   "mark this credit complete.")
+                    form_value = field["form"].cleaned_data.get("value")
+                    doc_field = field["field"].documentation_field
+                    if doc_field.is_upload():  # require upload fields can be
+                        # blank so long as a file has
+                        # been previously uploaded
+                        form_value = form_value or field["field"].get_value()
+                    if (
+                        doc_field.is_required()
+                        and form_value in (None, "", [])
+                        and doc_field.type != "tabular"
+                    ):
+                        field["form"].append_error(
+                            u"This field is required to " "mark this credit complete."
+                        )
                 except AttributeError:
                     assert False
 
@@ -624,8 +664,10 @@ class CreditSubmissionForm(LocalizedModelFormMixin, ModelForm):
         """ Helper method to determine if any error were discovered
         during basic validation of each field"""
         for field in self.get_submission_fields_and_forms():
-            if ("value" in field['form']._errors or
-                    "metric_value" in field['form']._errors):
+            if (
+                "value" in field["form"]._errors
+                or "metric_value" in field["form"]._errors
+            ):
                 return True
         # assert:  none of the fields had errors defined.
         return len(self.non_field_errors()) > 0
@@ -644,8 +686,10 @@ class CreditSubmissionForm(LocalizedModelFormMixin, ModelForm):
             Loads warnings onto form and returns TRUE if any warnings
             are loaded.
         """
-        validation_errors, validation_warnings = (
-            self.instance.credit.execute_validation_rules(self.instance))
+        (
+            validation_errors,
+            validation_warnings,
+        ) = self.instance.credit.execute_validation_rules(self.instance)
         return self._load_warnings(validation_warnings)
 
     def _load_warnings(self, validation_warnings):
@@ -653,14 +697,13 @@ class CreditSubmissionForm(LocalizedModelFormMixin, ModelForm):
         on both GET and POST"""
         has_warnings = False
         for field in self.get_submission_fields_and_forms():
-            doc_field = field['field'].documentation_field
+            doc_field = field["field"].documentation_field
             if doc_field.identifier in validation_warnings:
-                field['form'].append_warning(
-                    validation_warnings[doc_field.identifier])
+                field["form"].append_warning(validation_warnings[doc_field.identifier])
                 has_warnings = True
 
-        if 'top' in validation_warnings:
-            self.warnings = WarningList([validation_warnings['top']])
+        if "top" in validation_warnings:
+            self.warnings = WarningList([validation_warnings["top"]])
             has_warnings = True
         return has_warnings
 
@@ -668,15 +711,14 @@ class CreditSubmissionForm(LocalizedModelFormMixin, ModelForm):
         """ Helper to load custom validation errors onto form """
         has_errors = False
         for field in self.get_submission_fields_and_forms():
-            doc_field = field['field'].documentation_field
+            doc_field = field["field"].documentation_field
             if doc_field.identifier == "AY":
                 pass
             if doc_field.identifier in validation_errors:
-                field['form'].append_error(
-                    validation_errors[doc_field.identifier])
+                field["form"].append_error(validation_errors[doc_field.identifier])
                 has_errors = True
 
-        if 'top' in validation_errors:
+        if "top" in validation_errors:
             has_errors = True
         return has_errors
 
@@ -694,12 +736,14 @@ class CreditSubmissionForm(LocalizedModelFormMixin, ModelForm):
         # validation errors.  this is important because custom
         # validation_rules assume data is clean and complete.
         if not has_error:
-            validation_errors, validation_warnings = (
-                self.instance.credit.execute_validation_rules(self))
+            (
+                validation_errors,
+                validation_warnings,
+            ) = self.instance.credit.execute_validation_rules(self)
             has_error = self._load_errors(validation_errors)
             has_warning = self._load_warnings(validation_warnings)
-            if 'top' in validation_errors:
-                error_message = validation_errors['top']
+            if "top" in validation_errors:
+                error_message = validation_errors["top"]
 
         if has_error:
             raise forms.ValidationError(error_message)
@@ -714,13 +758,14 @@ class CreditSubmissionForm(LocalizedModelFormMixin, ModelForm):
         """
         key = {}
         for field in self.get_submission_fields_and_forms():
-            doc_field = field['field'].documentation_field
-            key[doc_field.identifier] = field['form'].cleaned_data.get("value")
+            doc_field = field["field"].documentation_field
+            key[doc_field.identifier] = field["form"].cleaned_data.get("value")
             if doc_field.is_upload():
                 # upload fields may be blank but still have a file that's
                 # been previously uploaded
-                key[doc_field.identifier] = (key[doc_field.identifier] or
-                                             field['field'].get_value())
+                key[doc_field.identifier] = (
+                    key[doc_field.identifier] or field["field"].get_value()
+                )
         return key
 
 
@@ -731,63 +776,79 @@ class ResponsiblePartyForm(LocalizedModelFormMixin, ModelForm):
 
     class Meta:
         model = ResponsibleParty
-        exclude = ['institution']
+        exclude = ["institution"]
 
     def form_name():
         return u"Responsible Party Form"
+
     form_name = staticmethod(form_name)
 
     def __init__(self, *args, **kwargs):
         super(ResponsiblePartyForm, self).__init__(*args, **kwargs)
         for f in self.fields:
             if self.fields[f].widget.__class__.__name__ == "TextInput":
-                self.fields[f].widget.attrs.update({'size': 40})
+                self.fields[f].widget.attrs.update({"size": 40})
 
 
 class CreditUserSubmissionForm(CreditSubmissionForm):
     """
         A Credit Submission Form for a user submission, with Submission Status
     """
+
     submission_status = forms.CharField(widget=HiddenInput())
 
     class Meta:
         model = CreditUserSubmission
-        fields = ['submission_notes', 'responsible_party_confirm',
-                  'responsible_party', 'submission_status',
-                  'applicability_reason']
+        fields = [
+            "submission_notes",
+            "responsible_party_confirm",
+            "responsible_party",
+            "submission_status",
+            "applicability_reason",
+        ]
 
     def __init__(self, *args, **kwargs):
         super(CreditUserSubmissionForm, self).__init__(*args, **kwargs)
 
-        self.fields['applicability_reason'].queryset = self.instance.credit.applicabilityreason_set.all()
-        self.fields['applicability_reason'].widget = HiddenInput()
+        self.fields[
+            "applicability_reason"
+        ].queryset = self.instance.credit.applicabilityreason_set.all()
+        self.fields["applicability_reason"].widget = HiddenInput()
 
-        self.fields['submission_notes'].widget.attrs['style'] = "width: 600px;"
+        self.fields["submission_notes"].widget.attrs["style"] = "width: 600px;"
 
         # Select only the responsible parties associated with that institution
-        self.fields['responsible_party'].queryset = self.instance.subcategory_submission.category_submission.submissionset.institution.responsibleparty_set.all()
-        self.fields['responsible_party'].label = "Select Responsible Party"
+        self.fields[
+            "responsible_party"
+        ].queryset = (
+            self.instance.subcategory_submission.category_submission.submissionset.institution.responsibleparty_set.all()
+        )
+        self.fields["responsible_party"].label = "Select Responsible Party"
 
-        if not self.instance.credit.get_creditset().has_optional_responsible_parties_feature:
-            self.fields['responsible_party_confirm'].label = (
-                'The information included in the submission for this credit '
-                'is accurate to the best of my knowledge.')
-            self.fields['responsible_party_confirm'].label = mark_safe(
+        if (
+            not self.instance.credit.get_creditset().has_optional_responsible_parties_feature
+        ):
+            self.fields["responsible_party_confirm"].label = (
+                "The information included in the submission for this credit "
+                "is accurate to the best of my knowledge."
+            )
+            self.fields["responsible_party_confirm"].label = mark_safe(
                 '<span class="required_note" '
                 '      title="This field is required to complete credit"> '
-                '  * '
-                '</span>' + self.fields['responsible_party_confirm'].label)
+                "  * "
+                "</span>" + self.fields["responsible_party_confirm"].label
+            )
 
         for field in self:
             # add the onchange field_changed handler to inform users
             # of lost changes if a field already has an onchange
             # handler then just add to it.
-            if field.field.widget.attrs.has_key('onchange'):
-                field.field.widget.attrs['onchange'] = (
-                    field.field.widget.attrs['onchange'] +
-                    ';field_changed(this);')  # see include.js
+            if field.field.widget.attrs.has_key("onchange"):
+                field.field.widget.attrs["onchange"] = (
+                    field.field.widget.attrs["onchange"] + ";field_changed(this);"
+                )  # see include.js
             else:
-                field.field.widget.attrs['onchange'] = 'field_changed(this);'
+                field.field.widget.attrs["onchange"] = "field_changed(this);"
 
     def clean(self):
         """
@@ -799,25 +860,27 @@ class CreditUserSubmissionForm(CreditSubmissionForm):
         cleaned_data = self.cleaned_data
         status = cleaned_data.get("submission_status")
         reason = cleaned_data.get("applicability_reason")
-        marked_complete = (status == 'c')
+        marked_complete = status == "c"
         error = False
 
         if not status:
             msg = u"Please tick the appropriate status for this submission."
             self._errors["submission_status"] = ErrorList([msg])
-        if status == 'na' and not reason:
+        if status == "na" and not reason:
             msg = u"Please select a reason why this does not apply."
             self._errors["applicability_reason"] = ErrorList([msg])
             error = marked_complete  # this is only an error if the
             # submission is marked complete.
-        if not status == 'na':
+        if not status == "na":
             cleaned_data["applicability_reason"] = None
 
         # Responsible party and responsible party confirm are required
         # if marked complete and responsible parties aren't optional for
         # this creditset.
-        if (marked_complete and
-                not self.instance.credit.get_creditset().has_optional_responsible_parties_feature):
+        if (
+            marked_complete
+            and not self.instance.credit.get_creditset().has_optional_responsible_parties_feature
+        ):
             rp = cleaned_data.get("responsible_party")
             if rp == None or rp == "":
                 msg = u"This field is required to mark this credit complete."
@@ -839,65 +902,70 @@ class CreditUserSubmissionForm(CreditSubmissionForm):
     def has_responsible_party_error(self):
         """ Return True iff there is an error with the responsible
         party fields on this form"""
-        return self._errors and \
-            ("responsible_party" in self._errors or
-             "responsible_party_confirm" in self._errors)
+        return self._errors and (
+            "responsible_party" in self._errors
+            or "responsible_party_confirm" in self._errors
+        )
 
 
 class CreditUserSubmissionNotesForm(LocalizedModelFormMixin, ModelForm):
     """
         A Form for storing internal notes about a Credit Submission
     """
+
     internal_notes = forms.CharField(
         label="Only shared internally",
-        widget=forms.Textarea(
-            attrs={'style': "width: 600px;height: 300px;"}),
-        required=False)
+        widget=forms.Textarea(attrs={"style": "width: 600px;height: 300px;"}),
+        required=False,
+    )
 
     class Meta:
         model = CreditUserSubmission
-        fields = ['internal_notes', ]
+        fields = [
+            "internal_notes",
+        ]
 
 
 class SubmitSubmissionSetForm(LocalizedModelFormMixin, ModelForm):
     """
         A Form to collect data for submitting a credit set for a rating
     """
+
     class Meta:
         model = SubmissionSet
-        fields = ['reporter_status',
-                  'submission_boundary',
-                  'presidents_letter']
+        fields = ["reporter_status", "submission_boundary", "presidents_letter"]
 
     def __init__(self, *args, **kwargs):
         super(SubmitSubmissionSetForm, self).__init__(*args, **kwargs)
-        self.fields['presidents_letter'].required = True
-        self.fields['submission_boundary'].required = True
-        self.fields['submission_boundary'].label = (
+        self.fields["presidents_letter"].required = True
+        self.fields["submission_boundary"].required = True
+        self.fields["submission_boundary"].label = (
             "Please describe the boundaries of the institution's "
             "STARS submission.  If any institution-owned, leased, "
             "or operated buildings or other holdings are omitted, "
-            "briefly explain why.")
+            "briefly explain why."
+        )
 
 
 class BoundaryForm(LocalizedModelFormMixin, ModelForm):
     """
         A Form to update the boundary data for a submission
     """
+
     class Meta:
         model = SubmissionSet
-        fields = ['submission_boundary']
+        fields = ["submission_boundary"]
 
     def __init__(self, *args, **kwargs):
         super(BoundaryForm, self).__init__(*args, **kwargs)
-        self.fields['submission_boundary'].required = True
-        self.fields['submission_boundary'].label = (
+        self.fields["submission_boundary"].required = True
+        self.fields["submission_boundary"].label = (
             "Please describe the boundaries of the institution's "
             "STARS submission.  If any institution-owned, leased, "
             "or operated buildings or other holdings are omitted, "
-            "briefly explain why.")
-        self.fields['submission_boundary'].widget.attrs = {'cols': 60,
-                                                           'rows': 4}
+            "briefly explain why."
+        )
+        self.fields["submission_boundary"].widget.attrs = {"cols": 60, "rows": 4}
 
 
 class StatusForm(LocalizedModelFormMixin, ModelForm):
@@ -905,24 +973,28 @@ class StatusForm(LocalizedModelFormMixin, ModelForm):
         A Form to allow institutions to choose the Reporter status if
         they choose
     """
+
     class Meta:
         model = SubmissionSet
-        fields = ['reporter_status']
+        fields = ["reporter_status"]
 
 
 class LetterForm(LocalizedModelFormMixin, ModelForm):
     """
         A Form to accept the president's letter
     """
+
     class Meta:
         model = SubmissionSet
-        fields = ['presidents_letter']
+        fields = ["presidents_letter"]
 
     def clean_presidents_letter(self):
-        data = self.cleaned_data['presidents_letter']
-        if ('1-presidents_letter' in self.files.keys() and
-            (self.files['1-presidents_letter'].content_type != 'application/pdf') and
-                'test' not in sys.argv):
+        data = self.cleaned_data["presidents_letter"]
+        if (
+            "1-presidents_letter" in self.files.keys()
+            and (self.files["1-presidents_letter"].content_type != "application/pdf")
+            and "test" not in sys.argv
+        ):
 
             raise forms.ValidationError("This doesn't seem to be a PDF file")
         return data
@@ -933,58 +1005,64 @@ class LetterForm(LocalizedModelFormMixin, ModelForm):
         self.fields["presidents_letter"].label = ""
         self.fields["presidents_letter"].widget.attrs = {
             "style": "display:none; padding-bottom: 10px;",
-            "onchange": "$('#upload-file-info').html($(this).val());"}
+            "onchange": "$('#upload-file-info').html($(this).val());",
+        }
 
 
 class ContactsForm(LocalizedModelFormMixin, ModelForm):
     """
         The contact information for the institution's contacts
     """
+
     class Meta:
         model = Institution
-        fields = ['contact_first_name',
-                  'contact_last_name',
-                  'contact_title',
-                  'contact_department',
-                  'contact_email',
-                  'executive_contact_first_name',
-                  'executive_contact_last_name',
-                  'executive_contact_title',
-                  'executive_contact_department',
-                  'executive_contact_email',
-                  'president_first_name',
-                  'president_last_name',
-                  'president_title',
-                  'president_email']
+        fields = [
+            "contact_first_name",
+            "contact_last_name",
+            "contact_title",
+            "contact_department",
+            "contact_email",
+            "executive_contact_first_name",
+            "executive_contact_last_name",
+            "executive_contact_title",
+            "executive_contact_department",
+            "executive_contact_email",
+            "president_first_name",
+            "president_last_name",
+            "president_title",
+            "president_email",
+        ]
 
     def __init__(self, *args, **kwargs):
         super(ContactsForm, self).__init__(*args, **kwargs)
-        for f in ('contact_first_name',
-                  'contact_last_name',
-                  'contact_title',
-                  'contact_department',
-                  'contact_email',
-                  'executive_contact_first_name',
-                  'executive_contact_last_name',
-                  'executive_contact_title',
-                  'executive_contact_department',
-                  'executive_contact_email'):
+        for f in (
+            "contact_first_name",
+            "contact_last_name",
+            "contact_title",
+            "contact_department",
+            "contact_email",
+            "executive_contact_first_name",
+            "executive_contact_last_name",
+            "executive_contact_title",
+            "executive_contact_department",
+            "executive_contact_email",
+        ):
             self.fields[f].required = True
 
-        self.fields['contact_first_name'].label = "First Name"
-        self.fields['contact_last_name'].label = "Last Name"
-        self.fields['contact_title'].label = "Title"
-        self.fields['contact_department'].label = "Department/Office"
-        self.fields['contact_email'].label = "Email"
-        self.fields['executive_contact_first_name'].label = "First Name"
-        self.fields['executive_contact_last_name'].label = "Last Name"
-        self.fields['executive_contact_title'].label = "Title"
-        self.fields['executive_contact_department'].label = "Department/Office"
-        self.fields['executive_contact_email'].label = "Email"
-        self.fields['president_first_name'].label = "First Name"
-        self.fields['president_last_name'].label = "Last Name"
-        self.fields['president_title'].label = "Title"
-        self.fields['president_email'].label = "Email"
+        self.fields["contact_first_name"].label = "First Name"
+        self.fields["contact_last_name"].label = "Last Name"
+        self.fields["contact_title"].label = "Title"
+        self.fields["contact_department"].label = "Department/Office"
+        self.fields["contact_email"].label = "Email"
+        self.fields["executive_contact_first_name"].label = "First Name"
+        self.fields["executive_contact_last_name"].label = "Last Name"
+        self.fields["executive_contact_title"].label = "Title"
+        self.fields["executive_contact_department"].label = "Department/Office"
+        self.fields["executive_contact_email"].label = "Email"
+        self.fields["president_first_name"].label = "First Name"
+        self.fields["president_last_name"].label = "Last Name"
+        self.fields["president_title"].label = "Title"
+        self.fields["president_email"].label = "Email"
 
         for field in self.fields.values():
             if field.required:
@@ -992,7 +1070,6 @@ class ContactsForm(LocalizedModelFormMixin, ModelForm):
 
 
 class ApproveSubmissionForm(LocalizedModelFormMixin, ModelForm):
-
     class Meta:
         model = SubmissionSet
         fields = ["status"]
@@ -1008,22 +1085,18 @@ class ApproveSubmissionForm(LocalizedModelFormMixin, ModelForm):
 
 
 class CreditSubmissionReviewForm(LocalizedModelFormMixin, ModelForm):
-
     class Meta:
         model = CreditUserSubmission
         fields = ["review_conclusion"]
 
 
-class CreditSubmissionReviewNotationForm(LocalizedModelFormMixin,
-                                         ModelForm):
-
+class CreditSubmissionReviewNotationForm(LocalizedModelFormMixin, ModelForm):
     class Meta:
         model = CreditSubmissionReviewNotation
         fields = ["kind", "comment", "send_email"]
 
     def __init__(self, *args, **kwargs):
-        super(CreditSubmissionReviewNotationForm, self).__init__(*args,
-                                                                 **kwargs)
+        super(CreditSubmissionReviewNotationForm, self).__init__(*args, **kwargs)
         self.fields["comment"].widget.attrs["class"] = "row-fluid"
 
 
@@ -1037,9 +1110,8 @@ class CreditSubmissionReviewNotationInlineFormSet(InlineFormSet):
 class SendCreditSubmissionReviewNotationsEmailForm(Form):
 
     email_content = forms.CharField(
-        label="",
-        widget=forms.Textarea(
-            attrs={"style": "width: 628px; height: 700px"}))
+        label="", widget=forms.Textarea(attrs={"style": "width: 628px; height: 700px"})
+    )
 
     class Meta:
         fields = ["email_content"]
