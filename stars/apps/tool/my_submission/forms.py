@@ -304,10 +304,20 @@ class NumericSubmissionForm(SubmissionFieldForm):
             if metric_value is not None:
                 min = self.instance.documentation_field.min_range
                 max = self.instance.documentation_field.max_range
-                if min is not None and self.units is not None:
-                    min = self.units.convert(min)
-                if max is not None and self.units is not None:
-                    max = self.units.convert(max)
+
+                if min is not None:
+                    min = (
+                        self.units.convert(min)
+                        if self.units is not None
+                        else self.instance.documentation_field.min_range
+                    )
+                if max is not None:
+                    max = (
+                        self.units.convert(max)
+                        if self.units is not None
+                        else self.instance.documentation_field.max_range
+                    )
+
                 self._validate_min_max(metric_value, min, max)
         return metric_value
 
@@ -319,6 +329,7 @@ class NumericSubmissionForm(SubmissionFieldForm):
 
             raises a validation error if necessary
         """
+
         if min is not None and max is not None and (value < min or value > max):
             raise forms.ValidationError(
                 "The value is outside of the accepted range for this field "
