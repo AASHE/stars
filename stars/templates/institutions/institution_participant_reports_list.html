@@ -58,9 +58,8 @@
               {% endif %}
             </td>
             <td class="span3">
-              {{ institution.country }}
-              {% if institution.ms_institution.state %}
-                , {{ institution.ms_institution.state }}
+              {{ institution.country }}{% if institution.ms_institution.state %},
+              {{institution.ms_institution.state}}
               {% endif %}
             </td>
             {% if institution.rated_submission %}
