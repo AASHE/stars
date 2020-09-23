@@ -8,7 +8,7 @@ import sys
 import django
 import django_cache_url
 import dj_database_url
-# from celerybeat_schedule import STARS_TASK_SCHEDULE
+from celerybeat_schedule import STARS_TASK_SCHEDULE
 from django.contrib.messages import constants as messages
 
 sys.path.append("../")
