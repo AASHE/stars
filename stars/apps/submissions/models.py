@@ -2850,9 +2850,10 @@ class NumericSubmission(DocumentationFieldSubmission):
             Determines if this instance needs to have both `value` and
             `metric_values` stored in the database
         """
-        # df = self.documentation_field
-        # return df.units and (df.us_units != df.metric_units)v
-        return True
+        documentation_field = self.documentation_field
+        return documentation_field.units and (
+            documentation_field.us_units != documentation_field.metric_units
+        )
 
     def use_metric(self):
         """
