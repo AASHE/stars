@@ -23,7 +23,7 @@
       <th>Liaison</th>
       <th>Submitted</th>
       {% if submissionset.creditset.has_president_letter_feature %}
-          <th>Executive Letter</th>
+          <th nowrap>Executive Letter</th>
       {% endif %}
       {% testrule user_can_view_export user submissionset %}
         <th>Export</th>
