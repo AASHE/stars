@@ -14,13 +14,13 @@
 {% block tab_content %}
   <span class="help_text">
     <p>
-      <b>
-        {{ inst_count }} institutions
-      </b>
-      have registered to use the STARS Reporting Tool.
-      Each institution's most recent rating is listed below. Ratings
-      more than three years old are considered to be expired (*).
-      Click on an institution's name to view all of its STARS reports.
+      {{ inst_count }} institutions
+      institutions have registered to use the STARS
+      Reporting Tool, of which {{ member_count }} have earned a STARS rating.
+      Each institution's most recent rating is listed below.
+      Ratings that have not been updated in more than three
+      years are considered to be expired (*). Click on an
+      institution's name to access all of its STARS reports.
     </p>
   </span>
   {% load help %}
