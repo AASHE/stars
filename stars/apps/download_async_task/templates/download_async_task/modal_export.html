@@ -12,7 +12,7 @@
 				<div class="bar" style="width: 100%;"></div>
 	</div>
 </div>
-<div id='finished' style='display: none;'>
+<div id='finished' style='display: inline;'>
 	<p style="text-align: center">Export Complete!</p>
 	<hr/>
 	<div style='text-align: center;'>
@@ -21,10 +21,10 @@
 			id='downloadButton'>
 				Download <i class='icon-download icon-white'></i></a>
 	</div>
-	
+
 	<script type='text/javascript'>
-		
-		function pollForResult(url) {  
+
+		function pollForResult(url) {
 		    $.getJSON(url, function(data) {
 		    	if(data.task.result != null) {
 						$('#waiting').hide();
