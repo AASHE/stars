@@ -243,16 +243,17 @@ THUMBNAIL_DEBUG = os.environ.get("THUMBNAIL_DEBUG", False)
 
 # Celery
 
-# CELERY_TIMEZONE = "US/Eastern"
-# CELERYBEAT_SCHEDULE = STARS_TASK_SCHEDULE
-# BROKER_URL = os.environ.get("CELERY_BROKER_URL", "amqp://guest:guest@localhost:5672/")
-# CELERY_ALWAYS_EAGER = os.environ.get("CELERY_ALWAYS_EAGER", False)
-# CELERY_RESULT_BACKEND = os.environ.get("CELERY_RESULT_BACKEND", "django-db")
-# CELERY_RESULT_DBURI = os.environ.get('CELERY_RESULT_DBURI',
-#                                      "sqlite:///tmp/stars-celery-results.db")
-# CELERY_CACHE_BACKEND = os.environ.get("CELERY_CACHE_BACKEND", "django-cache")
-# CELERY_TASK_SERIALIZER = "json"  # @todo - should move to Json
-# CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TIMEZONE = "US/Eastern"
+CELERYBEAT_SCHEDULE = STARS_TASK_SCHEDULE
+BROKER_URL = os.environ.get("CELERY_BROKER_URL", "amqp://guest:guest@localhost:5672/")
+CELERY_ALWAYS_EAGER = os.environ.get("CELERY_ALWAYS_EAGER", False)
+CELERY_RESULT_BACKEND = os.environ.get("CELERY_RESULT_BACKEND", "django-db")
+CELERY_RESULT_DBURI = os.environ.get(
+    "CELERY_RESULT_DBURI", "sqlite:///tmp/stars-celery-results.db"
+)
+CELERY_CACHE_BACKEND = os.environ.get("CELERY_CACHE_BACKEND", "django-cache")
+CELERY_TASK_SERIALIZER = "json"  # @todo - should move to Json
+CELERY_ACCEPT_CONTENT = ["json"]
 
 # default is test mode
 AUTHORIZENET_LOGIN = os.environ.get("AUTHORIZENET_LOGIN", None)
