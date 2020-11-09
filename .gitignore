@@ -4,6 +4,7 @@
 .DS_Store
 .DS_Store?
 .envrc
+env/
 htmlcov
 ghostdriver.log
 geckodriver.log
