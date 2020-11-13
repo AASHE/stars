@@ -19,12 +19,32 @@ spec:
     spec:
       containers:
       - name: stars
-        image: gcr.io/aashe-migration/stars-image:BUILD_ID
+        image: gcr.io/aashe-migration/stars-image:b6fd3668-deac-4700-8100-f7dda1c6540a
         ports:
         - containerPort: 8080
         env:
         - name: PORT
           value: "8080"
+        - name: STARS_DB_URL
+          value: mysql://root:123456@127.0.0.1:3306/stars
+        - name: ISS_DB_URL
+          value: mysql://root@localhost/iss
+        - name: MS_ACCESS_KEY
+          value: blah
+        - name: MS_SECRET_KEY
+          value: blah
+        - name: MS_ASSOCIATION_ID
+          value: blah
+        - name: STARS_BROCHURE_HOST
+          value: aashestars.wpengine.com
+        - name: STARS_REPORTS_HOST
+          value: localhost:8000
+        - name: STARS_BENCHMARKS_HOST
+          value: benchmarks.aashe.org
+        - name: STARS_MS_PUBLICATION_ID
+          value: blah
+        - name: EMAIL_REPLY_TO
+          value: blah
         readinessProbe:
           tcpSocket:
             port: 8080
