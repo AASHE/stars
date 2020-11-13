@@ -1,8 +1,0 @@
-{% load ce_tags %}
-{% load report_tags %}
-
-{% with credit_submission.get_public_submission_fields as submission_field_list %}
-	{% for field in credit_submission.credit.get_nested_documentation_fields %}
-    	{% show_submission_field_pdf  %}
-	{% endfor %}
-{% endwith %}

@@ -1,9 +1,0 @@
-<a href='/'>Home</a> &gt;
-{% for object in object_set %}
-    {% if forloop.revcounter0 %}
-        <a href='{{ object.get_edit_url }}'>{{ object }}</a>
-        &gt;
-    {% else %}
-        {{ object }}
-    {% endif %}
-{% endfor %}

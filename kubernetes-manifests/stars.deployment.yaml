@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stars
+  labels:
+    app: stars
+    tier: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stars
+      tier: app
+  template:
+    metadata:
+      labels:
+        app: stars
+        tier: app
+    spec:
+      containers:
+      - name: stars
+        image: gcr.io/aashe-migration/stars-image:BUILD_ID
+        ports:
+        - containerPort: 8080
+        env:
+        - name: PORT
+          value: "8080"
+        readinessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 5

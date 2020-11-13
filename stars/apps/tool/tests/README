@@ -1,2 +1,0 @@
-Since stars.apps.tool doesn't represent an INSTALLED_APP, the tests
-here are included down in stars.apps.tool.manage.tests.__init__.py.

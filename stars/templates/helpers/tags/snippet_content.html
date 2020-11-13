@@ -1,9 +1,0 @@
-{% autoescape off %}
-  {{ snippet.content }}
-  {% if user and user.is_staff %}
-    <a href='{{ edit_link }}' title='Edit {{ block.key }}' target='_blank'>
-      <i class='icon-edit'></i>
-    </a>
-  {% endif %}
-{% endautoescape %}
-    

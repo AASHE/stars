@@ -1,8 +1,0 @@
-{% autoescape off %}Dear {{ account.user.get_full_name }}, 
-{{ admin.get_full_name }} has removed your access to {{institution}}'s account in the STARS Reporting Tool (http://stars.aashe.org/).
-
-If you feel this was done in error, please contact {{ admin.email }}, the STARS liaison for your institution.
-
-The STARS Team
-stars@aashe.org  
-{% endautoescape %}

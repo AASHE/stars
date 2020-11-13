@@ -1,9 +1,0 @@
-<script>
-	$(function() {
-	    $(".modal-link").click(function(event) {
-	        event.preventDefault()
-	        $('#downloadModal').removeData("modal")
-	        $('#downloadModal').modal({remote: $(this).attr("href")})
-	    })
-	})
-</script>

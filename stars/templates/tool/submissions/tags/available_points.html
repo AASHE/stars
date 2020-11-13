@@ -1,9 +1,0 @@
-{{ value|floatformat:2 }}
-
-{% if popup_text %}
-  {% with 1 as modal %}
-    {% with popup_text as help_text %}
-      {% include "helpers/tags/help_text.html" %}
-    {% endwith %}
-  {% endwith %}
-{% endif %}

@@ -1,9 +1,0 @@
-{% extends "institutions/scorecards/base.html" %}
-
-{% load logical_rules_tags %}
-
-{% block body_onload %}expandTo = 0;{{ block.super }}{% endblock %}
-
-{% block content %}
-      {% include 'institutions/scorecards/summary_include.html' %}
-{% endblock %}

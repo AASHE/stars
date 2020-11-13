@@ -1,3 +1,0 @@
-Dump the fixtures periodically
-
-$ ./manage.py dumpdata notifications.EmailTemplate > stars/apps/notifications/fixtures/notification_emailtemplate_tests.json

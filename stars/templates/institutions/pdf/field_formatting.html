@@ -1,7 +1,0 @@
-{% extends 'institutions/scorecards/field_formatting.html' %}
-
-{% load report_tags %}
-
-{% block url_display %}<a href='{{ field.value }}' target="_blank">{{ field.value|charwrap:95 }}</a>{% endblock %}
-
-{% block long_text_disply %}{{ field.value|urlize|wraplinks:95|linebreaks }}{% endblock %}
