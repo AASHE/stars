@@ -1,0 +1,43 @@
+[
+    {
+        "pk": 1,
+        "model": "submissions.submissionset",
+        "fields": {
+            "creditset": 1,
+            "institution": 1,
+            "date_registered": "2012-09-10",
+            "registering_user": 1,
+            "status": "ps"
+        }
+    },
+    {
+    	"pk": 1,
+    	"model": "submissions.categorysubmission",
+    	"fields": {
+    		"submissionset": 1,
+    		"category": 1
+    	}
+    },
+    {
+    	"pk": 1,
+    	"model": "submissions.subcategorysubmission",
+    	"fields": {
+    		"category_submission": 1,
+    		"subcategory": 1
+    	}
+    },
+    {
+        "pk": 1,
+        "model": "submissions.creditsubmission",
+        "fields": {
+            "credit": 1
+        }
+    },
+    {
+    	"pk": 1,
+    	"model": "submissions.creditusersubmission",
+    	"fields": {
+    		"subcategory_submission": 1
+    	}
+    }
+]

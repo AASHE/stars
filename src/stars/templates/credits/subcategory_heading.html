@@ -1,0 +1,14 @@
+{% load logical_rules_tags %}
+
+{{ sub }}
+
+<div style='float: right'>
+  {% testrule submission_has_scores submissionset %}
+    {% if cat.category.include_in_score %}
+      {{ sub.get_claimed_points|floatformat:2 }}
+      {% if cat.category.abbreviation != "IN" %}
+        / {{ sub.get_adjusted_available_points|floatformat:2 }}
+      {% endif %}
+    {% endif %}
+  {% endtestrule %}
+</div>

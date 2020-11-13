@@ -1,0 +1,173 @@
+{% extends 'tool/submissions/columned_layout.html' %}
+
+{% load submit_tags %}
+
+{% block tool_content %}
+
+  <h2>
+    Submission Review Summary
+  </h2>
+
+  {% include "tool/submissions/submission_summary_header.html" %}
+
+  <div class="accordion" id="review-conclusions" style="padding-top: 15px">
+    <div class="accordion-group">
+      <div class="accordion-heading">
+        <a class="accordion-toggle" data-toggle="collapse"
+           data-parent="#review-conclusions" href="#does-not-meet-criteria">
+          <strong>Does Not Meet Criteria</strong>
+        </a>
+      </div>
+      <div id="does-not-meet-criteria" class="subcategory_accordion accordion-body in">
+        <div class="accordion-inner">
+          {% for creditsubmission in does_not_meet_criteria_list %}
+            <div class="row" style="padding-top:10px">
+              <div class="span5">
+                <a href="{{ creditsubmission.get_submit_url }}">
+                  <strong>
+                    {{ creditsubmission.credit }} <!-- {{ c.id }} -->
+                  </strong>
+                </a>
+              </div>
+              <div class="span2 pull-right">
+                {% if not creditsubmission.is_unlocked_for_review %}
+                  <i class="fa fa-lock fa-lg fa-fw"></i>
+                {% else %}
+                  <i class="fa fa-unlock fa-lg fa-fw text-red" style="color:red"></i>
+                {% endif %}
+                {% show_status_icon creditsubmission %}
+              </div>
+            </div>
+            {% if creditsubmission.creditsubmissionreviewnotation_set.count %}
+              <div class="row">
+                {% for notation in creditsubmission.creditsubmissionreviewnotation_set.all %}
+                  <div class="span3 offset1" style="font-size: 13px; line-height: 24px">
+                    <a href="{{ creditsubmission.get_submit_url }}review">
+                      {{ notation.get_kind_display }}
+                    </a>
+                  </div>
+                  <div class="span6 offset2">
+                    {{ notation.comment|safe }}
+                  </div>
+              </div> <!-- row -->
+              {% if not forloop.last %}
+                <div class="row">
+              {% endif %}
+                {% endfor %}
+            {% endif %}
+          {% endfor %}
+                </div>
+        </div>
+      </div>
+
+      <div class="accordion-group">
+        <div class="accordion-heading">
+          <a class="accordion-toggle" data-toggle="collapse"
+             data-parent="#review-conclusions" href="#not-really-pursuing">
+            <strong>Not Really Pursuing</strong>
+          </a>
+        </div>
+        <div id="not-really-pursuing" class="subcategory_accordion accordion-body in">
+          <div class="accordion-inner">
+            {% for creditsubmission in not_really_pursuing_list %}
+              <div class="row" style="padding-top:10px">
+                <div class="span5">
+                  <a href="{{ creditsubmission.get_submit_url }}">
+                    <strong>
+                      {{ creditsubmission.credit }} <!-- {{ c.id }} -->
+                    </strong>
+                  </a>
+                </div>
+                <div class="span2 pull-right">
+                  {% if not creditsubmission.is_unlocked_for_review %}
+                    <i class="fa fa-lock fa-lg fa-fw"></i>
+                  {% else %}
+                    <i class="fa fa-unlock fa-lg fa-fw text-red" style="color:red"></i>
+                  {% endif %}
+                  {% show_status_icon creditsubmission %}
+                </div>
+              </div>
+              {% if creditsubmission.creditsubmissionreviewnotation_set.count %}
+                <div class="row">
+                  {% for notation in creditsubmission.creditsubmissionreviewnotation_set.all %}
+                    <div class="span3 offset1" style="font-size: 13px; line-height: 24px">
+                      <a href="{{ creditsubmission.get_submit_url }}review">
+                        {{ notation.get_kind_display }}
+                      </a>
+                    </div>
+                    <div class="span6 offset2">
+                      {{ notation.comment|safe }}
+                    </div>
+                </div> <!-- row -->
+                {% if not forloop.last %}
+                  <div class="row">
+                {% endif %}
+                  {% endfor %}
+              {% endif %}
+            {% endfor %}
+                  </div>
+          </div>
+        </div>
+
+      <div class="accordion-group">
+        <div class="accordion-heading">
+          <a class="accordion-toggle" data-toggle="collapse"
+             data-parent="#review-conclusions" href="#meets-criteria">
+            <strong>Meets Criteria</strong>
+          </a>
+        </div>
+        <div id="meets-criteria" class="subcategory_accordion accordion-body in">
+          <div class="accordion-inner">
+            {% for creditsubmission in meets_criteria_list %}
+              <div class="row" style="padding-top:10px">
+                <div class="span5">
+                  <a href="{{ creditsubmission.get_submit_url }}">
+                    <strong>
+                      {{ creditsubmission.credit }} <!-- {{ c.id }} -->
+                    </strong>
+                  </a>
+                </div>
+                <div class="span2 pull-right">
+                  {% if not creditsubmission.is_unlocked_for_review %}
+                    <i class="fa fa-lock fa-lg fa-fw"></i>
+                  {% else %}
+                    <i class="fa fa-unlock fa-lg fa-fw text-red" style="color:red"></i>
+                  {% endif %}
+                  {% show_status_icon creditsubmission %}
+                </div>
+              </div>
+              {% if creditsubmission.creditsubmissionreviewnotation_set.count %}
+                <div class="row">
+                  {% for notation in creditsubmission.creditsubmissionreviewnotation_set.all %}
+                    <div class="span3 offset1" style="font-size: 13px; line-height: 24px">
+                      <a href="{{ creditsubmission.get_submit_url }}review">
+                        {{ notation.get_kind_display }}
+                      </a>
+                    </div>
+                    <div class="span6 offset2">
+                      {{ notation.comment|safe }}
+                    </div>
+                </div> <!-- row -->
+                {% if not forloop.last %}
+                  <div class="row">
+                {% endif %}
+                  {% endfor %}
+              {% endif %}
+            {% endfor %}
+                </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button onclick="window.history.back();"
+                  class="btn btn-default">
+            <i class="icon-arrow-left"></i>
+            Back
+          </button>
+        </div>
+
+      </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

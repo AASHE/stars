@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  {% block error_message %}
+    <div class="alert alert-error">
+      <h4 class="alert-heading">
+        <p>
+          {% block message_title %}
+            Sorry!  An error occurred while processing your request.
+          {% endblock %}
+        </p>
+      </h4>
+
+      {% block user_message_block %}
+        {% if user_message %}
+          {% autoescape off %}
+            {% block message_content %}
+              <p>{{ user_message }}</p>
+            {% endblock %}
+          {% endautoescape %}
+        {% endif %}
+      {% endblock %}
+    </div>
+  {% endblock %}
+
+  <div class='row'><div class='span12'>
+
+    {% block message_preamble %}
+    {% endblock %}
+
+    <p>
+      STARS staff have been notified of the problem, but if this
+      problem persists or you have any questions, please contact
+      the
+      <a href="mailto:stars@aashe.org?subject=STARS Tracking Tool Error">
+        AASHE STARS Team
+      </a>
+      with a detailed description of the problem.
+    </p>
+  </div>
+{% endblock %}

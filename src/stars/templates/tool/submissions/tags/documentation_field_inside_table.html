@@ -1,0 +1,76 @@
+{% load help %}
+{% load submit_tags %}
+
+{% if field_form.value.errors %}
+  <div class='control-group error'>
+{% endif %}
+
+<table>
+  <tbody>
+    <tr>
+      <td style="border-left-width: 0px; padding-right: 0px; padding-left: 4px">
+        <div class="control-label">
+          {% if documentation_field.is_required %}
+            <span class='required_note'
+                  title="This field is required to complete credit">
+              *
+            </span>
+          {% elif documentation_field.is_conditionally_required %}
+            <span class='conditionally_required_note'
+                  title="In some cases, this field will be required to complete credit">
+              *
+            </span>
+          {% endif %}
+        </div>
+      </td>
+      <td style="border-left-width: 0px">
+
+        <div class='controls'>
+
+          {{ field_form.value }} <!-- {{ field_form.instance.id }} -->
+          {% if documentation_field.type == 'numeric' or documentation_field.type == 'calculated' %}
+            {{ field_form.metric_value }}
+          {% endif %}
+
+          {% if not field_form.field_includes_units and documentation_field.units %}
+
+            {% if field_form.instance.get_institution.prefers_metric_system %}
+              <span class="help-inline">{{ documentation_field.units.equivalent }}</span>
+            {% else %}
+              <span class="help-inline">{{ documentation_field.units }}</span>
+            {% endif %}
+
+          {% endif %}
+
+          {% with documentation_field.get_escaped_tooltip_help_text as help_text %}
+            {% with "true" as modal %}
+              {% with documentation_field.id as id %}
+                {% include "helpers/tags/help_text.html" %}
+              {% endwith %}
+            {% endwith %}
+          {% endwith %}
+
+          {% include 'tool/submissions/tags/populate_button.html' %}
+
+          {% if editing %}
+            <a href='{{ documentation_field.get_edit_url }}'>
+              <i class='icon-edit'></i>
+            </a>
+          {% endif %}
+
+          {% if field_form.value.errors %}
+            <div class="alert alert-error">{{ field_form.errors.value }}</div>
+          {% endif %}
+          {% if field_form.warnings %}
+            <div class="alert alert-warning">{{ field_form.warnings }}</div>
+          {% endif %}
+
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+{% if field_form.value.errors %}
+  </div>
+{% endif %}

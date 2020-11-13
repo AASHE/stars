@@ -1,0 +1,19 @@
+
+  <ul class="listexpander">
+      {% for subcat in article_menu.subcategories %}
+      <li>
+         <a {% if not current_article %}{% ifequal subcat sub_category %}id='currentSelection'{% endifequal %}{% endif %}
+         	href="{{ subcat.get_absolute_url }}{% ifnotequal subcat root_category %}?root_category={{root_category.slug}}{%endifnotequal%}">
+           {{ subcat.label }}
+         </a>
+       <ul>
+         {% for article in subcat.articles %}
+         <li>
+           <a {% ifequal article.nid current_article.nid %} id='currentSelection'{% endifequal %}
+           	href="{{ article.get_absolute_url }}?root_category={{root_category.slug}}">{{ article.title }}</a>
+        </li>
+         {% endfor %}
+       </ul>
+      </li>
+      {% endfor %}
+     </ul>

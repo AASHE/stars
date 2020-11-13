@@ -1,0 +1,88 @@
+{% extends "tool/submissions/submit_wizard.html" %}
+
+{% load help %}
+{% load thumbnail %}
+
+{% block above_submit_form %}
+  {% show_help_context 'submit_for_rating_confirm' 0 %}
+  {% include 'tool/submissions/submission_summary_table.html' %}
+
+  {% if credit_list %}
+    <div class='well'>
+      <div class="alert">
+        {% get_help_context 'submit_for_rating_credits' %}
+      </div>
+      <div style='height: 150px;overflow: auto;'>
+        <table class='table table-striped table-bordered'>
+          {% for credit_user_submission in credit_list %}
+            <tr>
+              <td>{{ credit_user_submission.credit.subcategory }}</td>
+              <td>{{ credit_user_submission.credit.identifier }}</td>
+              <td>
+                <a href='{{ credit_user_submission.get_submit_url }}'>
+                  {{ credit_user_submission.credit.title }}
+                </a>
+              </td>
+            </tr>
+          {% endfor %}
+        </table>
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block submit_form_fields %}
+  {% if submissionset.get_STARS_rating.name != "Reporter" %}
+    {% if submissionset.institution.access_level == "full" %}
+      <p>
+        Once your submission is finalized, it will be locked
+        temporarily and placed in collaborative review and revision
+        mode. Before the report and the rating earned becomes public:
+        <ol>
+          <li>
+            AASHE staff will review the report for adherence to
+            credit criteria (about one-third of credits are reviewed).
+          </li>
+          <li>
+            AASHE staff will submit a summary of any concerns to the
+            institution’s STARS Liaison (usually within 10 business
+            days).
+          </li>
+          <li>
+            All content identified as not meeting credit criteria by
+            AASHE staff must be addressed in order for a certificate
+            of rating to be awarded and the report published.
+          </li>
+        </ol>
+      </p>
+      <hr>
+    {% endif %}
+    <table class='table'>
+      <tr>
+        <td>
+          {% thumbnail submissionset.get_STARS_rating.image_large "150x150" as im %}
+            <img src="{{ im.url }}"
+                 style="width: {{ im.width }}px;height={{ im.height }}px;"
+                 alt='{{ submissionset.rating }}' />
+          {% endthumbnail %}
+        </td>
+        <td>
+          <br/><br/><br/>
+          You have achieved a provisional
+          {{ submissionset.get_STARS_rating.name }} rating,
+          but have the option to submit as an unrated Reporter.
+          {% show_help_context 'submit_for_rating_reporter' %}
+        </td>
+        <td>
+          {% thumbnail reporter_rating.image_large "150x150" as im %}
+            <img src="{{ im.url }}"
+                 style="width: {{ im.width }}px;height={{ im.height }}px;"
+                 alt='Reporter' />
+          {% endthumbnail %}
+          <br/>
+          Submit as Reporter: {{ wizard.form.reporter_status }}
+        </td>
+      </tr>
+    </table>
+  {% endif %}
+{% endblock %}

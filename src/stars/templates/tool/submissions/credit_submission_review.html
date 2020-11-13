@@ -1,0 +1,12 @@
+{% extends 'tool/submissions/credit_base.html' %}
+
+{% load compress %}
+{% load staticfiles %}
+
+{% block credit_tabs %}{% with active='review' %}{{ block.super }}{% endwith %}{% endblock %}
+
+{% block tab_content %}
+  <div class='creditContent'>
+    {% include 'tool/submissions/credit_submission_review_form.html' %}
+  </div>
+{% endblock %}

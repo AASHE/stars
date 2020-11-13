@@ -1,0 +1,11 @@
+{% extends "tool/credit_editor/credits/base.html" %}
+
+{% block editor_content %}
+    {% with active_tab="reporting-fields" %}
+        {{ block.super }}
+    {% endwith %}
+{% endblock %}
+
+{% block credit_content %}
+   {% include "tool/credit_editor/add_include.html" %}
+{% endblock %}

@@ -1,0 +1,42 @@
+{% load submit_tags %}
+{% load logical_rules_tags %}
+
+<table class='table table-condensed table-striped'>
+  <thead>
+    <tr>
+      <th>Credit</th>
+      <th>Status</th>
+      {% testrule submission_has_scores submissionset %}
+        {% if cat.category.include_in_score %}
+          <th>Points</th>
+        {% endif %}
+      {% endtestrule %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for c in sub.creditusersubmission_set.all %}
+      {% if c.credit.is_opt_in and c.submission_status == 'na' %}
+        {# pass - don't show opt-in credits that aren't opted-in #}
+      {% else %}
+        {% block credit_summary_row %}
+          <tr>
+            <td>
+              <a href='{{ c.get_scorecard_url }}'>{{ c }}</a>
+            </td>
+            <td>
+              {% show_status_icon c %}
+            </td>
+            {% testrule submission_has_scores submissionset %}
+              {% if cat.category.include_in_score %}
+                <td>
+                  {{ c.assessed_points|floatformat:2 }} /
+                  {% format_available_points c %}
+                </td>
+              {% endif %}
+            {% endtestrule %}
+          </tr>
+        {% endblock %}
+      {% endif %}
+    {% endfor %}
+  </tbody>
+</table>

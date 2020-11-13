@@ -1,0 +1,26 @@
+{% extends 'tool/manage/base.html' %}
+
+{% load content %}
+{% load bootstrap %}
+
+{% block crumbs-tool %}<li>Contact</li>{% endblock %}
+
+{% block tabs %}
+	{% with active_tab="contact" %}{{ block.super }}{% endwith %}
+{% endblock %}
+
+{% block institution_content %}
+    <form method='post' action='.' class='form-horizontal'>
+    	<fieldset>
+    	{{ form|bootstrap }}
+    	</fieldset>
+    	<div class="form-actions">
+          <button type='submit' class='btn btn-primary'>Save</button>
+        </div>
+        
+    </form>
+{% endblock %}
+
+{% block help_content %}
+    {% display_block_content 'manage_contact_info' user %}
+{% endblock %}

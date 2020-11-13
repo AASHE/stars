@@ -1,0 +1,66 @@
+{% load logical_rules_tags %}
+
+<table class='table table-bordered table-condensed' style='font-size: .9em;'>
+    {% if preview %}
+        <tr>
+            <td colspan='2'>
+                <span class="label label-warning">Preview</span>
+            </td>
+        </tr>
+    {% endif %}
+    <tr>
+        <th>
+            Overall Rating
+        </th>
+        <td>
+          {% if not submissionset.expired %}
+            {{ rating }}
+          {% else %}
+            {{ rating }} - expired
+          {% endif %}
+        </td>
+    </tr><tr>
+        <th>Overall Score</th>
+        <td>
+          {% if rating.publish_score %}
+            {{ score|floatformat:2 }}
+          {% else %}
+            {% load help %}
+            {% show_help_context "reporter_status" %}
+          {% endif %}
+        </td>
+    </tr>
+    <tr>
+      <th>Liaison</th>
+      <td>
+	{{ submissionset.institution.contact_first_name }}
+	{{ submissionset.institution.contact_last_name }}
+      </td>
+    </tr>
+    {% if not preview %}
+        <tr>
+            <th>Submission Date</th>
+            <td>{{ submissionset.date_submitted }}</td>
+        </tr>
+        {% if submissionset.creditset.has_president_letter_feature %}
+            <tr>
+                <th>Executive Letter</th>
+                <td><a href='{{ submissionset.presidents_letter.url }}'>Download</a></td>
+            </tr>
+        {% endif %}
+    {% endif %}
+    {% if user_tied_to_institution %}
+    <tr>
+    	<th>Download</th>
+    	<td>
+    		<a href='{{ submissionset.get_scorecard_url }}pdf/'
+    		{% if submissionset.status != 'r' or not submissionset.pdf_report %}
+    		onclick="return confirm('This export could take a minute or two, please be patient.');"
+    		{% endif %}
+    		target='_blank'>
+    			PDF
+    		</a>
+    	</td>
+    </tr>
+    {% endif %}
+</table>

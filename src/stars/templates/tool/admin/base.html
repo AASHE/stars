@@ -1,0 +1,24 @@
+{% extends 'tool/base.html' %}
+
+{% block title %} | Admin {% endblock %}
+
+{% block crumbs %}
+	<ul class="breadcrumb">
+	  <li>
+	    Administer Site
+	  </li>
+	</ul>
+{% endblock %}
+
+{% block submenu_class %}class='sm_admin'{% endblock %}
+
+{% block tool_content %}
+        {% block tabs %}{% endblock %}
+        <div class='tabContent'>
+            {% block admin_content %}{% endblock %}
+        </div>
+{% endblock %}
+
+{% block tool_menu %}
+	{% with active_menu='admin'%}{% include "tool/menu.html" %}{% endwith %}
+{% endblock %}

@@ -1,0 +1,83 @@
+{% load bootstrap %}
+
+{% block subscription_payment_create_header_text %}
+  <p>
+    {% if pay_when = "later" %}
+      You will be billed ${{ amount_due|floatformat:2 }} for your new
+      STARS subscription.
+    {% else %}
+      Your credit card will be charged ${{ amount_due|floatformat:2 }}
+      for your
+      {% comment %}
+        This form is used to apply payments to existing subscriptions,
+        as well as new ones.
+      {% endcomment %}
+      {% if new_subscription %}
+        new
+      {% endif %}
+      STARS subscription.
+    {% endif %}
+  </p>
+{% endblock %}
+
+{% block subscription_payment_create_form %}
+  <form method='post' action='.' class='form-horizontal'>
+    {% csrf_token %}
+
+    {% if wizard %}
+
+      {{ wizard.management_form }}
+
+      {{ wizard.form|bootstrap }}
+
+      <div class='form-actions'>
+        {% if wizard.steps.next %}
+          <button type='submit' class='btn btn-primary pull-right'>
+            Next <i class='icon-step-forward icon-white'></i>
+          </button>
+        {% else %}
+          <button type='submit' class='btn btn-success pull-right'>
+            {% if new_registration %}
+              Register
+            {% elif new_subscription %}
+              Purchase Subscription
+            {% else %}
+              Submit Payment
+            {% endif %}
+          </button>
+        {% endif %}
+        {% if wizard.steps.prev %}
+          <button name="wizard_goto_step" type="submit"
+                  class='btn pull-right' value="{{ wizard.steps.prev }}"
+                  style='margin-right: 10px;'>
+            <i class='icon-step-backward'></i> Previous
+          </button>
+        {% endif %}
+      </div>
+
+    {% else %}
+      {{ form|bootstrap }}
+
+      <button
+          type='submit'
+          id='submit_button'
+          class='btn btn-primary'>
+              <i class='icon-lock icon-white'></i>
+              {% if new_subscription %}
+                Purchase Subscription
+              {% else %}
+                Submit Payment
+              {% endif %}
+      </button>
+
+      <button
+          type='button'
+          class='btn'
+          onclick="document.location='{% url 'tool:tool-summary' institution.slug %}'">
+              Cancel
+      </button>
+    {% endif %}
+
+  </form>
+
+{% endblock %}

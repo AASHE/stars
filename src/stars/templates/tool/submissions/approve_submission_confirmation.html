@@ -1,0 +1,31 @@
+{% extends 'tool/submissions/columned_layout.html' %}
+
+{% block tool_content %}
+  <h2>
+    Approve Submission
+  </h2>
+
+  {% include "tool/submissions/submission_summary_header.html" %}
+
+  <div class="well" style="padding-top: 10px">
+    <h4>
+      Sure you want to approve this submission?
+    </h4>
+
+    <form method="post" action=".">
+      {{ form }}
+      <div class="form-actions">
+        <button type="submit"
+                class="btn btn-primary">
+          <i class="icon-ok icon-white"></i>
+          Yes, approve it.
+        </button>
+        <button onclick="window.history.back();"
+                class="btn btn-default">
+          <i class="icon-remove"></i>
+          No. Do not approve it.
+        </button>
+      </div>
+    </form>
+  </div>
+{% endblock %}

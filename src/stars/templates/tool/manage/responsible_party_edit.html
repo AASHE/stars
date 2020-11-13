@@ -1,0 +1,35 @@
+{% extends 'tool/manage/responsible_party_list.html' %}
+
+{% load bootstrap %}
+
+{% block help_content %}
+    {% load help %}
+    {% show_help_context 'edit_responsible_party' 0 %}
+{% endblock %}
+
+{% block institution_content %}
+
+    <form method='post' action='.' class='form-horizontal'>
+        {{ form|bootstrap }}
+        <div class='form-actions'>
+            <button
+                type='submit'
+                id='submit_button'
+                class='btn btn-primary'>
+                    Save
+            </button>
+            <button
+                type='button'
+                class='btn'
+                onclick="document.location='{% url 'tool:manage:responsible-party-list' institution.slug %}'">
+                    Cancel
+            </button>
+        </div>
+    </form>
+
+    {% if responsible_party %}
+        <h3>Assigned Credits</h3>
+        {% include "tool/manage/responsible_party_credits.html" %}
+    {% endif %}
+
+{% endblock %}

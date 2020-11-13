@@ -1,0 +1,8 @@
+{% extends 'cms/base.html' %}
+
+{% block center %}
+	{% load cache %}
+	{% cache 86400 cms_category category category.timestamp user.is_staff %}
+        {% include 'cms/category_content.html' %}
+    {% endcache %}
+{% endblock %}

@@ -1,0 +1,295 @@
+[
+    {
+        "pk": 1,
+        "model": "auth.user",
+        "fields": {
+            "username": "tester",
+            "password": "sha1$ac334$deb690d155846e66261da300c3c26ae164f70f2a",
+            "email": "test@test.edu"
+        }
+    },
+    {
+        "pk": 1,
+        "model": "institutions.institution",
+        "fields": {
+            "name": "Okanagan College",
+            "aashe_id": "24394",
+            "contact_first_name": "FirstName",
+            "contact_last_name": "LastNmae",
+            "executive_contact_middle_name": "",
+            "enabled": true,
+            "executive_contact_email": "exec@test.edu",
+            "contact_department": "Department",
+            "contact_email": "liaison@test.edu",
+            "executive_contact_title": "Executive",
+            "contact_title": "Title",
+            "executive_contact_first_name": "FirstName",
+            "executive_contact_last_name": "Trask",
+            "current_submission": 1
+        }
+    },
+
+    {
+        "pk": 1,
+         "model": "institutions.baseaccount",
+         "fields":
+        {
+        }
+    },
+
+    {
+        "pk": 1,
+         "model": "institutions.starsaccount",
+         "fields":
+        {
+            "baseaccount_ptr": 1,
+            "is_selected": true,
+            "user_level": "admin",
+            "user": 1,
+            "terms_of_service": true,
+            "institution": 1
+        }
+    },
+
+    {
+        "pk": 1,
+        "model": "credits.creditset",
+        "fields": {
+            "is_locked": false,
+            "release_date": "2010-1-01",
+            "version": "1.0",
+            "tier_2_points": 0.25,
+            "scoring_method": "get_STARS_v1_0_score"
+        }
+    },
+
+    {
+        "pk": 1,
+        "model": "submissions.submissionset",
+        "fields": {
+            "creditset": 1,
+            "institution": 1,
+            "date_registered": "2010-01-01",
+            "registering_user": 1,
+            "status": "ps"
+        }
+    },
+
+    {
+        "pk": 1,
+         "model": "submissions.payment",
+         "fields":
+        {
+             "submissionset": 1,
+             "amount": 10,
+             "type": "credit",
+             "user": 1,
+             "date": "2010-1-1",
+             "reason": "reg",
+             "confirmation": ""
+        }
+    },
+
+    {
+        "pk": 1,
+        "model": "credits.category",
+        "fields": {
+            "ordinal": 0,
+            "description": "<p>Dummy Description</p>",
+            "title": "Test Cateogory",
+            "creditset": 1,
+            "abbreviation": "TC",
+            "max_point_value": 0
+        }
+    },
+
+    {
+        "pk": 1,
+        "model": "submissions.categorysubmission",
+        "fields": {
+            "submissionset": 1,
+            "category": 1
+        }
+    },
+
+    {
+        "pk": 1,
+        "model": "credits.subcategory",
+        "fields": {
+            "category": 1,
+            "ordinal": 0,
+            "max_point_value": 0,
+            "description": "",
+            "title": "Test Subcategory"
+        }
+    },
+
+    {
+        "pk": 1,
+        "model": "submissions.subcategorysubmission",
+        "fields": {
+            "category_submission": 1,
+            "subcategory": 1
+        }
+    },
+
+    {
+        "pk": 1,
+        "model": "credits.credit",
+        "fields": {
+            "ordinal": 0,
+            "scoring": "",
+            "staff_notes": "",
+            "subcategory": 1,
+            "title": "First Test Credit",
+            "criteria": "",
+            "measurement": "",
+            "number": 1,
+            "point_value": 5.0,
+            "applicability": "<p>This credit applies to all institutions.</p>",
+            "validation_rules": "",
+            "formula": "",
+            "type": "t1"
+        }
+    },
+
+    {
+        "pk": 1,
+        "model": "submissions.creditsubmission",
+        "fields": {
+            "credit": 1
+        }
+    },
+
+    {
+        "pk": 1,
+        "model": "submissions.creditusersubmission",
+        "fields": {
+            "subcategory_submission": 1,
+            "submission_status": "c",
+            "responsible_party_confirm": true
+        }
+    },
+
+    {
+        "pk": 1,
+        "model": "credits.documentationfield",
+        "fields": {
+            "ordinal": 0,
+            "max_range": 500000,
+            "required": "req",
+            "title": "First Test Numeric Documentation Field",
+            "tooltip_help_text": "",
+            "last_choice_is_other": false,
+            "min_range": 0,
+            "credit": 1,
+            "inline_help_text": "",
+            "units": null,
+            "identifier": "A1A",
+            "type": "numeric"
+        }
+    },
+
+    {
+        "pk": 1,
+        "model": "submissions.numericsubmission",
+        "fields": {
+            "documentation_field": 1,
+            "value": 1200.0,
+            "credit_submission": 1
+        }
+    },
+
+    {
+        "pk": 2,
+        "model": "credits.creditset",
+        "fields": {
+            "is_locked": false,
+            "release_date": "2011-1-01",
+            "version": "1.1",
+            "tier_2_points": 0.25,
+            "scoring_method": "get_STARS_v1_1_score",
+            "previous_version": 1
+        }
+    },
+
+    {
+        "pk": 2,
+        "model": "credits.category",
+        "fields": {
+            "ordinal": 0,
+            "description": "<p>Dummy Description</p>",
+            "title": "Test Cateogory 1.1",
+            "creditset": 2,
+            "abbreviation": "TC",
+            "max_point_value": 0,
+            "previous_version": 1
+        }
+    },
+
+    {
+        "pk": 2,
+        "model": "credits.subcategory",
+        "fields": {
+            "category": 2,
+            "ordinal": 0,
+            "max_point_value": 0,
+            "description": "",
+            "title": "Test Subcategory 1.1",
+            "previous_version": 1
+        }
+    },
+
+    {
+        "pk": 2,
+        "model": "credits.credit",
+        "fields": {
+            "ordinal": 0,
+            "scoring": "",
+            "staff_notes": "",
+            "subcategory": 2,
+            "title": "First Test Credit 1.1",
+            "criteria": "",
+            "measurement": "",
+            "number": 1,
+            "point_value": 5.0,
+            "applicability": "<p>This credit applies to all institutions.</p>",
+            "validation_rules": "",
+            "formula": "points = A",
+            "type": "t1",
+            "previous_version": 1
+        }
+    },
+
+    {
+        "pk": 2,
+        "model": "credits.documentationfield",
+        "fields": {
+            "ordinal": 0,
+            "max_range": 500000,
+            "required": "req",
+            "title": "First Test Numeric Documentation Field 1.1",
+            "tooltip_help_text": "",
+            "last_choice_is_other": false,
+            "min_range": 0,
+            "credit": 2,
+            "inline_help_text": "",
+            "units": null,
+            "identifier": "A",
+            "type": "numeric",
+            "previous_version": 1
+        }
+    },
+
+    {
+        "pk": 1,
+        "model": "institutions.subscription",
+        "fields": {
+            "institution": 1,
+            "start_date": "2010-1-30",
+            "end_date": "2011-1-31",
+            "amount_due": 0.0,
+            "paid_in_full": true
+        }
+    }
+]

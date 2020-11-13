@@ -1,0 +1,18 @@
+{% extends 'tool/manage/submissionset_base.html' %}
+
+{% block institution_content %}
+
+	<h2>Extension Request</h2>
+
+	{% load content %}
+    {% display_block_content 'extension_request' user %}
+    
+ 	<form class='generalForm' method='POST'>
+        <table class='form'>
+            {% include "helpers/standard_form.html" %}
+        </table>
+        <div class='button_row'>
+            <button type='submit' id='submit_button'>Confirm</button>
+        </div>
+    </form>
+{% endblock %}

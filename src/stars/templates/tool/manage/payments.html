@@ -1,0 +1,55 @@
+{% extends 'tool/manage/base.html' %}
+
+{% block crumbs-tool %}<li>Payments</li>{% endblock %}
+
+{% block tabs %}
+  {% with active_tab="payments" %}{{ block.super }}{% endwith %}
+{% endblock %}
+
+{% block help_content %}
+  {% load content %}
+  {% display_block_content 'manage_payments' user %}
+{% endblock %}
+
+{% block institution_content %}
+  {% include 'tool/manage/payment_list.html' %}
+
+  {% if subscription_list %}
+    <table class='table'>
+      <thead>
+        <tr>
+          <th>Subscription</th>
+          <th>Amount Due</th>
+          <th>Payments</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for sub in subscription_list %}
+          <tr>
+            <td>
+              {{ sub.start_date }} -
+              {{ sub.end_date }}
+            </td>
+            <td>
+              ${{ sub.amount_due|floatformat:2 }}
+            </td>
+            <td>
+              {% for p in sub.subscriptionpayment_set.all %}
+                <a href="{% url 'edit_payment' institution.slug sub.id p.id %}"
+                   class='btn'>
+                  <i class='icon-barcode'></i>
+                </a>
+              {% endfor %}
+              {% if not sub.paid_in_full %}
+                <a href="{% url 'add_payment' institution.slug sub.id %}"
+                   class='btn'>
+                  <i class='icon-plus-sign'></i>
+                </a>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
+{% endblock %}

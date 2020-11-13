@@ -1,0 +1,297 @@
+.header {
+  padding-bottom: 0px;
+}
+.navbar-inner {
+  background-color: #15387f;
+  background-image: -webkit-linear-gradient(top, #15387f, #15387f);
+}
+.navbar .btn {
+  margin: -5px;
+  line-height: 19px;
+  font-size: 1em;
+}
+.hero-unit {
+  padding: 0px 0 0 0;
+}
+.item {
+  margin: 0 auto;
+  text-align: left;
+}
+.story-slide-text {
+  color: white;
+  background: transparent;
+  background-color: rgba(0, 129, 209, 0.8);
+  -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#CC0081D1,endColorstr=#CC0081D1)";
+  filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#CC0081D1,endColorstr=#CC0081D1)";
+  zoom: 1;
+  opacity: 0.9;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 20px;
+  height: 100px;
+  padding: 15px 100px 10px;
+}
+.partners-start {
+  border-top: 1px solid #8e8c8a;
+  margin-top: 2em;
+}
+.partners {
+  margin-bottom: 1em;
+  padding: 1em;
+  color: #15387f;
+  text-align: center;
+}
+.partners img {
+  padding: 0.5em;
+}
+#get-started {
+  padding-top: 50px;
+}
+#get-started button {
+  font-size: 30px;
+  line-height: 35px;
+  padding: 10px;
+}
+.frontblock {
+  /*height: 320px;*/
+  overflow: hidden;
+}
+.frontblock .update-row {
+  border-bottom: 1px solid #dfdfdf;
+  margin-right: 25px;
+  padding: 5px 0px 3px 0px;
+  color: #4a4a4a;
+}
+.frontblock .update-title {
+  font-size: 14px;
+}
+.frontblock .update-date {
+  background: transparent url("/media/static/bootstrap/img/calendar.png")
+    no-repeat 0 2px;
+  padding-left: 16px;
+}
+.tweet-list img {
+  margin-right: 1em;
+  margin-bottom: 1em;
+}
+.tweet-list p {
+  margin-left: 58px;
+}
+.tweet-list .tweet-meta {
+  margin-left: 0;
+  font-size: 85%;
+}
+.tweet-text {
+  padding: 10px 0 3px;
+}
+.carousel-inner h2 {
+  color: #ffffff;
+}
+.caret {
+  border-top-color: #f2f2f2;
+  border-bottom-color: #f2f2f2;
+}
+/* social tabs */
+.social-tabs .tab-nav {
+  position: relative;
+  height: 37px;
+  top: 25px;
+  left: 0px;
+  text-align: center;
+}
+ul.tab-nav {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.social-tabs .tab-nav li {
+  float: right;
+}
+.social-tabs .tab-nav a {
+  background-image: url("/media/static/images/social-icons.png");
+  background-repeat: no-repeat;
+  display: block;
+  height: 37px;
+  width: 37px;
+  text-indent: -99999px;
+  overflow: hidden;
+  text-align: left;
+}
+.social-tabs .tab-nav li#tweet-tab a {
+  background-position: 0px -174px;
+}
+.social-tabs .tab-nav li#fbook-tab a {
+  background-position: 0px 0px;
+}
+.social-tabs .tab-nav li#flickr-tab a {
+  background-position: 0px -87px;
+}
+.social-tabs .tab-nav li#yt-tab a {
+  background-position: 0px -261px;
+}
+#footer-message {
+  margin-top: 1em;
+  padding-top: 1em;
+  padding-bottom: 1em;
+  border-top: 1px solid #8e8c8a;
+}
+.header .message {
+  padding: 50px 0 0 0;
+  font-family: aller, arial, Helvetica;
+}
+.header .tool-btn {
+  position: relative;
+  bottom: -50px;
+  left: 50px;
+}
+#ratingCarousel img.badge {
+  width: 200px;
+  background-color: #fff !important;
+}
+/* Headings */
+h2 {
+  color: #15387f;
+}
+.benefits-reg {
+  margin-top: 2em;
+}
+.plan h2 {
+  color: #fff;
+}
+.pricing-table .plan {
+  border-radius: 5px;
+  text-align: center;
+  background-color: #f3f3f3;
+  -moz-box-shadow: 0 0 6px 2px #b0b2ab;
+  -webkit-box-shadow: 0 0 6px 2px #b0b2ab;
+  box-shadow: 0 0 6px 2px #b0b2ab;
+}
+.plan:hover {
+  background-color: #fff;
+  -moz-box-shadow: 0 0 12px 3px #b0b2ab;
+  -webkit-box-shadow: 0 0 12px 3px #b0b2ab;
+  box-shadow: 0 0 12px 3px #b0b2ab;
+}
+.plan {
+  padding: 20px;
+  color: #ff;
+  background-color: #5e5f59;
+  -moz-border-radius: 5px 5px 0 0;
+  -webkit-border-radius: 5px 5px 0 0;
+  border-radius: 5px 5px 0 0;
+}
+.plan-name-full {
+  padding: 20px;
+  color: #fff;
+  background-color: #00a160;
+  -moz-border-radius: 5px 5px 0 0;
+  -webkit-border-radius: 5px 5px 0 0;
+  border-radius: 5px 5px 0 0;
+}
+.plan-name-basic {
+  padding: 20px;
+  color: #fff;
+  background-color: #a78fc3;
+  -moz-border-radius: 5px 5px 0 0;
+  -webkit-border-radius: 5px 5px 0 0;
+  border-radius: 5px 5px 0 0;
+}
+.pricing-table-full {
+  padding: 20px;
+  color: #fff;
+  background-color: #f89406;
+  -moz-border-radius: 5px 5px 0 0;
+  -webkit-border-radius: 5px 5px 0 0;
+  border-radius: 5px 5px 0 0;
+}
+.pricing-table .plan .plan-name span {
+  font-size: 20px;
+}
+.pricing-table .plan ul {
+  list-style: none;
+  margin: 0;
+  -moz-border-radius: 0 0 5px 5px;
+  -webkit-border-radius: 0 0 5px 5px;
+  border-radius: 0 0 5px 5px;
+}
+.pricing-table .plan ul li.plan-feature {
+  padding: 15px 10px;
+  border-top: 1px solid #c5c8c0;
+}
+.pricing-three-column {
+  margin: 0 auto;
+  width: 80%;
+}
+.pricing-variable-height .plan {
+  float: none;
+  margin-left: 2%;
+  vertical-align: bottom;
+  display: inline-block;
+  zoom: 1;
+  *display: inline;
+}
+.plan-mouseover .plan-name {
+  background-color: #4e9a06 !important;
+}
+.btn-plan-select {
+  padding: 8px 25px;
+  font-size: 18px;
+}
+.org-list {
+  display: none;
+}
+.org-list li {
+  border: 1px solid #e5e5e5;
+  border-radius: 2px;
+  padding: 7px;
+}
+.org-list li:hover {
+  cursor: pointer;
+  padding-top: 30px;
+  height: 40px;
+}
+.search-panel {
+  padding: 15px;
+  height: 75px;
+  margin: 7px;
+  border: 1px solid #bdbdbd;
+  border-radius: 6px;
+}
+#school-finder {
+  margin: .25rem;
+}
+.green-dot {
+  display: none;
+  margin-top: 2px;
+  height: 12px;
+  width: 12px;
+  border: 1px solid #eeeeee;
+  border-radius: 50%;
+  background-color: #5bb75b;
+}
+#institution-submit-btn {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+#institution-selection {
+  margin-top: 1.35rem;
+}
+.fake-h3 {
+  color: #425968;
+  font-size: 1.5625em;
+  font-family: "Aller",sans-serif;
+  font-weight: 700;
+  line-height: 1.1;
+}
+.registration-column {
+  margin-top: 1rem;
+}
+#registration-ul {
+  margin-top: .75rem;
+}
+.errorlist {
+  margin: 0 0 9px 0;
+}
+.errorlist li {
+  color: #b94a48;
+}

@@ -1,0 +1,31 @@
+[
+ {
+     "pk": 1,
+     "model": "institutions.institution",
+     "fields": {
+         "name": "Institution",
+         "aashe_id": "-1",
+         "slug": "test-institution"
+     }
+ },
+
+ {
+     "pk": 2,
+     "model": "institutions.institution",
+     "fields": {
+         "name": "AASHE",
+         "aashe_id": "-2",
+         "slug": "test-institution-2"
+     }
+ },
+
+ {
+     "pk": 1,
+     "model": "auth.user",
+     "fields": {
+         "username": "bob",
+         "password": "x",
+         "email": "bob@testdomain.org"
+     }
+ }
+]

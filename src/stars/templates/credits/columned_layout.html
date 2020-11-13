@@ -1,0 +1,22 @@
+<div class='row'>
+  <div class='span4'>
+    {% block railAboveMenu %}{% endblock %}
+    <div id='leftMenu'>
+      {% block navAbove %}{% endblock %}
+      {% block navHeader %}
+	<h4>
+	  Credits
+	</h4>
+      {% endblock %}
+      {% block left_column %}
+        {% include 'credits/outline_nav.html' %}
+      {% endblock %}
+      {% block navBelow %}{% endblock %}
+    </div>
+  </div>
+
+  <div class='span8'>
+    {% block center_column %}{% endblock %}
+    {% block center_column_footer %}{% endblock %}
+  </div>
+</div>

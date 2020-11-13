@@ -1,0 +1,10 @@
+<script>
+	$(function() {
+	    $(".term-link").click(function(event) {
+	        event.preventDefault();
+	        $('#termModal').removeData("modal");
+					$('#termModalHeader').html($(this).html());
+	        $('#termModal').modal({remote: $(this).attr("href")})
+	    })
+	})
+</script>

@@ -1,0 +1,89 @@
+{% load logical_rules_tags %}
+
+<ul class="nav nav-tabs nav-stacked">
+
+    {% comment %}
+        The 'My Summary', 'My Submission', 'My Resources', and 'My Reports(s)'
+        menu items are only shown when an instituion is available.  This
+        is almost always, but not quite; /tool/admin, for example, lacks
+        an institution.slug.
+
+        Since the 'My ...' menu items act on an institution, it doesn't
+        hurt to hide them when no institution is available.  In fact,
+        errors will be raised if '{% url ... instutition.slug %}' is
+        called when no institution is available.
+    {% endcomment %}
+
+    {% if institution %}
+    	{% testrule user_has_access_level user 'admin' institution %}
+            <li{% if active_menu == "summary"%} class='active'{% endif %}>
+                {% if institution %}
+                    <a href="{% url 'tool:tool-summary' institution.slug %}">
+                {% else %}
+                    <a href="{% url 'tool:tool-landing-page' %}">
+                {% endif %}
+                        <i class="icon-home"></i>
+                        My Summary
+                    </a>
+            </li>
+        {% endtestrule %}
+        {% testrule user_has_access_level user 'submit' institution %}
+            <li{% if active_menu == "submission" %} class='active'{% endif %}>
+                   <a href="{% url 'tool:my_submission:submission-summary' institution.slug institution.current_submission.id %}">
+                    <i class="icon-folder-close"></i>
+                    My Submission
+                </a>
+            </li>
+            {% block submission_outline %}{% endblock %}
+        {% endtestrule %}
+        {% testrule user_has_access_level user 'view' institution %}
+          <li{% if active_menu == "preview" %} class='active'{% endif %}>
+                 <a href="{{ institution.current_submission.get_scorecard_url }}">
+                  <i class="icon-eye-open"></i>
+                  Preview Submission
+              </a>
+          </li>
+        {% endtestrule %}
+        <li{% if active_menu == "resources"%} class='active'{% endif %}>
+            <a href="{% url 'tool:my_resources:my-resources' institution.slug %}">
+                <i class='icon-briefcase'></i>
+                My Resources
+            </a>
+        </li>
+        {% if institution.latest_expired_submission or institution.rated_submission %}
+        <li{% if active_menu == "reports"%} class='active'{% endif %}>
+            <a href='/institutions/{{ institution.slug }}/report/'>
+                <i class='icon-book'></i>
+                My Published Report(s)
+            </a>
+        </li>
+        {% endif %}
+    	{% testrule user_has_access_level user 'admin' institution %}
+            <li{% if active_menu == "settings"%} class='active'{% endif %}>
+                {% if institution %}
+                    <a href="{% url 'tool:settings' institution.slug %}">
+                {% else %}
+                    <a href="{% url 'tool:tool-landing-page' %}">
+                {% endif %}
+                        <i class="icon-wrench"></i>
+                        Settings
+                    </a>
+            </li>
+        {% endtestrule %}
+    {% endif %}
+    {% if user.is_staff %}
+        <li{% if active_menu == "admin"%} class='active'{% endif %}>
+            <a href='/tool/admin/'>
+                <i class='icon-cog'></i>
+                Administer Site
+            </a>
+        </li>
+        <li{% if active_menu == "editor"%} class='active'{% endif %}>
+            <a href='/tool/credit-editor/'>
+                <i class='icon-pencil'></i>
+                Credit Editor
+            </a>
+        </li>
+        {% block credit_editor_outline %}{% endblock %}
+    {% endif %}
+</ul>

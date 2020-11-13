@@ -1,0 +1,146 @@
+{% load bootstrap %}
+
+{% block subscription_price_form %}
+
+  {% if automatic_discount_code %}
+    <form>
+      <input id="automatic-discount-code"
+             type="hidden" 
+             value="{{ automatic_discount_code }}">
+    </form>
+  {% endif %}
+
+
+  {% if not institution_is_member %}
+    <div id="please-come-back-modal" class="modal hide fade">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"
+                aria-hidden="true">&times;</button>
+        <h3>Excellent!</h3>
+      </div>
+      <div class="modal-body">
+        <p>Click on the button below, and you'll be redirected to the
+           membership page on the main AASHE site.  That's where you can
+           join AASHE.
+        </p>
+        <p>After that, be sure to come back and register for STARS
+           to get your <strong>$500 discount</strong>!
+        </p>
+        <p>Thank you!</p>
+      </div>
+      <div class="modal-footer">
+        <a href="{{ join_aashe_url }}" class="btn btn-primary">
+          Join AASHE now!
+        </a>
+      </div>
+    </div>
+    <div id="message-for-nonmembers"
+         class="well">
+      <p>
+        AASHE members get a <strong>$500.00 discount</strong> on STARS!
+      </p>
+      <p>
+        Unfortunately, {{ institution_name }} isn't an AASHE member.
+      </p>
+      <p>
+        But it's easy to join.
+        <button id="join-aashe"
+                type="button"
+                class="btn btn-info"
+                data-toggle="modal"
+                data-target="#please-come-back-modal"
+                style="float:right;">
+          Join AASHE now!
+        </button>
+      </p>
+    </div>
+  {% endif %}
+  <form id='promo-code-form' method='post' action='.' class='form-horizontal'>
+    {% csrf_token %}
+    {{ wizard.management_form }}
+    <table class="table">
+      <tbody>
+        <tr id="subscription-base-price">
+          <td class="amount" style="text-align:right">
+            ${{ prices.base_price|floatformat:2 }}
+          </td>
+          <td>
+            STARS subscription, from {{ subscription_start_date }}
+            to {{ subscription_end_date }}
+          </td>
+        </tr>
+        {% if prices.member_discount %}
+          <tr>
+            <td class="amount" style="text-align:right;color:red">
+                - ${{ prices.member_discount|floatformat:2 }}
+              </span>
+            </td>
+            <td>
+                Discount for AASHE members
+            </td>
+          </tr>
+        {% endif %}
+        {% if prices.early_renewal_discount %}
+          <tr>
+            <td class="amount" style="text-align:right;color:red">
+                - ${{ prices.early_renewal_discount|floatformat:2 }}
+              </span>
+            </td>
+            <td>
+                Discount for renewing your subscription early
+            </td>
+          </tr>
+        {% endif %}
+        <tr id="id_promo_code_row" style="display:none;">
+          <td id="id_promo_code_amount" class="amount"
+              style="text-align:right;color:red">
+          </td>
+          <td id="id_promo_code_description">
+          </td>
+        </tr>
+        <tr>
+          <td id="amount-due" style="text-align:right">
+            <h4>
+              ${{ prices.total|floatformat:2 }}
+            </h4>
+          </td>
+          <td>
+            <h4>
+              Amount due
+            </h4>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div id="promo-code-input-widgets">
+      {{ wizard.form.promo_code|bootstrap }}
+
+      <div class="controls">
+        <button id="apply-promo-code-button" type="button" class="btn"
+                onclick="applyPromoCode();">
+          Apply Promo Code
+        </button>
+      </div>
+      <div class='form-actions'>
+        {% if wizard.steps.next %}
+          <button type='submit' class='btn btn-primary pull-right'
+                  onclick='clearErrors(); this.form.submit();'>
+            Next <i class='icon-step-forward icon-white'></i>
+          </button>
+        {% else %}
+          <button type='submit' class='btn btn-success pull-right'>
+            Purchase Subscription
+          </button>
+        {% endif %}
+        {% if wizard.steps.prev %}
+          <button name="wizard_goto_step" type="submit"
+                  class='btn pull-right' value="{{ wizard.steps.prev }}"
+                  style='margin-right: 10px;'>
+            <i class='icon-step-backward'></i> Previous
+          </button>
+        {% endif %}
+      </div>
+    </div>
+  </form>
+{% endblock %}

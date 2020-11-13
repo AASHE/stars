@@ -1,0 +1,62 @@
+{% extends 'tool/base.html' %}
+
+{% load compress %}
+
+{% block title %}
+    {{ creditset }} | Credit Editor | {{ block.super }}
+{% endblock %}
+{% compress js %}
+{% block extra_head %}
+    {{ block.super }}
+    {% block tinymce %}
+    <script type="text/javascript"
+            src="{{ STATIC_URL }}tp/tinymce/js/tinymce/tinymce.min.js"></script>
+    <script type="text/javascript">
+        tinymce.init({plugins: "link paste table,",
+                      tools: "inserttable",
+                      convert_urls : false,
+                      selector: "textarea:not(.noMCE)"});
+    </script>
+    {% endblock %}
+    <script type="text/javascript"
+            src="{{ STATIC_URL }}js/tablednd.js"></script>
+	<script src="{{ STATIC_URL }}js/select_tree.js"></script>
+{% endblock %}
+
+{% block body_onload %}
+    {{ block.super }}
+    listexpander();collapseSummary();
+{% endblock %}
+
+{% block crumbs %}
+    <a href='/tool/'>Reporting Tool</a> &gt;
+    <a href='/tool/credit-editor/'>Credit Editor</a>
+{% endblock %}
+
+{% block credit_editor_outline %}
+    <div style='background-color: #dddddd; text-align: center; padding: 4px; margin: 4px 0px;border-width: 1px 0px; border-style: solid; border-color: #bbbbbb;'>
+        <label for='version'>Version:</label>
+        <select onchange='document.location=this.options[this.selectedIndex].value;'>
+            <option value='/tool/credit-editor/add-creditset/'>---</option>
+            {% for set in available_sets %}
+                <option value='{{ set.get_edit_url }}' {% ifequal set creditset %}selected='selected'{% endifequal %}>{{ set.version }}</option>
+            {% endfor %}
+        </select>
+        <button type='button' title='New Version' onclick='document.location="/tool/credit-editor/add-creditset/"'>New Version</button>
+    </div>
+    {% include 'credits/outline_nav.html' %}
+{% endblock %}
+
+{% block tool_content %}
+    <h1>{% block h1 %}Credit Editor{% endblock %}</h1>
+    {% block editor_content %}{% endblock %}
+{% endblock %}
+
+{% block extra_footer %}
+    <script type='text/javascript'>
+        var tableDnD = null;
+        setTable('dndtable');
+    </script>
+    {{ block.super }}
+{% endblock %}
+{% endcompress %}

@@ -1,0 +1,19 @@
+{% extends 'tool/manage/submissionset_base.html' %}
+
+{% block crumbs %} {{ block.super }} &gt; Boundary {% endblock %}
+
+{% block institution_content %}
+	<form method='post' action='.' class='generalForm'>
+		<table>
+			{% include 'helpers/standard_form.html' %}
+		</table>
+    	<div class='buttonRow'>
+    		<button type='submit'>Save</button>
+    	</div>
+	</form>
+{% endblock %}
+
+{% block help_content %}
+    {% load content %}
+    {% display_block_content 'edit_submission_boundary' user %}
+{% endblock %}

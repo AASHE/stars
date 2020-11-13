@@ -1,0 +1,41 @@
+{% block subscription_payment_options_header_text %}
+  <p>
+      Your new STARS subscription will cost
+      <span id='amount-due'>${{ amount_due|floatformat:2 }}</span>.
+  </p>
+  <p>
+      When would you like to pay?
+  </p>
+{% endblock %}
+
+{% block subscription_payment_options_form %}
+  <form method='post' action='.' class='form-horizontal'>
+    {% csrf_token %}
+    {{ wizard.management_form }}
+
+    {% for radio in wizard.form.pay_when %}
+      <div class='radio'>
+        {{ radio }}
+      </div>
+    {% endfor %}
+
+    <div class='form-actions'>
+      {% if wizard.steps.next %}
+        <button type='submit' class='btn btn-primary pull-right'>
+	  Next <i class='icon-step-forward icon-white'></i>
+        </button>
+      {% else %}
+	<button type='submit' class='btn btn-success pull-right'>
+          Purchase Subscription
+        </button>
+      {% endif %}
+      {% if wizard.steps.prev %}
+	<button name="wizard_goto_step" type="submit"
+		class='btn pull-right' value="{{ wizard.steps.prev }}"
+		style='margin-right: 10px;'>
+	  <i class='icon-step-backward'></i> Previous
+        </button>
+      {% endif %}
+    </div>
+  </form>
+{% endblock %}

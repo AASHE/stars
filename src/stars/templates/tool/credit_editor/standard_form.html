@@ -1,0 +1,12 @@
+<table class='form'>
+    <tr><td>
+        {% for field in object_form %}
+            <p>
+                {{ field.errors }}
+                {{ field.label_tag }}: {{ field|safe }}
+                {% load help %}
+                {% show_help_text field.help_text %}
+            </p>
+        {% endfor %}
+    </td></tr>
+</table>

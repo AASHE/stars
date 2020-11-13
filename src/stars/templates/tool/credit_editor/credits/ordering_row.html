@@ -1,0 +1,15 @@
+{% extends "tool/credit_editor/base_ordering.html" %}
+
+{% block display_row %}
+    {% comment %}
+        <!-- Using the same display form as in the Submission Tool -->
+        {% include 'tool/submissions/tags/documentation_field_form.html' %}
+    {% endcomment %}
+    {% with form.instance as documentation_field %}
+        {% with form as field_form %}
+        	{% with "tool/credit_editor/credits/tabular_field.html" as field_template %}
+            	{% include 'tool/submissions/tags/documentation_field_form.html' %}
+            {% endwith %}
+        {% endwith %}
+    {% endwith %}
+{% endblock %}

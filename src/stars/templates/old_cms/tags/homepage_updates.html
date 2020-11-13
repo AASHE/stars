@@ -1,0 +1,9 @@
+{% load humanize %}
+{% for update in update_list %}
+  <div class="update-row">
+  <div class="update-title">
+    <a href="{{ update.link }}">{{ update.title }}</a>
+  </div>
+  <div class="update-date">{{ update.created|naturaltime|capfirst }}</div>
+  </div>
+  {% endfor %}

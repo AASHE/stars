@@ -1,0 +1,48 @@
+{% extends 'base_error.html' %}
+
+{% block title %}
+  Permission Denied | {{ block.super }}
+{% endblock %}
+
+{% block message_title %}
+  You do not have permission to access this page.
+{% endblock %}
+
+{% block user_message_block %}
+  {% block message_content %}
+
+    {% if institution_in_url %}
+
+      <p>
+        Contact {{ institution_in_url.get_liaison_name }}, the STARS
+        administrator for {{ institution_in_url.name }}, to ensure you have
+        the right permissions for this institution.
+      </p>
+
+      {% comment %}
+        Only show contact info for the liaison if this user has
+        a StarsAccount for this institution.
+      {% endcomment %}
+
+      {% if liaison_contact_info %}
+        <p>
+          {{ liaison_contact_info }}
+        </p>
+      {% endif %}
+
+  {% else %}
+
+    {% comment %}
+      For legacy URLs that don't have an institution-slug in them (yet),
+      a generic message.
+    {% endcomment %}
+
+    <p>
+      Contact your STARS administrator to ensure you have
+      the right permissions for this institution.
+    </p>
+
+  {% endif %}
+
+  {% endblock %}
+{% endblock %}

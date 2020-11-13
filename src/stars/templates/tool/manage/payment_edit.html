@@ -1,0 +1,31 @@
+{% extends 'tool/manage/payments.html' %}
+
+{% load bootstrap %}
+
+{% block crumbs-tool %}
+	<li>
+		<a href="{% url 'institution-payments' institution.slug %}">
+            Payments
+        </a>
+		<span class="divider">/</span>
+	</li>
+	<li>
+		Edit
+	</li>
+{% endblock %}
+
+{% block help_content %}
+    {% load content %}
+    {% display_block_content 'edit_payment' user %}
+{% endblock %}
+
+{% block institution_content %}
+    <h2>{{ title }}</h2>
+    <form method='post' action='.' class='form'>
+    	{{ form|bootstrap }}
+		<div class='form-actions'>
+                <button type='submit' class='btn btn-primary'>Save Payment</button>
+                <!-- <button type='button' class='btn' onclick='document.location="{{ object_form.instance.get_delete_url }}";'>Delete</button> -->
+		</div>
+    </form>
+{% endblock %}

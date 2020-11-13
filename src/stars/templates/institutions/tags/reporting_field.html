@@ -1,0 +1,34 @@
+	{% if show_field %}
+	  <tr>
+	    <th>
+			{{ field }}
+            {% load help %}
+			{% show_help_text field.documentation_field.tooltip_help_text 1 %}
+	    </th>
+	    <td>
+			{% if url %}
+			    <a href='{{url}}' target='_blank'>{{ field_value }}</a>
+			{% else %}
+			{% if choices %}
+			   <table>
+			     {% for choice in choices %}
+			     <tr>
+			       <td>
+			        {% if choice.is_selected %}
+			            <img src='/media/static/images/tick.png' title='Selected' alt='*'>
+			        {% else %}
+			          &nbsp;
+			        {% endif %}
+			       </td>
+			       <td style='text-align:left;'>
+			         {{ choice.choice }} {{ units }}
+			       </td>
+			     </tr>
+			   {% endfor %}
+			   </table>
+			{% else %}
+			  {{ field_value|default_if_none:"" }} {{ units }}
+			{% endif %}{% endif %}
+	    </td>
+	  </tr>  
+	{% endif %}      

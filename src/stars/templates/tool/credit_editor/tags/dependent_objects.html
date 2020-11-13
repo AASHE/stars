@@ -1,0 +1,30 @@
+{% if counts_only %}  {% comment %} Displaying only counts stops the recursion! {% endcomment %} 
+
+    <ul>
+    {% for dependent in dependents %}
+        {% if dependent.name and dependent.queryset %}
+            <li><em>{{ dependent.queryset.count }} {{ dependent.name }}</em></li>
+        {% endif %}
+    {% endfor %}
+    </ul>
+
+{% else %}
+
+    {% for dependent in dependents %}
+        {% if dependent.name and dependent.queryset %}
+           <u><em>{{ dependent.name }}:</em></u>
+           <ul>
+               {% for object in dependent.queryset %}
+                   <li>{{ object }}<br/>
+                        {% comment %}  RECURSIVE CALL TO THE TEMPLATE TAG!!! {% endcomment %}
+                        {% if depth and object.has_dependents %}
+                            {% load ce_tags %}
+                            {% show_dependent_objects object depth %}
+                        {% endif %}
+                   </li>
+               {% endfor %}
+           </ul>
+        {% endif %}
+    {% endfor %}
+
+{% endif %}

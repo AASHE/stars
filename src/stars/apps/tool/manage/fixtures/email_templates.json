@@ -1,0 +1,86 @@
+[
+    {
+        "fields": {
+            "active": true,
+            "content": "Dear {{ institution.executive_contact_title }} {{ institution.executive_contact_last_name }},\r\n\r\nCongratulations! {{ institution.name }} has successfully renewed its participation in the Sustainability Tracking, Assessment & Rating System (STARS).  STARS is a tool to help colleges and universities track and measure their sustainability performance.\r\n\r\nThe STARS Liaison for {{ institution.name }}, listed below, provided your contact information to notify you about your institution's continued participation in this program. Since many individuals and departments on campus will be involved in the STARS process, executive-level support will help make your institution's participation successful.\r\n\r\nTo learn more about the STARS Program, visit http://stars.aashe.org/ or email stars@aashe.org with any questions.\r\n\r\nWe're glad to have {{ institution.name }} as a renewed STARS Participant!\r\n\r\nAll the best,\r\n\r\nThe AASHE Staff\r\nstars@aashe.org\r\n(303) 395 1332\r\n\r\n{{ institution.name }} STARS Liaison:\r\n{{ institution.contact_first_name }} {{ institution.contact_last_name }}\r\n{{ institution.contact_title }}\r\n{{ institution.contact_email }}",
+            "description": "Email sent to Executive contact after an institution re-registers fro STARS.",
+            "example_data": {
+                "institution": {
+                    "contact_email": "[EMAIL ADDRESS]",
+                    "contact_first_name": "[FIRST NAME]",
+                    "contact_last_name": "[LAST NAME]",
+                    "contact_title": "[TITLE]",
+                    "executive_contact_last_name": "[LAST NAME]",
+                    "executive_contact_title": "[TITLE]",
+                    "name": "[INSTITUTION_NAME]"
+                }
+            },
+            "slug": "reg_renewal_exec",
+            "title": "STARS Renewed Registration Success"
+        },
+        "model": "notifications.emailtemplate",
+        "pk": 14
+    },
+    {
+        "fields": {
+            "active": true,
+            "content": "Thank you for renewing your institution\u2019s participation in STARS! \r\n\r\nYour registration has been received and is being processed by AASHE.  Payment information and instructions are below.  You selected the \"pay later\" option for your STARS registration. Payment is due within the next 4 weeks. To request an official invoice please email Margueritte Williams (margueritte.williams@aashe.org), AASHE's Business Operations Associate.\r\n\r\nPlease note, access to the STARS Reporting Tool will be available once we receive your registration payment. Your institution\u2019s registration date will reflect the date of registration, not the date that payment is received.\r\n\r\nBy renewing with STARS, you will gain 12 months of access to the STARS Reporting Tool. This will allow you to continue to document data for the STARS credits as well as access resources in the \"My Resources\" section of the Reporting Tool. Your institution's current STARS Report and STARS Rating is valid for three years from the date it was earned.  However, institutions have the option to submit an updated STARS Report as often as annually.  Your institution's STARS Report will be publicly available on the STARS website until you either submit for a new rating or your rating expires. \r\n\r\nSee the STARS Technical Manual (https://stars.aashe.org/pages/about/technical-manual.html) for up-to-date information about STARS credits, including a list of the reporting fields associated with each credit.\r\n\r\nIf you have not done so already, we encourage you to subscribe to the AASHE Bulletin (http://www.aashe.org/user/newsletters), a free weekly e-newsletter that delivers the latest campus sustainability news, resources, opportunities, and events including topics related to STARS. Also, visit the STARS website (https://www.stars.aashe.org) for additional information about STARS and email stars@aashe.org with any questions.\r\n\r\nSTARS REGISTRATION PAYMENT\r\n\r\nFEE\r\n${{ price }}\r\n\r\nBILLING INFORMATION\r\n\r\nPlease mail a check payable to AASHE at our new payment address:\r\n\r\nAASHE\r\nPO Box 824583\r\nPhiladelphia, PA  19182-4583\r\n\r\nOr, to pay by Credit Card, please log into the STARS Reporting Tool and click on the \"pay now\" link beside your subscription.",
+            "description": "Email sent to Liaison after an institution re-registers for STARS, but hasn't yet paid.",
+            "example_data": {
+                "price": "[400]"
+            },
+            "slug": "reg_renewal_unpaid",
+            "title": "STARS Renewed Registration Success"
+        },
+        "model": "notifications.emailtemplate",
+        "pk": 15
+    },
+    {
+        "fields": {
+            "active": true,
+            "content": "Thank you for renewing your institution\u2019s participation in STARS! \r\n\r\nYour registration has been received and is being processed by AASHE.  Your receipt is below.\r\n\r\nBy renewing with STARS, you now have 12 months of access to the STARS Reporting Tool. This will allow you to continue to document data for the STARS credits as well as access resources in the \"My Resources\" section of the Reporting Tool. Your institution's current STARS Report and STARS Rating is valid for three years from the date it was earned.  However, institutions have the option to submit an updated STARS Report as often as annually.  Your institution's STARS Report will be publicly available on the STARS website until you either submit for a new rating or your rating expires. \r\n\r\nAlso, as a reminder, see the STARS Technical Manual (https://stars.aashe.org/pages/about/technical-manual.html) for up-to-date information about STARS credits, including a list of the reporting fields associated with each credit.\r\n\r\nIf you have not done so already, we encourage you to subscribe to the AASHE Bulletin (http://www.aashe.org/user/newsletters), a free weekly e-newsletter that delivers the latest campus sustainability news, resources, opportunities, and events including topics related to STARS. Also, visit the STARS website (https://www.stars.aashe.org) for additional information about STARS and email stars@aashe.org with any questions.\r\n\r\n\r\nSTARS REGISTRATION RECEIPT\r\n\r\nFEE\r\n${{ payment.amount }}\r\n\r\nBILLED TO::\r\nCredit Card: [************{{ payment_dict.last_four }}]\r\n\r\nPaid to AASHE",
+            "description": "Email sent to Liaison after an institution re-registers for STARS with payment.",
+            "example_data": {
+                "payment": {
+                    "amount": "[400]",
+                    "last_four": "1234"
+                }
+            },
+            "slug": "reg_renewed_paid",
+            "title": "STARS Renewed Registration Success"
+        },
+        "model": "notifications.emailtemplate",
+        "pk": 16
+    },
+    {
+        "fields": {
+            "active": true,
+            "content": "Thank you for registering as a STARS Participant!\r\n\r\nYour registration has been received and is being processed by AASHE.  Your receipt is below.\r\n\r\nYou may now access the STARS Reporting Tool. Also, see the STARS Technical Manual (https://stars.aashe.org/pages/about/technical-manual.html) for information about STARS credits, including a list of the reporting fields associated with each credit.\r\n\r\nTo get started log into the STARS website (https://stars.aashe.org) and choose the \"Reporting\" link in the toolbar at the top of the page.  Data may be entered in the \"My Submission\" section.  Giving access to additional \"users,\" updating \"contact\" information, \"share data\" options, and the \"migrate\" data function are all available in the \"My Summary\" section.\r\n\r\nIf you have not done so already, we encourage you to subscribe to the AASHE Bulletin (http://www.aashe.org/user/newsletters), a free weekly e-newsletter that delivers the latest campus sustainability news, resources, opportunities, and events including topics related to STARS. Also, visit the STARS website (https://www.stars.aashe.org) for additional information about STARS and email stars@aashe.org with any questions.\r\n\r\nThe AASHE Staff\r\nstars@aashe.org\r\n(303) 395 1332\r\n\r\nSTARS REGISTRATION RECEIPT\r\n\r\nFEE\r\n${{ payment.amount }}\r\nConf #: {{ payment.confirmation }}\r\n\r\nPaid to AASHE",
+            "description": "Email sent to liaison after registration with payment.",
+            "example_data": {
+                "payment": {
+                    "amount": "[400]",
+                    "confirmation": "[1234567890123456]"
+                }
+            },
+            "slug": "welcome_liaison_paid",
+            "title": "STARS Registration Success"
+        },
+        "model": "notifications.emailtemplate",
+        "pk": 11
+    },
+    {
+        "fields": {
+            "active": true,
+            "content": "Thank you for registering as a STARS Participant!\r\n\r\nYour registration has been received and is being processed by AASHE.  Payment information and instructions are below.  You selected the \"pay later\" option for your STARS registration. Payment is due within the next 4 weeks. An official invoice will be emailed to you by  Margueritte Williams (margueritte.williams@aashe.org), AASHE's Business Operations Associate.\r\n\r\nPlease note, although your institution has successfully registered for the STARS Program, your institution will not be listed on the STARS website until payment is received. In addition, access to the STARS Reporting Tool will be available once we receive your registration payment. Your institution\u2019s registration date will reflect the date of registration, not the date that payment is received.\r\n\r\nSee the STARS Technical Manual (https://stars.aashe.org/pages/about/technical-manual.html) for information about STARS credits, including a list of the reporting fields associated with each credit.\r\n\r\nTo get started log into the STARS website (https://stars.aashe.org) and choose the \"Reporting\" link in the toolbar at the top of the page.  Data may be entered in the \"My Submission\" section.  Giving access to additional \"users,\" updating \"contact\" information, \"share data\" options, and the \"migrate\" data function are all available in the \"My Summary\" section.\r\n\r\nIf you have not done so already, we encourage you to subscribe to the AASHE Bulletin (http://www.aashe.org/user/newsletters), a free weekly e-newsletter that delivers the latest campus sustainability news, resources, opportunities, and events including topics related to STARS. Also, visit the STARS website (https://www.stars.aashe.org) for additional information about STARS and email stars@aashe.org with any questions.\r\n\r\nSTARS REGISTRATION PAYMENT\r\n\r\nFEE\r\n${{ price }}\r\n\r\nBILLING INFORMATION\r\n\r\nPlease mail a check payable to AASHE at our new payment address:\r\n\r\nAASHE\r\nPO Box 824583\r\nPhiladelphia, PA  19182-4583\r\n\r\nOr, to pay by Credit Card, please log into the STARS Reporting Tool simply log in to the tool and click on the pay now link beside your subscription.\r\n\r\nThe AASHE Staff\r\nstars@aashe.org\r\n(303) 395 1332",
+            "description": "Email sent to liaison after registration w/out payment.",
+            "example_data": {
+                "price": "[400]"
+            },
+            "slug": "welcome_liaison_unpaid",
+            "title": "STARS Registration Success"
+        },
+        "model": "notifications.emailtemplate",
+        "pk": 12
+    }
+]

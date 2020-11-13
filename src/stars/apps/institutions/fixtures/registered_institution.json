@@ -1,0 +1,20 @@
+[
+	{
+	     "pk": 1,
+	     "model": "institutions.institution",
+	     "fields": {
+	         "name": "Institution",
+	         "aashe_id": "-1",
+	         "is_participant": true,
+	     }
+	},
+	{
+	     "pk": 1,
+	     "model": "auth.user",
+	     "fields": {
+	         "username": "bob",
+	         "password": "x",
+	         "email": "bob@testdomain.org"
+	     }
+	}
+]

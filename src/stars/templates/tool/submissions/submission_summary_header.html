@@ -1,0 +1,64 @@
+{% load logical_rules_tags %}
+{% load content %}
+
+{% if submissionset.is_under_review %}
+  <div class="alert alert-warning">
+    {% display_block_content 'submission_in_review_warning' %}
+  </div>
+{% endif %}
+
+{% if show_migration_warning %}
+  <div class='alert alert-warning'>
+    You recently upgraded your submission data ({{ last_migration_date }}).
+    <br/>
+    As a result, your score was reset and all credits were marked as
+    "In Progress."
+  </div>
+{% endif %}
+
+{% include 'tool/submissions/submission_summary_table.html' %}
+
+{% if not submissionset.is_under_review %}
+  <div class='submissionBoundary'>
+    <p style='text-align: center;'>
+
+      {% if submissionset.creditset.has_boundary_feature %}
+        {% testrule user_has_access_level user 'admin' institution %}
+          <a href="{% url 'tool:my_submission:boundary-edit' institution.slug submissionset.id %}"
+             class='btn btn-warning'>
+            <i class="icon-edit icon-white"></i> Edit Boundary</a>
+        {% endtestrule %}
+      {% endif %}
+
+      {% testrule user_can_submit_report user submissionset %}
+      <a href='{{ submissionset.get_submit_url }}'
+         class='btn btn-success'>
+        <i class="icon-check icon-white"></i> Submit Report</a>
+      {% endtestrule %}
+    </p>
+  </div>
+{% else %}  {# Submission is under review. #}
+  {% if request.user.is_staff %}
+    <div>
+      <p style="text-align: center">
+        <a href="{% url 'tool:my_submission:submission-review-summary' submissionset.institution.slug submissionset.id %}"
+           class="btn btn-warning" style="color: black">
+          <i class="icon-folder-open"></i>
+          Review Summary
+        </a>
+        <a href="{% url 'tool:my_submission:send-credit-submission-review-notations-email' submissionset.institution.slug submissionset.id %}?next={{ request.get_full_path }}"
+           class="btn btn-primary"
+           data-toggle="tooltip"
+           title="{{ num_notations_to_send }} Notation Email(s) to Send">
+          <i class="icon-eye-open icon-white"></i>
+          Preview/Send Review Notations Email
+        </a>
+        <a href="{% url 'tool:my_submission:approve-submission' submissionset.institution.slug submissionset.id %}"
+           class="btn btn-success">
+          <i class="icon-thumbs-up icon-white"></i>
+          Approve Submission
+        </a>
+      </p>
+    </div>
+  {% endif %}
+{% endif %}

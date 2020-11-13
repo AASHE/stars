@@ -1,0 +1,21 @@
+{% extends "empty_base.html" %}
+
+{% load bootstrap %}
+
+{% block title %}Add New Responsible Party{% endblock %}
+
+{% block body %}
+    <h1>Add Responsible Party</h1>
+    <div style='padding: 20px;'>
+    <form action='.' method='post' class='form-horizontal'>
+		{{ form|bootstrap }}
+        <div class='form-actions'>
+        	<button type='submit' id='submit_button' class="btn btn-primary">
+            	Add
+        	</button>
+            <button type='button' class='btn' onclick='window.close();'>Cancel</button>
+    	</div>
+    </form>
+    </div>
+
+{% endblock %}

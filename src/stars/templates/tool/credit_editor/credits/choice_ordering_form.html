@@ -1,0 +1,39 @@
+{% comment %} Similar to "tool/credit_editor/base_ordering.html", but not quite similar enough... {% endcomment %}
+
+ <table class='list' id='dndtable'>
+   <tbody>
+    {% for row in object_ordering %}
+    <tr class='row'>
+        {% block display_row %} 
+		    <td>
+		        {{ row.form.choice.errors }}    
+		        {{ row.form.choice }}
+		    </td>
+         {% endblock %}
+        <td class='buttonColumn'>
+            {% block edit_buttons %} 
+            <a href='{{ row.obj.get_edit_url }}delete/'>
+                <img src='/media/static/images/delete.png' alt='delete' title='delete' />
+            </a>
+            {% endblock %}
+            <img src='/media/static/images/drag_vertical.png' alt='drag this row' title='drag this row' />
+            {{ row.form.ordinal }}
+        </td>
+    </tr>
+    {% endfor %}
+    
+    <tr class='new' nodrop='true' nodrag='true'>
+        {% block display_new_row %} 
+            <td>
+                {{ new_choice_form.choice }}
+            </td>
+            <td class='buttonColumn'>new</td>
+         {% endblock %}
+    </tr>
+  </tbody>
+ </table>
+    
+ <div>
+     <button type='submit' id='save_ordering'>Save</button>
+     <button onclick='addChoice();' type='button'>Add Choice</button>
+ </div>        

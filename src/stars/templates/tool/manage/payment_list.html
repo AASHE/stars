@@ -1,0 +1,47 @@
+{% comment %} Payment list is factored out so it can be shared b/w manage and admin payments {% endcomment %}
+     {% load submit_tags %}
+     <table class='table'>
+     	<thead>
+	       <tr>
+	           <th colspan=2>Subscription Period</th>
+	           <th>Amount</th>
+	           <th colspan=2>Paid by</th>
+	           <th>Date</th>
+	           <th>Confirmation</th>
+	           {% if show_admin_tools %}
+	             <th></th>
+	           {% endif %}
+	       </tr>
+       </thead>
+       <tbody>
+       {% comment %} This should use base_edit_list, currently defined in credit_editor {% endcomment %}
+       {% for payment in payment_list %}
+       <tr class='{% cycle 'even' 'odd' %}'>
+           <td>
+            {{ payment.subscription.start_date }}<br/>
+            {{ payment.subscription.end_date }}
+           </td>
+           <td>{{ payment.get_reason_display }}</td>
+           <td><strong>${{ payment.amount|floatformat:2 }}</strong></td>
+           <td>{{ payment.user.email }}</td>
+           <td>{% show_payment_type_icon payment %}</td>
+           <td>{{ payment.date }}</td>
+           <td>{{ payment.confirmation }}</td>
+           {% if show_admin_tools %}
+             <td class='buttonColumn'>
+               <a href='{{ payment.get_edit_url }}'>
+                   <img src='/media/static/images/page_edit.png' alt='edit' title='edit' />
+               </a>
+               <a href='{{ payment.get_delete_url }}'>
+                   <img src='/media/static/images/delete.png' alt='delete' title='delete' />
+               </a>
+               {% if user.is_staff and payment.type != 'later' %}
+                    <a href='{{ payment.get_receipt_url }}'>
+                        <img src='/media/static/images/email_go.png' alt='send receipt' title='send receipt'></a>
+               {% endif %}
+             </td>
+           {% endif %}
+       </tr>
+       {% endfor %}
+       </tbody>
+    </table>

@@ -1,0 +1,31 @@
+{% extends "tool/credit_editor/credits/base.html" %}
+
+{% load bootstrap %}
+
+{% block editor_content %}
+  {% with active_tab="formula-and-validation" %}
+    {{ block.super }}
+  {% endwith %}
+{% endblock %}
+
+{% block credit_content %}
+  <form action='.' method='POST' class='generalForm'>
+    <div class='form'>
+
+      {{ object_form|bootstrap }}
+
+      {% with object_form as submission_form %}
+        {% with 1 as show_identifier %}
+          {% include "tool/submissions/submission_fields_form.html" %}
+        {% endwith %}
+      {% endwith %}
+
+      <div class="form-actions">
+        <input type="submit"
+               class="btn btn-primary"
+               value="Save test case"/>
+      </div>
+
+    </div>
+  </form>
+{% endblock %}

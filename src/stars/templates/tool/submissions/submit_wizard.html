@@ -1,0 +1,54 @@
+{% extends "tool/base.html" %}
+
+{% load bootstrap %}
+
+{% block crumbs-tool %}
+  <a href="{% url 'tool:my_submission:submission-summary' institution.slug submissionset.id %}">
+    My Submission
+  </a>
+  <span class="divider">/</span>
+  Submit Report
+{% endblock %}
+
+{% block extra_head %}
+  {{ block.super }}
+  {{ wizard.form.media }}
+{% endblock %}
+
+{% block tool_content %}
+  <h2>
+    Submit a Report: step {{ wizard.steps.step1 }} of {{ wizard.steps.count }}
+  </h2>
+  <br/>
+  {% block above_submit_form %}
+  {% endblock %}
+  <form class='generalForm' action="." method="post"
+        enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ wizard.management_form }}
+    {% block submit_form_fields %}
+      {{ wizard.form|bootstrap }}
+    {% endblock %}
+    <div class='form-actions'>
+      <a href="{% url 'tool:my_submission:submission-summary' institution.slug submissionset.id %}"
+         class="btn btn-warning">Cancel</a>
+      {% if wizard.steps.next %}
+        <button type='submit' class='btn btn-info pull-right'>
+          Next <i class='icon-step-forward icon-white'></i>
+        </button>
+      {% else %}
+        <button type='submit' class='btn btn-success pull-right'>
+          Finish
+        </button>
+      {% endif %}
+
+      {% if wizard.steps.prev %}
+        <button name="wizard_goto_step" type="submit"
+                class='btn pull-right' value="{{ wizard.steps.prev }}"
+                style='margin-right: 10px;'>
+          <i class='icon-step-backward'></i> Previous
+        </button>
+      {% endif %}
+    </div>
+  </form>
+{% endblock %}

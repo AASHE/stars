@@ -1,0 +1,23 @@
+{% extends 'tool/submissions/columned_layout.html' %}
+
+{% block crumbs %}
+    {{ block.super }}
+    {% load submit_tags  %}
+    {% show_submit_crumbs category_submission %}
+{% endblock %}
+
+{% block header %}{{ category }}{% endblock %}
+
+{% block center %}
+    <div class='description'>
+        {% autoescape off %}{{ category.description }}{% endautoescape %}
+    </div>
+    {% with 'Submission Status' as title %}
+        {% include 'tool/submissions/category_progress.html' %}
+    {% endwith %}
+    {% for sub in subcategory_submission_list %}
+        {% with sub as title %}
+            {% include 'tool/submissions/subcategory_row.html' %}
+        {% endwith %}
+    {% endfor %}
+{% endblock %}

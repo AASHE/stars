@@ -1,0 +1,14 @@
+Fixtures:
+---------
+initial_data.json - contains sumbission ratings
+v0.5-submission_set - a test submission for institution AASHE with Ben, Jillian, Laura, and Joseph as admin users
+
+Fixture Dependencies:
+---------------------
+empty DB
+ - initial_data
+ -- v0.5-submission_set
+ --- v0.5-credit_submission 
+     Also depdends on credits/fixtures:
+     - v0.5-categories
+     - v0.5-credits

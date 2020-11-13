@@ -1,0 +1,22 @@
+{% extends 'tool/admin/base.html' %}
+
+{% block title %} {{ block.super }} | Institutions{% endblock %}
+
+{% block crumbs %}
+	<ul class="breadcrumb">
+	  <li>
+	    <a href='/tool/admin/'>Administer Site</a> <span class="divider">/</span>
+	  </li>
+	  <li>
+	    Institutions
+	  </li>
+	</ul>
+{% endblock %}
+
+{% block tabs %}
+	{% with active='institutions'%}{% include "tool/admin/tabs.html"%}{% endwith %}
+{% endblock %}
+
+{% block admin_content %}
+    {% block institution_content %}{% endblock %}
+{% endblock %}

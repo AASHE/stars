@@ -1,0 +1,50 @@
+{% extends 'institutions/scorecards/credit.html' %}
+
+{% load bootstrap %}
+
+{% block title %}Data Correction Request | {{ block.super }}{% endblock %}
+
+{% block crumb-tab %}
+   	{{ block.super }}
+   	<li>
+   		<span class="divider">/</span>
+    	Data Correction Request
+    </li>
+{% endblock %}
+
+{% block content %}
+	<br/>
+	<h1>Data Correction Request</h1><br/>
+	<form class='form-horizontal' method='post' action='.'>
+		{% load content %}
+		{% display_block_content 'data_correction_top' user %}
+		
+		<h2>Correction</h2><br/>
+		{% display_block_content "data_correction_confirm" user %}
+		<table class='table'>
+			<tr>
+				<th>Credit</th>
+				<td><b>{{ credit_submission.credit }}</b></td>
+			</tr>
+			<tr>
+				<th>Reporting Field</th>
+				<td>{{ field.title }}</td>
+			</tr>
+			<tr>
+				<th>Previous Value</th>
+				<td>
+					{% with reporting_field as field %}
+						{% include 'institutions/scorecards/field_formatting.html' %}
+					{% endwith %}
+				</td>
+			</tr>
+		</table>
+		{% with form as object_form %}
+	    	{{ object_form|bootstrap }}
+	    {% endwith %}
+    	<div class='form-actions'>
+    		<button type='submit' class='btn btn-primary'>Submit</button>
+    		<a href='{{ credit_submission.get_scorecard_url }}' class='btn'>Cancel</a>
+    	</div>
+    </form>
+{% endblock %}

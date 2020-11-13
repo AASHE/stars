@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="urn:schemas-cybersource-com:transaction-data-1.26">
+   <SOAP-ENV:Header xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd"> 
+      <wsse:Security SOAP-ENV:mustUnderstand="1"> 
+         <wsse:UsernameToken> 
+            <wsse:Username>{{ account.merchant_id }}</wsse:Username> 
+            <wsse:Password Type="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText">{{ account.password }}</wsse:Password> 
+         </wsse:UsernameToken> 
+      </wsse:Security> 
+   </SOAP-ENV:Header> 
+   <SOAP-ENV:Body> 
+      <ns1:requestMessage> 
+         <ns1:merchantID>{{ account.merchant_id }}</ns1:merchantID> 
+         <ns1:merchantReferenceCode>{{ ref_code }}</ns1:merchantReferenceCode> 
+         <ns1:billTo> 
+            <ns1:firstName>{{ payment_dict.billing_firstname }}</ns1:firstName>
+            <ns1:lastName>{{ payment_dict.billing_lastname }}</ns1:lastName>
+            <ns1:street1>{{ payment_dict.billing_address }}</ns1:street1>
+            {% if payment_dict.billing_address_line_2 %}
+                <ns1:street2>{{ payment_dict.billing_address_line_2 }}</ns1:street2>
+            {% endif %}
+            <ns1:city>{{ payment_dict.billing_city }}</ns1:city> 
+            <ns1:state>{{ payment_dict.billing_state }}</ns1:state>
+            <ns1:postalCode>{{ payment_dict.billing_zipcode }}</ns1:postalCode> 
+            <ns1:country>{{ payment_dict.country }}</ns1:country>
+            <ns1:email>{{ payment_dict.billing_email }}</ns1:email>
+         </ns1:billTo>
+         {% for product in product_list %}
+             <ns1:item id="{{ forloop.counter }}">
+                <ns1:unitPrice>{{ product.price }}</ns1:unitPrice> 
+                <ns1:quantity>{{ product.quantity }}</ns1:quantity> 
+                <ns1:productName>{{ product.name }}</ns1:productName>
+             </ns1:item>
+         {% endfor %}
+         <ns1:purchaseTotals>
+            <ns1:currency>USD</ns1:currency>
+         </ns1:purchaseTotals> 
+         <ns1:card>
+            <ns1:accountNumber>{{ payment_dict.cc_number }}</ns1:accountNumber> 
+            <ns1:expirationMonth>{{ payment_dict.exp_month }}</ns1:expirationMonth>
+            <ns1:expirationYear>{{ payment_dict.exp_year }}</ns1:expirationYear>
+            <ns1:cvNumber>{{ payment_dict.cv_code }}</ns1:cvNumber>
+         </ns1:card> 
+         <ns1:ccAuthService run="true"/> 
+      </ns1:requestMessage> 
+   </SOAP-ENV:Body> 
+</SOAP-ENV:Envelope>

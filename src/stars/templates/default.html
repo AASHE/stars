@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %} | Home {% endblock %}
+
+{% block content %}
+    <h1>Welcome to the STARS Reporting Tool</h1>
+	{% if user.is_staff %}
+	    <h2> Staff Quick Links: </h2>
+	    <ul>
+			<li><a href='/tool/admin/'>Administer Site</a></li>
+			<li><a href='/tool/credit-editor/'>Credit Editor</a></li>
+		</ul>
+    {% endif %}
+    
+    <div style='text-align: center; padding: 10px;'><a href='/register/'><img src='http://www.aashe.org/files/documents/STARS/stars_button_small_norm.png' alt='Register for STARS' /></a></div>
+    
+    <h2>Want to know more about STARS?</h2>
+    <p>
+        For more information on STARS, including <a href='http://www.aashe.org/stars/faqs.php'>FAQ's</a> and the <a href='http://www.aashe.org/files/documents/STARS/STARS_1.0_Early_Release_Technical_Manual_0.pdf'>STARS 1.0 Early Release Technical Manual (pdf)</a>, visit the <a href='http://www.aashe.org/stars/'>STARS website</a>. 
+        If you have questions about STARS, please contact us at <a href='mailto:stars@aashe.org'>stars@aashe.org</a>. 
+    </p>
+    
+    <p style='margin: 10px 50px;'>
+        If you have questions about participating in STARS 1.0, please contact us at <a href="mailto:stars@aashe.org>stars@aashe.org">stars@aashe.org</a>.
+    </p>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'tool/admin/base.html' %}
+
+{% block title %} {{ block.super }} | Articles{% endblock %}
+
+{% block crumbs %} {{ block.super }} &gt; Articles {% endblock %}
+
+{% block tabclass %}class='tab3'{% endblock %}
+
+{% block admin_content %}
+    <h2><a href="http://www.aashe.org/node/add/article" target="_blank">Add New Article</a></h2>
+    <p>Add a new article in any category on the IRC</p>
+    <h2><a href="http://www.aashe.org/admin/content/taxonomy/8" target="_blank">Edit or Add Article Category</a></h2>
+    <p>Edit the Article Categories terms on the IRC which governs the article hierarchy.</p>
+    <b>Notes:</b>
+    <ul>
+      <li>Articles and Article Categories are created and edited on the IRC and
+        pulled into STARS automatically, as needed.
+      <li>STARS uses a manual cache for Article Categories to speed page loads.<br>
+        After adding or editing a category, you must <a href="/tool/admin/pages/syncdb/">syncronize STARS categories with IRC DB</a> to keep the two systems in sync.
+      <li>STARS uses an automated cache for articles to make page loads more efficient.  <br>
+        New articles or edits made to articles on the IRC will not
+        show up in STARS until the cache is refreshed.
+    </ul>
+    {% include 'tool/admin/cms/article_category_consistency_table.html' %}
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'tool/manage/migrate_submissionset.html' %}
+
+{% load logical_rules_tags %}
+{% load content %}
+{% load bootstrap %}
+
+{% block institution_content %}
+
+	<div class='row'>
+		<div class='span5 offset2'>
+			<div class='alert alert-info' style='text-align: center;''>
+				{{ old_submission.date_submitted }}
+				{% if old_submission.rating %}( {{ old_submission.rating }} ){% endif %}
+				<i class='icon-arrow-right icon-white'></i>
+				Current Submission Data
+			</div>
+		</div>
+	</div>
+	<div class='row'>
+		<div class='span9'>
+    		{% display_block_content 'data_migration_warning' user %}
+
+    		<div class='alert alert-warning'>
+    			{% display_block_content 'data_migration_alert' user %}
+			</div>
+
+    		<form method='post' action='.'>
+    			{{ form|bootstrap }}
+    			<div class='form-actions'>
+    				<button type='submit'
+                            class='btn btn-success'
+                            id='migrate-my-data-button'>
+                        Migrate My Data
+                    </button>
+    				<a href="{% url 'tool:manage:migrate-options' institution.slug %}"
+                       class='btn'>
+                        Cancel
+                    </a>
+    			</div>
+    		</form>
+		</div>
+	</div>
+{% endblock %}

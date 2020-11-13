@@ -1,0 +1,65 @@
+{% extends 'tool/manage/share_base.html' %}
+
+{% load l10n %}
+{% load content %}
+{% load logical_rules_tags %}
+
+{% block subtabs %}
+  {% with active_tab="snapshots"%}{{ block.super }}{% endwith %}
+{% endblock %}
+
+
+{% block help_content %}
+  {% display_block_content 'third-party_snapshots' user %}
+{% endblock %}
+
+{% block institution_content %}
+  {% include "download_async_task/modal_container.html" %}
+
+  <h3>Snapshots</h3>
+
+  <table class='table'>
+    <thead>
+      <tr>
+        <th>Date of Snapshot</th>
+        <th>STARS Version</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+    {% if snapshot_list %}
+      {% for ss in snapshot_list %}
+        <tr>
+          <td>
+            {{ ss.date_submitted }}
+          </td>
+          <td>
+            {{ ss.creditset.version }}
+          </td>
+	  {% testrule user_can_view_export user ss %}
+	  <td>
+	    <a class='modal-link'
+               href='{{ ss.id|unlocalize }}/csv/'>
+	      <i class='icon-download-alt'></i> CSV
+	    </a><br/>
+	    <a class='modal-link'
+               href="{{ ss.id|unlocalize }}/pdf/">
+	      <i class='icon-download-alt'></i> PDF
+	    </a>
+	  </td>
+	  {% endtestrule %}
+        </tr>
+      {% endfor %}
+    {% else %}
+      <tr>
+        <td colspan="2">
+          No current snapshots
+        </td>
+      </tr>
+    {% endif %}
+    </tbody>
+  </table>
+
+  {% include "download_async_task/modal_js.html" %}
+
+{% endblock %}

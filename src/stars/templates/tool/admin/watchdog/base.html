@@ -1,0 +1,11 @@
+{% extends 'tool/admin/base.html' %}
+
+{% block title %} {{ block.super }} | Watchdog Log{% endblock %}
+
+{% block crumbs %} {{ block.super }} &gt; <a href='/tool/admin/watchdog/'>Watchdog</a>{% endblock %}
+
+{% block tabclass %}class='tab4'{% endblock %}
+
+{% block admin_content %}
+    {% block watchdog_content %}{% endblock %}
+{% endblock %}

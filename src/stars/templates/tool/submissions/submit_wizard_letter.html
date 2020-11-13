@@ -1,0 +1,31 @@
+{% extends "tool/submissions/submit_wizard.html" %}
+
+{% load content %}
+
+{% block above_submit_form %}
+  {% display_block_content 'submit_for_rating_letter' user %}
+{% endblock %}
+
+{% block submit_form_fields %}
+  {% for field, errors in wizard.form.errors.items %}
+    {% for error in errors %}
+      <p style="color: red">{{ error }}</p>
+    {% endfor %}
+  {% endfor %}
+  <div class="control-group required">
+    <p class="help-block">
+      Please upload a letter from your institution's president,
+      chancellor or other high ranking executive in PDF format.
+    </p>
+    <div class="controls">
+      <label class="btn btn-primary" for="1-presidents_letter">
+        <input name="1-presidents_letter" id="1-presidents_letter"
+               type="file" style="display:none;"
+               onchange="$('#upload-file-info').html($(this).val());">
+        Browse...
+      </label>
+      <span id="upload-file-info"></span>
+      <br>
+    </div>
+  </div>
+{% endblock %}

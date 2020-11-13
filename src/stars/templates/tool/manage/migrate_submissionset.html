@@ -1,0 +1,94 @@
+{% extends 'tool/manage/base.html' %}
+
+{% load content %}
+{% load logical_rules_tags %}
+
+{% block crumbs-tool %}
+	<li>
+		<a href="{% url 'tool:my_submission:submission-summary' institution.slug institution.current_submission.id %}">{{ institution.current_submission.creditset.version }}</a>
+		<span class="divider">/</span>
+	</li>
+	<li>Manage Data</li>
+{% endblock %}
+
+{% block tabs %}
+	{% with active_tab="manage_data" %}{{ block.super }}{% endwith %}
+{% endblock %}
+
+{% block institution_content %}
+
+	<div class='row'>
+		<div class='span8'>
+			{% display_block_content 'migrate_base' user %}
+		</div>
+		<div class='span3'>
+			<h3>Version Upgrade</h3>
+			<p>Upgrade Submission to <strong>{{ latest_creditset }}</strong>.</p>
+			{% if active_submission.creditset != latest_creditset %}
+				{% testrule user_can_migrate_version user institution %}
+					<a href="{% url 'tool:manage:migrate-version' institution.slug active_submission.id %}" class='btn btn-primary'>Upgrade Now</a>
+				{% else %}
+					<div class="alert">Sorry, you do not have permission to upgrade versions. Please contact your STARS liaison to get admin privileges.</div>
+				{% endtestrule %}
+			{% else %}
+				<div class="alert alert-success">
+					You are already working in <strong>{{ latest_creditset }}</strong>.
+				</div>
+			{% endif %}
+		</div>
+		<div class='span5 offset1'>
+			<h3>Data Migration</h3>
+			<p>Pull data from previous Reports.</p>
+			{% testrule user_can_migrate_data user active_submission.institution %}
+				{% if available_submission_list %}
+					<table class='table'>
+						<thead>
+							<tr>
+								<th>Date</th>
+								<th>Type</th>
+								<th>Version</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for sub in available_submission_list %}
+							<tr>
+								<td>
+									{% if sub.date_submitted %}
+										{{ sub.date_submitted }}
+									{% else %}
+										{{ sub.date_registered }}
+									{% endif %}
+								</td>
+								<td>
+									{% if sub.status == 'f' %}
+										Snapshot
+									{% else %}{% if sub.status == "r" %}
+										Report
+									{% else %}
+										Unpublished
+									{% endif %}{% endif %}
+								</td>
+								<td>
+									{{ sub.creditset }}
+								</td>
+								<td>
+									<a href="{% url 'tool:manage:migrate-data' institution.slug sub.id %}" class='btn btn-mini'>
+										<i class='icon-share-alt'></i >Migrate
+                                    </a>
+								</td>
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				{% else %}
+					<div class="alert">
+						No currently available submissions.
+					</div>
+				{% endif %}
+			{% else %}
+				<div class="alert">Sorry, you do not have permission to migrate data. Please contact your STARS liaison to get admin privileges.
+			{% endtestrule %}
+		</div>
+	</div>
+{% endblock %}

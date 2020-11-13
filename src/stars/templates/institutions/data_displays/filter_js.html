@@ -1,0 +1,11 @@
+<script type='text/javascript'>
+	choicesLookup = {
+	{% for f in available_filters %}
+		{{ f.filter_key }}: {
+			{% for i in f.filter_choices %}
+				'{{ i.0 }}': '{{ i.1|safe }}'{% if not forloop.last %},{% endif %}
+			{% endfor %}
+		}{% if not forloop.last %},{% endif %}
+	{% endfor %}
+	}
+</script>

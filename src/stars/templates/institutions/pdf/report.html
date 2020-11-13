@@ -1,0 +1,446 @@
+{% autoescape off %}
+{% load submit_tags %}
+{% load report_tags %}
+{% load staticfiles %}
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>{{ ss.institution.name }} STARS Report</title>
+
+  <style type='text/css'>
+    @page {
+      margin: 1cm;
+      margin-bottom: 1cm;
+      size: letter;
+
+        {
+        % if preview %
+      }
+
+      @frame header {
+        -pdf-frame-content: headerContent;
+        top: .5cm;
+        margin-left: 1cm;
+        margin-right: 1cm;
+        height: 1.75cm;
+      }
+
+        {
+        % endif %
+      }
+
+      @frame footer {
+        -pdf-frame-content: footerContent;
+        bottom: 0cm;
+        margin-left: 1cm;
+        margin-right: 1cm;
+        height: 1.25cm;
+      }
+    }
+
+    table.tabular {
+      border-collapse: collapse;
+      border: 1px solid #ffffff;
+      text-align: left;
+    }
+
+    table.tabular tr {
+      vertical-align: middle;
+    }
+
+    table.tabular td,
+    table.tabular th {
+      vertical-align: middle;
+      padding: 10px 10px 4px 10px;
+    }
+
+    table.tabular td {
+      background-color: #eeeeee;
+    }
+
+    table.tabular th {
+      background-color: #dddddd;
+    }
+
+    .seal {
+      width: 5cm;
+      height: 5cm;
+    }
+  </style>
+
+  <link href="{{ STATIC_ROOT }}/css/pdf.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+  <div class='seals'>
+    {% if not preview %}
+    <img class="seal" src='{{ rating_image }}' alt='{{ ss.rating }}' />
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    {% endif %}
+    {% if ss.institution.charter_participant %}
+    <img class="seal" src="{{ STATIC_ROOT }}/images/seals/Stars_Seal_Charter_Particip_RGB_300.png"
+      alt="Charter Participant" />
+    {% else %}
+    <img class="seal" src="{{ STATIC_ROOT }}/images/seals/Stars_Seal_Participant_RGB_300.png" alt="Participant" />
+    {% endif %}
+  </div>
+  <h1>{{ ss.institution.name }}<br /><i>STARS REPORT</i></h1>
+
+  <table class='submissionSummary vertical'>
+    <tr>
+      <th>Date Submitted:</th>
+      <td>
+        {% if preview %}
+        <span style='color: red;'>Preview</span>
+        {% else %}
+        {{ ss.date_submitted }}
+        {% endif %}
+      </td>
+    </tr>
+    <tr>
+      <th>
+        {% if preview %}Provisional{% endif %}
+        Rating:
+      </th>
+      <td>
+        {% if rating.publish_score %}
+        {{ rating }}
+        {% else %}
+        Reporter
+        {% endif %}
+      </td>
+    </tr>
+    <tr>
+      <th>
+        {% if preview %}Provisional{% endif %}
+        Score:
+      </th>
+      <td>
+        {% if rating.publish_score %}
+        {{ ss.get_STARS_score|floatformat:2 }}
+        {% else %}
+        Reporter
+        {% endif %}
+      </td>
+    </tr>
+    <tr>
+      <th>Online Report:</th>
+      <td><a href='http://reports.aashe.org{{ ss.get_scorecard_url }}'>{{ ss.institution }}</a></td>
+    </tr>
+    <tr>
+      <th>STARS Version:</th>
+      <td>{{ ss.creditset.version }}</td>
+    </tr>
+    {% if preview %}
+    <tr>
+      <td colspan='2' style='text-align: center;'>
+        <br /><br />This is a preview of the final STARS Report.<br /><br />
+        The final version of the report will be available upon
+        publication, at which time the final rating will be
+        awarded and the data contained in the report will become
+        publicly available on the STARS website.<br />
+      </td>
+      {% endif %}
+  </table>
+
+  <h2>Wait, Wait! Don’t Print Me!</h2>
+  <p>
+    To reduce paper consumption, this document has been designed to
+    be browsed quickly and easily on computer screens using Adobe
+    Reader. The following special features have been embedded:</p>
+  <b>Moving Around in the Document</b>
+  <ul>
+    {% if rating.publish_score %}
+    <li>
+      <b>Summary of Results Links</b> - Headings in the Summary of
+      Results are links, which can be clicked to take you directly
+      to the referenced page.
+    </li>
+    {% endif %}
+    <li>
+      <b>Bookmarks</b> - You can jump to segments of the document
+      quickly and easily using the Bookmarks provided in the
+      document. To access the Bookmarks, click on the "Bookmarks"
+      tab on the left side of the Adobe Reader window – it's the
+      icon that looks like a sheet of paper with a blue ribbon
+      hanging over the upper left corner.
+    </li>
+    <li>
+      <b>Pages</b> - You can quickly go to any page listed in the
+      Table of Contents simply by typing the page number into the
+      box that displays the current page number in the Adobe Reader
+      window, and pressing "Return/Enter."
+    </li>
+  </ul>
+  <br />
+  <b>Searching</b>
+  <ul>
+    <li>
+      Adobe Reader's search tool allows you to see the results of
+      your search in a menu format, similar to web search
+      engines. Using the menu, you can choose to go directly to the
+      occurrence of the search term that is most relevant to your
+      interest. To access this search tool, press Shift+Ctrl+F, or
+      choose "Search" from the "Edit" menu.
+    </li>
+  </ul>
+  <p>
+    If these features don’t meet your on-screen reading needs,
+    please consider printing only the sections you need, printing
+    double-sided, and using recycled-content paper or paper that has
+    already been printed on one side.
+  </p>
+
+  <h2>About STARS</h2>
+  <p>
+    The Sustainability Tracking, Assessment &amp; Rating System
+    (STARS<sup>&reg;</sup>) is a transparent, self-reporting framework
+    for colleges and universities to gauge relative progress toward
+    sustainability. STARS was developed by
+    <a href="http://www.aashe.org" target="_self">AASHE</a> with broad
+    participation from the higher education community.
+  </p>
+  <p>
+    STARS is designed to:
+  </p>
+  <ul>
+    <li>
+      Provide a framework for understanding sustainability in all
+      sectors of higher education.
+    </li>
+    <li>
+      Enable meaningful comparisons over time and across
+      institutions using a common set of measurements developed with
+      broad participation from the campus sustainability community.
+    </li>
+    <li>
+      Create incentives for continual improvement toward
+      sustainability.
+    </li>
+    <li>
+      Facilitate information sharing about higher education
+      sustainability practices and performance.
+    </li>
+    <li>
+      Build a stronger, more diverse campus sustainability
+      community.
+    </li>
+  </ul>
+  <p>
+    STARS is intended to engage and recognize the full spectrum of
+    colleges and universities—from community colleges to research
+    universities, and from institutions just starting their
+    sustainability programs to long-time campus sustainability
+    leaders. STARS encompasses long-term sustainability goals for
+    already high-achieving institutions as well as entry points of
+    recognition for institutions that are taking first steps toward
+    sustainability.
+  </p>
+  <h3 class="noBreak">About AASHE</h3>
+  <p>
+    STARS is a program of AASHE, the
+    <a href="http://www.aashe.org" target="_self">
+      Association for the Advancement of Sustainability in Higher Education</a>.
+    AASHE is a
+    <a href="http://www.aashe.org/membership/description.php" target="_self">
+      member-driven organization</a>
+    with a mission to empower higher education to lead the sustainability
+    transformation.
+    <a href="http://www.aashe.org/about/about.php" target="_self">
+      Learn more about AASHE</a>.
+  </p>
+
+  {% include 'institutions/pdf/report_toc.html' %}
+
+  <p class='disclaimer'>
+    The information presented in this submission is self-reported
+    and has not been verified by AASHE or a third party. If you
+    believe any of this information is erroneous, please see the
+    <a href='http://stars.aashe.org/pages/faqs/4105/?root_category=about#Erroneous_Data'>
+      process for inquiring</a>
+    about the information reported by an institution.
+  </p>
+
+  {% for cat in ss.categorysubmission_set.all %}
+  {% if cat.category.include_in_report %}
+  <h2 class='category'>
+    <a name='cat{{ cat.category.id }}'></a>
+    {{ cat }}
+  </h2>
+  {% if rating.publish_score %}
+  {% if ss.creditset.has_category_scoring_feature %}
+
+  <table class='scoreTable vertical'>
+    <tr>
+      <th>
+        {% if preview %}Provisional{% endif %}
+        Score
+      </th>
+      <td>
+        {% if cat.category.title != 'Innovation' %}
+        {{ cat.get_STARS_score|floatformat:2 }}%
+        {% else %}
+        {{ cat.get_STARS_score|floatformat:2 }}
+        {% endif %}
+      </td>
+    </tr>
+  </table>
+
+  {% endif %}
+  {% endif %}
+  {% for sub in cat.subcategorysubmission_set.all %}
+  <h3 class='{% if forloop.counter0 == 0 %}noBreak{% endif %}'>
+    <a name='sub{{ sub.subcategory.id }}'></a>
+    {{ sub }}
+  </h3>
+  {% if rating.publish_score %}
+
+  <table class='scoreTable vertical'>
+    <tr>
+      <th>Points Claimed</th>
+      <td>
+        {{ sub.get_claimed_points|floatformat:2 }}
+      </td>
+    </tr>
+    <tr>
+      <th>Points Available</th>
+      <td>
+        {{ sub.get_adjusted_available_points|floatformat:2 }}
+      </td>
+    </tr>
+  </table>
+  {% endif %}
+  <p>{{ sub.subcategory.description }}</p>
+  {% if sub.description %}
+  <hr />
+  <h5>From the institution:</h5>
+  {{ sub.description|urlizetrunc:85|linebreaks }}
+  {% endif %}
+  <table class='creditList'>
+    <tr>
+      <th style='text-align: left;'>Credit</th>
+      {% if rating.publish_score %}<th style='text-align: right;'>Points</th>{% endif %}
+    </tr>
+    {% for credit_submission in sub.creditusersubmission_set.all %}
+    {# Skip opt-ed out opt-in credits. #}
+    {% if credit_submission.credit.is_opt_in and credit_submission.submission_status == "na" %}
+    {# Do nothing. #}
+    {% else %}
+    <tr>
+      <td>
+        <a href='#credit{{ credit_submission.credit.id }}'>{{ credit_submission }}</a>
+      </td>
+      {% if rating.publish_score %}
+      <td align='right'>
+        {% if credit_submission.submission_status == 'na' %}
+        Not Applicable
+        {% else %}
+        {{ credit_submission.assessed_points|floatformat:2 }} /
+        {% format_available_points credit_submission %}
+        {% endif %}
+      </td>
+      {% endif %}
+    </tr>
+    {% endif %}
+    {% endfor %}
+  </table>
+  {% for credit_submission in sub.creditusersubmission_set.all %}
+  {# Skip opt-ed out opt-in credits. #}
+  {% if credit_submission.credit.is_opt_in and credit_submission.submission_status == "na" %}
+  {# Do nothing. #}
+  {% else %}
+  <h4>
+    <a name='credit{{ credit_submission.credit.id }}'></a>
+    {{ credit_submission }}
+  </h4>
+  {% if rating.publish_score or credit_submission.responsible_party %}
+  <hr />
+  <table class='scoreTable horizontal'>
+    <tr>
+      {% if rating.publish_score and credit_submission.submission_status != 'na' %}
+      <th>
+        {% if preview %}Provisional{% endif %}
+        Score
+      </th>
+      {% endif %}
+      <th>Responsible Party</th>
+    </tr>
+    <tr>
+      {% if rating.publish_score and credit_submission.submission_status != 'na' %}
+      <td>
+        {{ credit_submission.assessed_points|floatformat:2 }} /
+        {% format_available_points credit_submission %}
+      </td>
+      {% endif %}
+      <td>
+        {% if credit_submission.responsible_party %}
+        <b>
+          {{ credit_submission.responsible_party.first_name }}
+          {{ credit_submission.responsible_party.last_name }}
+        </b>
+        <br />
+        {{ credit_submission.responsible_party.title }}<br />
+        {{ credit_submission.responsible_party.department }}
+        {% endif %}
+      </td>
+    </tr>
+  </table>
+  <hr />
+  {% endif %}
+  {% if credit_submission.credit.type == 't1' %}
+  <h5>Criteria</h5>
+  {{ credit_submission.credit.criteria }}
+  <hr />
+  {% endif %}
+  {% if credit_submission.submission_status == 'na' and not credit_submission.is_opt_in %}
+  <p class='hideReportingFields'>
+    This credit was marked as <b>Not Applicable</b> for the following reason:<br /><br />
+    <i>{{ credit_submission.applicability_reason.reason }}</i>
+  </p>
+  {% else %}{% if credit_submission.submission_status == 'np' or credit_submission.submission_status == 'ns' %}
+  <p class='hideReportingFields'>
+    This credit was marked as <b>Not Pursuing</b> so Reporting Fields will not be displayed.
+  </p>
+  {% else %}
+  <div style="text-align: right;font-size: .9em;padding:10px;">
+    "<span class='green bold'>---</span>"
+    <i>indicates that no data was submitted for this field</i>
+  </div>
+  {% block tab_content %}
+  <br />
+  {% include "institutions/pdf/field_list.html" %}
+  {% endblock %}
+  {% endif %}{% endif %}
+  {% if credit_submission.submission_notes %}
+  <div class='note'>
+    <b>Data source(s) and notes about the submission:</b><br />
+    {{ credit_submission.submission_notes|urlize|linebreaks|wraplinks:95 }}
+  </div>
+  {% endif %}
+  {% endif %}
+  {% endfor %}
+  {% endfor %}
+  {% endif %}
+  {% endfor %}
+  <div id="footerContent">
+    <table style='margin: 0px; font-size: 1em; border:0px; padding: 0px;'>
+      <tr>
+        <td align='left'>
+          <a href='http://stars.aashe.org'>stars.aashe.org</a>
+        </td>
+        <td align='right'>
+          <a href='http://reports.aashe.org{{ ss.get_scorecard_url }}'>{{ ss.institution }}</a>
+          | STARS Report | <pdf:pagenumber>
+        </td>
+      </tr>
+    </table>
+  </div>
+  {% if preview %}
+  <div id='headerContent'>PREVIEW</div>
+  {% endif %}
+</body>
+
+</html>
+{% endautoescape %}

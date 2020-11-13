@@ -1,0 +1,19 @@
+{% extends "tool/credit_editor/delete_object.html" %}
+
+{% block submissions_warning %}
+    {% if object.num_submissions %}
+        <div class='warning'>
+            There are {{ object.num_submissions }} N/A submissions
+            citing this {{ object_class }}.
+            <br/>
+            Deleting this {{ object_class }} will affect
+            <strong>ALL</strong> of these submissions!
+            <ul>
+                <li> The {{ object_class }} will be removed from
+                     each submission. </li>
+                <li> The status of each submission will be reset
+                     to "in progress". </li>
+            </ul>
+        </div>
+    {% endif %}
+{% endblock %}

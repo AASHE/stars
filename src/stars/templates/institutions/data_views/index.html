@@ -1,0 +1,45 @@
+{% extends 'institutions/base.html' %}
+
+{% block crumbs %}
+	{{ block.super }} &gt;
+	<a href='/institutions/data-views/'>Data Views</a>
+{% endblock %}
+
+{% block content %}
+	<div class='inner20'>
+		<h1>View Examples</h1>
+		<ol>
+			<li>
+				<a href='/institutions/data-views/dashboard/'>Dashboard</a>
+			</li>
+			<li>
+				<a href='/institutions/data-views/stats/'>Aggregated STARS Category Scores</a>
+			</li>
+			<li>
+				<a href='/institutions/data-views/score/'>Score Filter</a>
+			</li>
+			<li>
+				<a href='/institutions/data-views/content/'>Content Filter</a>
+			</li>
+		</ol>
+		
+		<b>TODO:</b>
+		<ul>
+		
+			<li>Add links to IRC</li>
+			<li>Link back to TM</li>
+			<li>Include Variances around Averages</li>
+			<li>Include Purpose for each view</li>
+			<li>What about Institutional Members</li>
+			<li>Distinguish between STARS Participants and Submitters</li>
+			<li>Press Access?</li>
+			<li>What's the process for adding more content to Dashboard? Who do we ask?</li>
+			<li>Add "scores" to columns in filtered tables</li>
+			<li>Use descriptions to link to other Data Views</li>
+			<li>Include reporters in Content View?</li>
+			<li>Label credit and reporting field in Content view filter</li>
+			<li>How do columns map to table below?</li>
+		
+		</ul>
+	</div>
+{% endblock %}

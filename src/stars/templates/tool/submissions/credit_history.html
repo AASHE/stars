@@ -1,0 +1,207 @@
+{% extends 'tool/submissions/credit_base.html' %}
+
+{% load bootstrap %}
+
+{% load logical_rules_tags %}
+
+{% block credit_tabs %}
+    {% with active='history' %}
+        {{ block.super }}
+    {% endwith %}
+{% endblock %}
+
+{% block tab_content %}
+    <div class='creditContent'>
+        <h2>History</h2>
+        {% for doc_field, doc_field_sub_histories in history.items %}
+          {% if doc_field_sub_histories %}
+            <div class="documentationField">
+                <div class="control-group">
+                    <label class="control-label">
+                        <strong>
+                            {{ doc_field }}
+                        </strong>
+                    </label>
+                    {% for doc_field_history in doc_field_sub_histories %}
+                        <table class="controls table">
+                            <tr>
+                                <td class="span1">
+                                    v{{ doc_field_history.doc_field_sub.get_creditset.version }}
+                                </td>
+                                <td class="span4">
+                                  {{ doc_field_history.historical_significance }}
+                                </td>
+                                <td>
+                                  {{ doc_field_history.doc_field_sub.get_value }}
+                                </td>
+                            </tr>
+                        </table>
+                    {% endfor %}
+                </div>
+            </div>
+          {% endif %}
+        {% empty %}
+          <h3>
+            There is no history for this credit.
+          </h3>
+        {% endfor %}
+
+        {% if history %}
+          <div class="btn-group">
+            Download all history:
+            {% for submissionset in exportable_submissionsets %}
+              {% if institution_has_full_access %}
+                {% testrule user_can_view_export user submissionset %}
+                  <a data-toggle="dropdown" href="#">
+                    v.{{ submissionset.creditset.version }}
+                    <span class="caret"></span>
+                  </a>
+                  <ul class="dropdown-menu">
+                  <li>
+                      <a class='modal-link modal-download-link'
+                         href="{{ submissionset.get_scorecard_url }}pdf/">
+                        PDF
+                      </a>
+                    </li>
+                  <li>
+                      <a class='modal-link modal-download-link'
+                         href='{{ submissionset.get_scorecard_url}}excel/'>
+                          Excel
+                      </a>
+                    </li>
+                  </ul>
+                {% else %}
+                  {% comment %}
+                    user doesn't have sufficient permissions
+                  {% endcomment %}
+                  <a class='modal-link'
+                     href='#userHasInsufficientPermissions'
+                     data-toggle='modal'>
+                    v.{{ submissionset.creditset.version }}
+                    <span class="caret"></span>
+                  </a>
+                {% endtestrule %}
+              {% else %}
+                {% comment %}
+                  institution doesn't have full access
+                {% endcomment %}
+                <a class='modal-link'
+                   href='#institutionDoesNotHaveFullAccess'
+                   data-toggle='modal'>
+                  v.{{ submissionset.creditset.version }}
+                  <span class="caret"></span>
+                </a>
+              {% endif %} {% comment %} inst has full access {% endcomment %}
+            {% endfor %} {% comment %} for each submissionset {% endcomment %}
+          </div>
+        {% endif %}
+    </div>
+
+    {% comment %}
+      Links to download SubmissionSet exports:
+    {% endcomment %}
+    <div id="userHasInsufficientPermissions"
+         class="modal hide fade"
+         aria-hidden="true">
+      <div class="modal-header">
+        <button type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-hidden="true">
+          &times;
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>
+          You don't have sufficient priveleges to view exported submissions.
+        </p>
+        <p>
+          Contact {{ institution.get_liaison_name }}, the STARS
+          administrator for {{ institution.name }}, to upgrade your
+          priveleges.
+        </p>
+        {% if institution.get_liaison_email %}
+          <p>
+            You can email {{ institution.get_liaison_name }}
+            at <mailto="{{ institution.get_liaison_email }}">
+            {{ institution.get_liaison_email }}</mailto>.
+          </p>
+        {% endif %}
+      </div>
+      <div class="modal-footer">
+        <button class="btn"
+                data-dismiss="modal"
+                aria-hidden="true">
+          Close
+        </button>
+      </div>
+    </div>
+
+    <div id="institutionDoesNotHaveFullAccess"
+         class="modal hide fade"
+         aria-hidden="true">
+      <div class="modal-header">
+        <button type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-hidden="true">
+          &times;
+        </button>
+        <h3>
+          Full Access Required
+        </h3>
+      </div>
+      <div class="modal-body">
+        <p>
+          Only institutions with Full Access can export submissions.
+        </p>
+        <p>
+          You can upgrade to Full Access by purchasing a STARS
+          subscription from your
+          <a href="{% url 'tool:tool-summary' institution.slug %}">
+            My Summary</a>
+          page.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn"
+                data-dismiss="modal"
+                aria-hidden="true">
+          Close
+        </button>
+      </div>
+    </div>
+
+    {% comment %}
+      downloadModal below lifted from submission_summary_table.html
+    {% endcomment %}
+    <div id="downloadModal"
+         class="modal hide fade"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="myModalLabel"
+         aria-hidden="true">
+      <div class="modal-body">
+        <p>...</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn"
+                data-dismiss="modal"
+                aria-hidden="true">Close</button>
+      </div>
+    </div>
+
+    {% comment %}
+      script below lifted from submission_summary_table.html
+    {% endcomment %}
+    <script>
+      $(function() {
+        $(".modal-download-link").click(function(event) {
+          event.preventDefault()
+          $('#downloadModal').removeData("modal")
+          $('#downloadModal').modal({remote: $(this).attr("href")})
+        })
+      })
+    </script>
+
+{% endblock %}

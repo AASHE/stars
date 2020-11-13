@@ -1,0 +1,33 @@
+{% extends 'tool/base.html' %}
+
+{% load bootstrap %}
+
+{% block content %}
+  <div class="row">
+    <span class="span9" style="padding-left: 20px">
+      <h2>Update Credit Submission Status</h2>
+      <div>
+        <form enctype="multipart/form-data" method='post' action='.'>
+          {% csrf_token %}
+          {{ form }}
+          <input type="hidden" name="next" value="{{ next }}" />
+          <input type="hidden" name="original_submission_status"
+                 value="{{ object.submission_status }}" />
+          <div class="form-actions" style="padding-left: -10px">
+            <button
+              type="submit"
+              id="submit_button"
+              class="btn btn-primary"
+              onclick="document.body.style.cursor = 'wait';">
+              Save
+            </button>
+            <button onclick="window.history.back();"
+                    class="btn btn-default">
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </span>
+  </div>
+{% endblock %}

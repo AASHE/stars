@@ -1,0 +1,139 @@
+{% extends 'institutions/data_views/index.html' %}
+
+{% block title %}Compare Content{% endblock %}
+
+{% block content %}
+	<div class='inner20'>
+		<h1>Filter and Compare Data</h1>
+		<div style='margin: 15px 100px'>
+			Compare submission values for a specific reporting field from any credit.
+			<p>
+			In <span style='background-color: #ffa;'>YELLOW</span> below: participants can include their own institution in the list
+			</p>
+		</div>
+		<div class='greyBox'>
+			Display results for institutions by filtering on the following characteristics:<br/><br/>
+			<table class='filterList'>
+				<tr>
+					<th></th>
+					<th>Type of Characteristic</th>
+					<th>Specific Characteristic</th>
+					<th></th>
+				</tr>
+				<tr>
+					<td style="text-align: center;">
+						<a href='#' title="Remove"><img src='/media/static/images/delete_grey_x.png' alt='[x]' /></a>
+					</td>
+					<td>Carnegie Classification</td>
+					<td>Research</td>
+					<td>(3 found)</td>
+				</tr>
+				<tr>
+					<td style="text-align: center;">
+						<select>
+							<option>AND</option>
+							<option>OR</option>
+						</select>
+					</td>
+					<td>
+						<select>
+							<option>-----</option>
+							<option>Sports Division</option>
+							<option>Region</option>
+							<option>STARS Rating</option>
+							<option>Enrollment</option>
+						</select>
+					</td>
+					<td>
+						<select>
+							<option>-----</option>
+							<option>Bronze</option>
+							<option>Silver</option>
+							<option>Gold</option>
+							<option>Platinum</option>
+						</select>
+					</td>
+					<td><button>Add Characteristic</button></td>
+				</tr><tr style='padding: 0px 20px;background-color:#ffa;'>
+					<td colspan='4' style='text-align: center'>
+						<input type='checkbox' /> Include my institution below
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div style='text-align: center'>
+			<img src='/media/static/images/arrow_down.png' />
+		</div>
+		<div class='greyBox'>
+			Select Reporting Field:<br/>
+			<div style='text-align: center;'>
+			{% include "credits/select_dom.html" %}
+			<select><option>Select Reporting Field</option></select>
+			<button>Go</button>
+			</div>
+		</div>
+		
+		<div style='text-align: center'>
+			<img src='/media/static/images/arrow_down.png' />
+		</div>
+		<table id="institution_list" class='greyTable'>
+        	<tr>
+        		<th style='text-align: left;'>
+        			Institution
+        		</th>
+        		<th>
+        			Credit Score
+        			<img src='/media/static/images/sort_asc.png' alt="/\" />
+        		</th>
+        		<th>
+        			The website URL for the campaign
+        		</th>
+        	</tr>
+        	<tr>
+        		<td style='text-align: left;'><a href='#'>University of Colorado</a></td>
+        		<td>3</td>
+        		<td><a href='#'>http://www.colorado.edu/er2.html</a></td>
+        	</tr>
+        	<tr class='odd'>
+        		<td style='text-align: left;'><a href='#'>Pacific Lutheran</a></td>
+        		<td>1.2</td>
+        		<td><a href='#'>http://www.plu.edu/er2.html</a></td>
+        	</tr>
+        	<tr>
+        		<td style='text-align: left;'><a href='#'>Royal Roads University</a></td>
+        		<td>1</td>
+        		<td><a href='#'>http://www.rru.edu/er2.html</a></td>
+        	</tr>
+        	<tr class='odd'>
+        		<td style='text-align: left;'><a href='#'>Institution</a></td>
+        		<td>1</td>
+        		<td><a href='#'>http://www.fake.edu/er2.html</a></td>
+        	</tr>
+        	<tr>
+        		<td style='text-align: left;'><a href='#'>Institution</a></td>
+        		<td>1</td>
+        		<td><a href='#'>http://www.fake.edu/er2.html</a></td>
+        	</tr>
+        	<tr class='odd'>
+        		<td style='text-align: left;'><a href='#'>Institution</a></td>
+        		<td>1</td>
+        		<td><a href='#'>http://www.fake.edu/er2.html</a></td>
+        	</tr>
+        	<tr>
+        		<td style='text-align: left;'><a href='#'>Institution</a></td>
+        		<td>1</td>
+        		<td><a href='#'>http://www.fake.edu/er2.html</a></td>
+        	</tr>
+        	<tr class='odd'>
+        		<td style='text-align: left;'><a href='#'>Institution</a></td>
+        		<td>1</td>
+        		<td><a href='#'>http://www.fake.edu/er2.html</a></td>
+        	</tr>
+        	<tr>
+        		<td style='text-align: left;'><a href='#'>Institution</a></td>
+        		<td>1</td>
+        		<td><a href='#'>http://www.fake.edu/er2.html</a></td>
+        	</tr>
+        </table>
+	</div>
+{% endblock %}

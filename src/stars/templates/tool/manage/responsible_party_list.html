@@ -1,0 +1,54 @@
+{% extends 'tool/manage/base.html' %}
+
+{% block crumbs-tool %}<li>Responsible Parties</li>{% endblock %}
+
+{% block tabs %}
+    {% with active_tab="rps" %}{{ block.super }}{% endwith %}
+{% endblock %}
+
+{% block institution_content %}
+    {% if not object_list %}
+        <p>
+          No responsible parties yet.
+          <a href="{% url 'tool:manage:responsible-party-create' institution.slug %}">
+            Add one</a>.
+        </p>
+    {% else %}
+        <table class='table'>
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Title</th>
+                <th>Email</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for rp in object_list %}
+                <tr class='{% cycle 'even' 'odd' %}'>
+                    <td>{{ rp.first_name }} {{ rp.last_name }}</td>
+                    <td>{{ rp.title }}</td>
+                    <td><a href='mailto:{{ rp.email }}'>{{ rp.email }}</a></td>
+                    <td class='buttonColumn'>
+                        <a href="{% url 'tool:manage:responsible-party-edit' institution.slug rp.id %}">
+                            <i class='icon-pencil'></i>
+                        </a>
+                        <a href="{% url 'tool:manage:responsible-party-delete' institution.slug rp.id %}">
+                            <i class='icon-trash'></i>
+                        </a>
+
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <a href="{% url 'tool:manage:responsible-party-create' institution.slug %}"
+           class='btn btn-primary'>
+            Add a Responsible Party
+        </a>
+    {% endif %}
+{% endblock %}
+
+{% block help_content %}
+    {% load content %}
+    {% display_block_content "responsible_parties" user %}
+{% endblock %}

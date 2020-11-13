@@ -1,0 +1,84 @@
+{% extends "tool/credit_editor/credits/formula.html" %}
+
+{% block crumbs %}
+    {% load ce_tags %}
+    {% show_editor_crumbs test_case %}
+{% endblock %}
+
+{% block header %}{{ credit.get_identifier }}: Edit Formula Test Case{% endblock %}
+
+{% block tab_content %}
+    <table border='0' width='98%'>
+        <tr>
+            <td align='left'>
+                <a href='{{ credit.get_formula_url }}'>&lt; back to Formula Editor</a>
+            </td>
+            {% block add_test %}
+            <td align='right'>
+                <a href='{{ test_case.get_add_url }}'>add another test case &gt;</a>
+            </td>
+            {% endblock %}
+        </tr>
+    </table>
+
+    {% block test_result %}
+    <h3>Test {% if test_case.result %}<font color="green">Passed{% else %}<font color="red">Failed{% endif %}</font>:</h3>
+    <table>
+    <tr>
+        <td>Expected: <b>{{test_case.expected_value}}</b></td>
+        <td>Calculated: <b>{{test_case.computed_value}}</b></td>
+        <td>{% if test_case.result %}
+                <img src='/media/static/images/accept.png' title='Test Passed' alt='pass'>
+            {% else %}
+                <img src='/media/static/images/cross.png' title='Test Failed' alt='fail'>
+            {% endif %}
+        </td>
+    </tr>
+    </table>
+    
+    <hr>
+    {% endblock %}
+
+    {% include "tool/credit_editor/credits/formula_legend.html" %}
+
+    <table border='0' width='100%'>
+        <tr>
+            <td align='left' width='90px'>
+                <h3> Formula: </h3>
+            </td>
+            <td  align='left'>
+			    <div id='dfAppearance'>
+			      <pre>{{ credit.formula }}</pre>
+			    </div>    
+			</td>
+		</tr>
+	</table>
+    
+    <hr>
+    
+    {% block test_case %}
+    <table border='0' width='100%'>
+        <tr>
+            <td align='left' width='90px'>
+                <h3> Test Case: </h3>
+            </td>
+            <td  align='left'>
+                <div id='dfAppearance'>
+                  <pre>{{ test_case }}</pre>
+                </div>    
+            </td>
+        </tr>
+    </table>
+     {% endblock %}
+    <form action='.' method='POST' enctype="multipart/form-data">
+    	{% with 1 as show_identifier %}
+        	{% include "tool/submissions/submission_fields_form.html" %}
+        {% endwith %}
+        <hr>
+        {% with submission_form.expected_value as field %}
+          {% include "tool/form_field.html" %}
+        {% endwith %}
+        <input type='submit' value='submit' />
+        <button type='button' onclick="confirm_action('Are you sure?', '{{  test_case.get_delete_url  }}')">delete</button>
+    </form>
+{% endblock %}

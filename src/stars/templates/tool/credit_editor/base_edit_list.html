@@ -1,0 +1,25 @@
+{% if object_edit_list %}
+    {% for obj in object_edit_list %}
+        <tr>
+            {% block display_object %} {% endblock %}
+            <td class='buttonColumn'>
+                {% block edit_button %}
+                    <a href='{{ obj.get_edit_url }}'>
+                        <img src='/media/static/images/page_edit.png'
+                             alt='edit'
+                             title='edit' />
+                    </a>
+                {% endblock %}
+                {% block delete_button %}
+                    <a href='{{ obj.get_delete_url }}'>
+                        <img src='/media/static/images/delete.png'
+                             alt='delete'
+                             title='delete' />
+                    </a>
+                {% endblock %}
+                {% block additional_edit_options %} {% endblock %}
+            </td>
+        </tr>
+    {% endfor %}
+    {% block last_row %} {% endblock %}
+{% endif %}

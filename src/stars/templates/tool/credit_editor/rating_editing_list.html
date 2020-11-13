@@ -1,0 +1,49 @@
+{% comment %} Built to be generic - could split out base_editing_list for re-use? {% endcomment %} 
+ <table id='object_editing_table' class='list'>
+   <tbody>
+    {% block field_headings %}
+      <tr>
+        <th>Rating</th>
+        <th>Minimal Score to achieve rating</th>
+        <th> </th>
+      </tr>
+    {% endblock %}
+    {% for row in object_editing_list %}
+    <tr class='row'>
+        {% block display_row %} 
+            {% for field in row.form %}
+              <td>
+                {{ field.errors }}    
+                {{ field }}
+              </td>
+            {% endfor %}
+         {% endblock %}
+        <td class='buttonColumn'>
+            {% block edit_buttons %} 
+            <a href='{{ row.obj.get_delete_url }}'>
+                <img src='/media/static/images/delete.png' alt='delete' title='delete' />
+            </a>
+            {% endblock %}
+        </td>
+    </tr>
+    {% endfor %}
+    
+    <tr class='new'>
+        {% block display_new_row %} 
+            {% for field in new_object_form %}
+              <td>
+                {{ field }}
+              </td>
+            {% endfor %}
+            <td class='buttonColumn'>new</td>
+         {% endblock %}
+    </tr>
+  </tbody>
+ </table>
+    
+ <div>
+     <button type='submit' id='save_ordering'>Save</button>
+     {% block add_button %}
+       <button onclick='addObjectRow();' type='button'>Add Rating</button>
+     {% endblock %}
+ </div>       

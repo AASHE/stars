@@ -1,0 +1,148 @@
+{% block extra_head %}
+{% load compress %}
+{% compress js %}
+  <script type="text/javascript">
+    function addThousandsCommas(text_amount) {
+        var number_parts;
+        var integer_part;
+        var decimal_part = "";
+
+        number_parts = text_amount.split('.');
+
+        integer_part = number_parts[0];
+
+        if (number_parts.length > 1) {
+            decimal_part = number_parts[1];
+        }
+
+        formatted_number = integer_part.replace(/(\d)(?=(\d{3})+$)/g,
+                                                "$1,");
+
+        if (decimal_part) {
+            formatted_number += "." + decimal_part;
+        }
+
+        return formatted_number;
+    }
+    function decimalToDollarString(decimal) {
+        dollar_string = "$" + addThousandsCommas(decimal.toString());
+        return dollar_string;
+    }
+    function updateAmountDue(amt) {
+        fixed_amt = amt.toFixed(2);
+        $("#amount-due").contents().text(decimalToDollarString(fixed_amt));
+    }
+    function applyFormFieldErrorByID(field_id, error) {
+        var input = $("#" + field_id);
+        var container = input.closest(".control-group");
+        var error_msg = $("<span/>").addClass(
+            "help-inline error").text(error);
+        container.addClass("error");
+        error_msg.insertAfter(input);
+    }
+    function applyFormFieldErrorByName(fieldname, error) {
+        applyFormFieldErrorById("#id_" + fieldname);
+    }
+    function djangoMessage(message, level) {
+        var error_div = $("<div>");
+        error_div.addClass("alert fade in alert-" + level);
+        error_div.text(message);
+
+        var close_button = $("<button>");
+        close_button.addClass("close");
+        close_button.prop("title", "Close");
+        close_button.prop("href", "#");
+        close_button.attr("data-dismiss", "alert");
+        close_button.text("x");  // should be &times; - but how?
+
+        error_div.append(close_button);
+        // here's some pretty fragile placement . . .
+        $(".row.header").after(error_div);
+    }
+    function clearFieldError(element) {
+        var container = element.closest(".control-group");
+        element.next(".help-inline", container).remove();
+        container.removeClass("error");
+    }
+    function clearErrors() {
+        var promo_code = $(".promo_code");
+        clearFieldError(promo_code);
+        // clear alerts:
+        $(".alert").remove();
+    }
+    function getPromoCode() {
+        return $(".promo_code");
+    }
+    function getPromoCodeID() {
+        promo_code = getPromoCode();
+        return promo_code.attr("id");
+    }
+    function applyPromoCode() {
+        clearErrors();
+        var promo_code = getPromoCode();
+        var promo_code_text = promo_code.val();
+        if (promo_code_text.length == 0) {
+            return;
+        }
+        var ajax_data = {}
+        ajax_data[getPromoCodeID()] = promo_code_text;
+        var ajax_request = $.ajax({
+            type: "POST",
+            data: ajax_data,
+            success: function(data, textStatus, jqXHR) {
+                // fill in the description and amount in the
+                // promo code row of the pricing table:
+                var amount_subtracted = parseFloat(
+                    data.prices.promo_discount);
+                amount_subtracted = amount_subtracted.toFixed(2);
+                $("#id_promo_code_amount").text(
+                    "-" + decimalToDollarString(amount_subtracted));
+                $("#id_promo_code_description").text(
+                    data.discount_description);
+
+                // show it:
+                $("#id_promo_code_row").show()
+
+                updateAmountDue(data.prices.total);
+            },
+            error: function(data, textStatus, jqXHR) {
+                // hide the promo code row:
+                $("#id_promo_code_row").hide();
+
+                var responseDict = $.parseJSON(data.responseText);
+
+                var errors = responseDict['form-errors'];
+                $.each(errors, function(index, value) {
+                    applyFormFieldErrorByID(index, value);
+                })
+
+                djangoMessage("Please correct the errors below", "error");
+
+                // update the amount due (the previous amount due might
+                // have reflected a valid promo discount):
+                updateAmountDue(responseDict["prices"]["total"]);
+            }
+        });
+    }
+    function hidePromoCodeWidgets() {
+        promo_code = getPromoCode();
+        control_group_div = promo_code.closest("div .control-group");
+        control_group_div.hide("fast");
+        apply_promo_code_button = $("#apply-promo-code-button");
+        controls_div = apply_promo_code_button.closest("div .controls");
+        controls_div.hide("fast");
+    }
+    function getAutomaticDiscountCode() {
+        return $("#automatic-discount-code");
+    }
+    $(document).ready(function applyAutomaticDiscount() {
+        // If there's an automatic discount in effect, apply it.  
+        if (Boolean(getAutomaticDiscountCode().val())) {
+            hidePromoCodeWidgets();
+            getPromoCode().val(getAutomaticDiscountCode().val());
+            applyPromoCode();
+        }
+    });
+  </script>
+{% endcompress %}
+{% endblock %}

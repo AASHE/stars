@@ -1,0 +1,20 @@
+{% extends 'institutions/scorecards/credit.html' %}
+
+{% block title %}Data Correction Request | {{ block.super }}{% endblock %}
+
+{% block crumb-tab %}
+   	{{ block.super }}
+   	<li>
+   		<span class="divider">/</span>
+       Data Revision Request Success
+    </li>
+{% endblock %}
+
+{% block content %}
+	<br/>
+	<h1>Data Revision Request Success</h1><br/>
+	<div class='well'>
+	{% load content %}
+	{% display_block_content 'data_correction_success' user %}
+	</div>
+{% endblock %}

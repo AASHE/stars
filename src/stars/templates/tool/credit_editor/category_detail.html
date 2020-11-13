@@ -1,0 +1,68 @@
+{% extends "tool/credit_editor/base.html" %}
+
+{% load bootstrap %}
+
+{% block crumbs %}
+    {% load ce_tags %}
+    {% show_editor_crumbs category %}
+{% endblock %}
+
+{% block h1 %}{{ creditset }}: {{ category }}{% endblock %}
+
+{% block editor_content %}
+    <div class='creditContent'>
+        <form class='generalForm' method='POST' action='.'>
+            {{ object_form|bootstrap }}
+
+            {% if object_ordering %}
+                <table class='table table-condensed' id='dndtable'>
+                    <tr nodrop="true" nodrag="true">
+                        <th colspan='2'
+                            style="align: left;">
+                            Subcategories
+                        </th>
+                    </tr>
+                    {% include 'tool/credit_editor/ordering_form_table.html' %}
+                </table>
+            {% endif %}
+            <div class="form-actions">
+                <input type="submit" class="btn btn-primary"
+                       value="Save category" id="submit_button"/>
+            </div>
+        </form>
+
+        <div class="accordion" id="add-subcategory-accordion">
+            <div class="accordion-group">
+                <div class="accordion-heading">
+                    <a class="accordion-toggle"
+                       href="#add-subcategory-form"
+                       data-toggle="collapse"
+                       data-parent="#add-subcategory-accordion">
+                        Add subcategory
+                    </a>
+                </div>
+                <div id="add-subcategory-form"
+                  class="accordion-body collapse">
+                    <form action='{{ category.get_edit_url }}add-subcategory/'
+                          method='POST'
+                          style="padding: 20px;">
+                        {{ new_subcategory_form|bootstrap }}
+                        <div class="form-actions">
+                            <input
+                               type="submit"
+                               class="btn btn-primary"
+                               value="Save subcategory"/>
+                            <input
+                               type="button" class="btn"
+                               value="Cancel"
+                               data-toggle="collapse"
+                               data-parent="#add-subcategory-accordion"
+                               href="#add-subcategory-form"/>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

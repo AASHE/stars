@@ -1,0 +1,95 @@
+{% extends 'tool/manage/base.html' %}
+
+{% load content %}
+
+{% block crumbs-tool %}<li>Users</li>{% endblock %}
+
+{% block tabs %}
+	{% with active_tab="users" %}{{ block.super }}{% endwith %}
+{% endblock %}
+
+{% block help_content %}
+    {% display_block_content 'list_accounts' user %}
+{% endblock %}
+
+{% block institution_content %}
+    <table class='table'>
+    	<thead>
+            <tr>
+                <th></th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Last Login</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for account in accounts %}
+                <tr {% if account.is_pending %}
+                      class='pending'
+                      title="Account pending; user must register at www.aashe.org."
+                    {% endif %}>
+                    <td>
+                        {{ account.user_name }}
+                    </td>
+                    <td class='account-email-address'>
+                         {{ account.email }}
+                         {% if account.is_pending %}
+                             <span class="pending_note">*</span>
+                         {% endif %}
+                    </td>
+                    <td>
+                        {{ account.user_level_description }}
+                    </td>
+                    <td>
+                        {% if account.last_access %}
+                            {{ account.last_access|date:"D d M Y" }}
+                        {% else %}
+                            <span class="pending_note"
+                                  title="User has not yet logged in to STARS">
+                                -
+                            </span>
+                        {% endif %}
+                    </td>
+                    <td class='buttonColumn'>
+                        {% ifnotequal account.user user %}
+                            <a href=
+                            "{% url 'tool:manage:account-edit' institution.slug account.id %}"
+                            >
+                                <i class='icon-pencil'></i>
+                            </a>
+                            {% if account.is_pending %}
+                                <a href="{% url 'tool:manage:pending-account-delete' institution.slug account.id %}">
+                            {% else %}
+                                <a href="{% url 'tool:manage:account-delete' institution.slug account.id %}">
+                            {% endif %}
+                                <i class='icon-trash'></i>
+                            </a>
+                        {% else %}
+                            {% if user.is_staff %}
+                                {% if account.is_pending %}
+                                    <a href="{% url 'tool:manage:pending-account-delete' institution.slug account.id %}">
+                                {% else %}
+                                    <a href="{% url 'tool:manage:account-delete' institution.slug account.id %}">
+                                {% endif %}
+                                  <i class='icon-trash'></i>
+                              </a>
+                            {% endif %}
+                        {% endifnotequal %}
+                    </td>
+                </tr>
+             {% endfor %}
+         </tbody>
+     </table>
+     <a href="{% url 'tool:manage:account-create' institution.slug %}"
+        class='btn btn-primary'>
+         Add a User
+     </a>
+     <p>
+         <span class="pending_note">
+             <br/>
+             <br/>
+             * - Account pending; user must register at
+             <a href='http://www.aashe.org/user/register'>www.aashe.org/user/register</a>.
+         </span>
+     </p>
+{% endblock %}

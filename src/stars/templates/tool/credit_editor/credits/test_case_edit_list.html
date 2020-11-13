@@ -1,0 +1,41 @@
+{% extends "tool/credit_editor/base_edit_list.html" %}
+
+{% load l10n %}
+
+{% block display_object %}
+  <td>
+    <div style="overflow: auto;height: 100px; padding-left: 10px;">
+      {% for f in obj.get_submission_fields %}
+	<a href="#" data-toggle="tooltip"
+           title="{{ f.documentation_field }}"
+           id='{{ f.id|unlocalize }}_'>
+	  {{ f.documentation_field.identifier }}</a>:
+        {{ f.get_value }}
+        <br/>
+	<script>$('#{{ f.id|unlocalize }}_').tooltip('hide');</script>
+      {% endfor %}
+    </div>
+  </td>
+  <td>{{ obj.expected_value }}</td>
+  <td>{{ obj.computed_value }}</td>
+  <td>
+    {% if obj.result %}
+      <img src='/media/static/images/accept.png' title='Test Passed'
+           alt='pass'>
+    {% else %}
+      <img src='/media/static/images/cross.png' title='Test Failed'
+           alt='fail'>
+    {% endif %}
+  </td>
+{% endblock %}
+
+{% block delete_button %}
+  <a data-toggle="modal"
+     data-target="#delete-test-case-modal"/>
+  <img src="/media/static/images/delete.png"
+       alt="delete"
+       title="delete"
+       class="delete-test-case-link"
+       url="{{ obj.get_delete_url }}"/>
+  </a>
+{% endblock %}

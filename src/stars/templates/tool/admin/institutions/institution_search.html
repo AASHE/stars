@@ -1,0 +1,28 @@
+{% extends 'tool/admin/institutions/base.html' %}
+
+{% load compress %}
+
+{% block extra_head %}
+    {% compress js %}
+    <script src='/media/static/js/ajax.js' type='text/javascript'></script>
+    {% endcompress %}
+{% endblock %}
+
+{% block subsubmenu_class %}ssm_inst_search{% endblock %}
+
+{% block institution_content %}
+     {% block subsubmenu %}
+        <ul id='subsubmenu'>
+            <li class='active'><a href='/tool/admin/search'>Search AASHE Institutions</a></li>
+            <li><a href='/tool/admin/list'>Manage STARS Institutions</a></li>
+        </ul>
+    {% endblock %}
+
+    <div id='searchbox'>
+        <h2>Find an Institution</h2>
+        <label>Begin typing an institution:</label>
+        <input type='text' onkeyup='search_institution(this);' />
+    </div>
+    <h2>Search Results</h2>
+    <div id='search_target'></div>
+{% endblock %}

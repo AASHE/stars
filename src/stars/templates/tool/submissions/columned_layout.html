@@ -1,0 +1,24 @@
+{% extends 'tool/base.html' %}
+
+{% load cache %}
+{% load collapsing_menu %}
+{% load l10n %}
+
+
+{% block tool_menu %}
+  {% with active_menu="submission"%}{{ block.super }}{% endwith %}
+{% endblock %}
+
+{% block body_onload %}{{ block.super }}{% endblock %}
+
+{% block left_nav %}
+    <div class="well" style="width:220px; padding: 8px 0;">
+      {% show_collapsing_menu outline %}
+      <script>
+      {% if credit_submission %}
+        c_id = "#outline_cred_{{ credit_submission.id|unlocalize }}";
+        $(c_id).addClass('active');
+      {% endif %}
+      </script>
+    </div>
+{% endblock %}

@@ -1,0 +1,8 @@
+# Docker build
+steps:
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/aashe-migration/stars-image:$BUILD_ID', '.']
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'gcr.io/aashe-migration/stars-image:$BUILD_ID']

@@ -1,0 +1,26 @@
+{% extends 'tool/manage/accounts.html' %}
+
+{% block institution_content %}
+    <h2>Delete User Account: {{account.user}}</h2>
+    {% ifequal account.user user %}
+        <div class='warning'>
+            You are about to delete your own account!
+        </div>
+    {% endifequal %}
+    <p>Are you sure you want to delete this account:</p>
+    <blockquote>
+      <b>User: {{account.user}}</b><br/>
+      <b>from {{account.institution}}</b>
+    </blockquote>
+    <form method='POST' action='.'>
+      <p>
+        {{ notify_form.notify_users }}
+        <span class='help'>Notify {{ account.user }} by e-mail that their STARS account has been deleted.</span>
+      </p>
+      <p>
+        {% with 'delete it' as button_text %}
+           {% include 'helpers/confirm_form.html' %}
+        {% endwith %}
+      </p>
+    </form>
+{% endblock %}

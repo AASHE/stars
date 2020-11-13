@@ -1,0 +1,102 @@
+{% extends 'institutions/base.html' %}
+
+{% block title %}Participants &amp; Reports | {{ block.super }}{% endblock %}
+
+{% block h1 %}STARS Participants &amp; Reports{% endblock %}
+
+{% block tabs %}
+{% endblock %}
+
+{% block crumb-tab %}
+  <li>Participants &amp; Reports</li>
+{% endblock %}
+
+{% block tab_content %}
+  <span class="help_text">
+    <p>
+      {{ inst_count }} institutions
+      institutions have registered to use the STARS
+      Reporting Tool, of which {{ member_count }} have earned a STARS rating.
+      Each institution's most recent rating is listed below.
+      Ratings that have not been updated in more than three
+      years are considered to be expired (*). Click on an
+      institution's name to access all of its STARS reports.
+    </p>
+  </span>
+  {% load help %}
+  {% show_help_context 'rated_institutions_page' 0 %}
+  {% load cache %}
+  {% cache 7200 institution_list_rated sort_key rev %}
+    <!-- template cached: {% now "jS F Y H:i" %} -->
+    <table id="institution_list" class="table table-striped table-condensed">
+      <thead>
+        <tr>
+          {% for col in sort_columns %}
+            <th nowrap>
+              {% ifequal col.key sort_key %}
+                <a href='?sort={{ rev }}{{ col.key }}' title='sort'>
+                  {{ col.title }}</a>
+                <img src='/media/static/images/{% ifequal rev '-' %}sort_desc.png{% else %}sort_asc.png{% endifequal %}' alt='^'/>
+              {% else %}
+                <a href='?sort={{ col.key }}' title='sort'>{{ col.title }}</a>
+              {% endifequal %}
+            </th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for institution in object_list %}
+          <tr class="{% cycle 'even' 'odd' %}">
+            <td style='text-align: left' class="span4">
+              {% if institution.rated_submission %}
+                <a href="{% url 'institutions:scorecard-list' institution.slug %}"
+                   id='scorecard-list'>
+                  {{ institution.name }}
+                </a>
+              {% else %}
+                {{ institution.name }}
+              {% endif %}
+            </td>
+            <td class="span3">
+              {{ institution.country }}{% if institution.ms_institution.state %},
+              {{institution.ms_institution.state}}
+              {% endif %}
+            </td>
+            {% if institution.rated_submission %}
+                <td class="span1">
+                  {{ institution.rated_submission.creditset.version }}
+                </td>
+                <td class="span2">
+                  <a href="{% url 'institutions:scorecard-summary' institution.slug institution.rated_submission.date_submitted %}">
+                {{ institution.rated_submission.rating }}
+                {% if institution.rated_submission.expired %}
+                    *
+	            {% endif %}
+                  </a>
+                </td>
+                <td class="span2">
+                      {{ institution.rated_submission.date_expiration }}
+                </td>
+            {% else %}
+                <td class="span1"></td>
+                <td class="span2"></td>
+                <td class="span2"></td>
+            {% endif %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endcache %}
+
+  <script>
+   jQuery( function($) {
+     $('tbody tr').addClass('clickable').click( function() {
+       var href = $(this).find('#scorecard-list').attr('href')
+       if(href) {
+         window.location = href;
+       }
+     });
+   });
+  </script>
+
+{% endblock %}

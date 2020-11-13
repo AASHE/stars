@@ -1,0 +1,7 @@
+{% if c.submission_status == 'c' %}
+    <img src='/media/static/images/tick.png' alt='{{ c.get_submission_status_display }}' title='{{ c.get_submission_status_display }}' />
+{% else %}{% if c.submission_status == 'p' or c.submission_status = 'np' or c.submission_status = 'ns' %}
+    <span title='Not Pursuing'>--</span>
+{% else %}{% if c.submission_status == "na" %}
+    <span title='Not Applicable'>n/a</span>
+{% endif %}{% endif %}{% endif %}

@@ -1,0 +1,6 @@
+<a href='/tool/'>Reporting Tool</a> &gt;
+<a href='/tool/credit-editor/'>Credit Editor</a>
+{% for object in object_set %}
+    &gt;
+    <a href='{{ object.get_edit_url }}'>{{ object|safe }}</a>
+{% endfor %}

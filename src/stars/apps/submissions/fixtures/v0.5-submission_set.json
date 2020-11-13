@@ -1,0 +1,16 @@
+[
+{"pk": 1, "model": "submissions.submissionset", "fields": {"status": "ps", "rating": null, "submitting_user": 8697, "date_reviewed": null, "creditset": 1, "date_submitted": null, "date_registered": "2009-01-01", "registering_user": 8697, "institution": 1}},
+{"pk": 1, "model": "institutions.institution", "fields": {"name": "AASHE", "contact_last_name": "Matson", "enabled": true, "aashe_id": 4335, "contact_email": "laura@aashe.org", "contact_first_name": "Laura", "contact_title": "STARS coordinator"}},
+{"pk": 1, "model": "institutions.starsaccount", "fields": {"user_level": "admin", "user": 8697, "institution": 1}},
+{"pk": 2, "model": "institutions.starsaccount", "fields": {"user_level": "admin", "user": 5214, "institution": 1}},
+{"pk": 3, "model": "institutions.starsaccount", "fields": {"user_level": "admin", "user": 14, "institution": 1}},
+{"pk": 4, "model": "institutions.starsaccount", "fields": {"user_level": "admin", "user": 5204, "institution": 1}},
+{"pk": 5, "model": "institutions.starsaccount", "fields": {"user_level": "admin", "user": 10055, "institution": 1}},
+{"pk": 1, "model": "institutions.institutionstate", "fields": {"active_submission_set": 1, "institution": 1}},
+{"pk": 14, "model": "auth.user", "fields": {"username": "laura_at_aashe_dot_org", "first_name": "", "last_name": "", "is_active": true, "is_superuser": true, "is_staff": true, "last_login": "2009-08-28 12:33:11", "groups": [], "user_permissions": [], "password": "f3d6b883d89d414e92cee86b2632cb5c", "email": "laura@aashe.org", "date_joined": "2009-08-28 12:33:11"}},
+{"pk": 5204, "model": "auth.user", "fields": {"username": "jillian_at_aashe_dot_org", "first_name": "", "last_name": "", "is_active": true, "is_superuser": true, "is_staff": true, "last_login": "2009-08-28 12:33:20", "groups": [], "user_permissions": [], "password": "ae90714c7f6d39d8fdbf15b4fd1172c3", "email": "jillian@aashe.org", "date_joined": "2009-08-28 12:33:20"}},
+{"pk": 5214, "model": "auth.user", "fields": {"username": "ben_at_aashe_dot_org", "first_name": "", "last_name": "", "is_active": true, "is_superuser": true, "is_staff": true, "last_login": "2009-08-28 12:33:24", "groups": [], "user_permissions": [], "password": "522b68d66005a6290b2b6be8241861d6", "email": "ben@aashe.org", "date_joined": "2009-08-28 12:33:24"}},
+{"pk": 8697, "model": "auth.user", "fields": {"username": "joseph_at_aashe_dot_org", "first_name": "", "last_name": "", "is_active": true, "is_superuser": true, "is_staff": true, "last_login": "2009-08-28 12:32:05", "groups": [], "user_permissions": [], "password": "e2ab4214fabba154c64304c2f0638f95", "email": "joseph@aashe.org", "date_joined": "2009-08-28 12:32:05"}},
+{"pk": 10055, "model": "auth.user", "fields": {"username": "stars_at_aashe_dot_org", "first_name": "STARS", "last_name": "Tester", "is_active": true, "is_superuser": false, "is_staff": false, "last_login": "2009-08-28 12:32:05", "groups": [], "user_permissions": [], "password": "", "email": "stars@aashe.org", "date_joined": "2009-08-28 12:32:05"}},
+{"pk": 1, "model": "submissions.responsibleparty", "fields": {"institution": "1", "first_name": "Mickey", "last_name": "Mouse", "title": "head cheese", "department": "cheese", "email": "noone@example.org", "phone": "555-5555"}}
+]

@@ -1,0 +1,9 @@
+{% extends 'tool/summary.html' %}
+
+{% block crumbs-tool %}
+  <li>Purchase Subscription</li>
+{% endblock %}
+
+{% block institution_content %}
+  {% include 'payments/subscription_price.html' %}
+{% endblock %}

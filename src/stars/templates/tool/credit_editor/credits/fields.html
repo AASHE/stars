@@ -1,0 +1,62 @@
+{% extends "tool/credit_editor/credits/base.html" %}
+
+{% load bootstrap %}
+
+{% block editor_content %}
+    {% with active_tab="reporting-fields" %}
+        {{ block.super }}
+    {% endwith %}
+{% endblock %}
+
+{% block credit_content %}
+    <form class='generalForm' method='POST' action='.'>
+        <table class='orderingTable' id='dndtable'>
+            <tr nodrop="true" nodrag="true">
+                <th colspan="2"
+                    style="align: left;">
+                    Reporting Fields
+                </th>
+            </tr>
+            {% with 1 as editing %}
+            	{% include "tool/credit_editor/credits/ordering_row.html" %}
+            {% endwith %}
+        </table>
+
+        <div class="form-actions">
+            <input type="submit" class="btn btn-primary"
+                   value="Save field order"/>
+        </div>
+    </form>
+
+    <div class="accordion" id="add-field-accordion">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                <a class="accordion-toggle"
+                   href="#add-field-form"
+                   data-toggle="collapse"
+                   data-parent="#add-field-accordion">
+                    Add field
+                </a>
+            </div>
+            <div id="add-field-form" class="accordion-body collapse">
+                <form action='{{ credit.get_edit_url }}add-field/'
+                      method='POST'
+                      style="padding: 20px;">
+                    {{ new_field_form|bootstrap }}
+
+                    {% include "tool/credit_editor/credits/formula_legend.html" %}
+
+                    <div class="form-actions">
+                        <input type="submit"
+                               class="btn btn-primary"
+                               value="Save field"/>
+                        <input type="button" class="btn"
+                               value="Cancel"
+                               data-toggle="collapse"
+                               data-parent="#add-field-accordion"
+                               href="#add-field-form"/>
+                    </div>
+                </form>
+            </div>
+        </div>
+{% endblock %}

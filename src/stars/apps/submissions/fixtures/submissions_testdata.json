@@ -1,0 +1,1389 @@
+[
+    {
+        "pk": 1,
+        "model": "auth.user",
+        "fields": {
+            "username": "tester",
+            "password": "x",
+            "email": "test@test.edu"
+        }
+    },
+
+    {
+        "pk": 56,
+        "model": "institutions.institution",
+        "fields": {
+            "executive_contact_department": "Office of the Executive Vice President",
+            "name": "Duke University",
+            "contact_last_name": "Capps",
+            "executive_contact_middle_name": "",
+            "charter_participant": true,
+            "enabled": true,
+            "aashe_id": 16204,
+            "executive_contact_email": "t3@duke.edu",
+            "executive_contact_first_name": "Tallman",
+            "contact_department": "Sustainable Duke, Office of the Executive Vice President",
+            "contact_email": "tavey.mcdaniel@duke.edu",
+            "contact_first_name": "Tavey",
+            "executive_contact_title": "Executive Vice President",
+            "contact_title": "Environmental Sustainability Director",
+            "contact_middle_name": "McDaniel",
+            "executive_contact_last_name": "Trask"
+        }
+    },
+
+    {
+        "pk": 2,
+        "model": "credits.creditset",
+        "fields": {
+            "is_locked": false,
+            "release_date": "2010-11-02",
+            "version": "1.0",
+            "tier_2_points": 0.25,
+            "scoring_method": "get_STARS_v1_0_score"
+        }
+    },
+
+    {
+        "pk": 5,
+        "model": "credits.rating",
+        "fields": {
+            "creditset": 2,
+            "image_200": "seals/STARS-Platinum-200x200_1.png",
+            "name": "Platinum",
+            "image_large": "seals/STARS-Seal-Platinum.png",
+            "minimal_score": 85
+        }
+    },
+    {
+        "pk": 4,
+        "model": "credits.rating",
+        "fields": {
+            "creditset": 2,
+            "image_200": "seals/STARS-Gold-200x200_1.png",
+            "name": "Gold",
+            "image_large": "seals/STARS-Seal-Gold.png",
+            "minimal_score": 65
+        }
+    },
+    {
+        "pk": 3,
+        "model": "credits.rating",
+        "fields": {
+            "creditset": 2,
+            "image_200": "seals/STARS-Silver-200x200_1.png",
+            "name": "Silver",
+            "image_large": "seals/STARS-Seal-Silver.png",
+            "minimal_score": 45
+        }
+    },
+    {
+        "pk": 2,
+        "model": "credits.rating",
+        "fields": {
+            "creditset": 2,
+            "image_200": "seals/STARS-Bronze-200x200_1.png",
+            "name": "Bronze",
+            "image_large": "seals/STARS-Seal-Bronze.png",
+            "minimal_score": 25
+        }
+    },
+    {
+        "pk": 1,
+        "model": "credits.rating",
+        "fields": {
+            "creditset": 2,
+            "image_200": "seals/STARS-Reporter-200x200_1.png",
+            "name": "Reporter",
+            "image_large": "seals/STARS-Seal-Reporter.png",
+            "minimal_score": 0
+        }
+    },
+
+    {
+        "pk": 1,
+        "model": "credits.category",
+        "fields": {
+            "ordinal": 0,
+            "description": "<p>The Education &amp; Research category includes Co-Curricular Education, Curriculum, and Research sub-categories.</p>",
+            "title": "Education & Research",
+            "creditset": 2,
+            "abbreviation": "ER",
+            "max_point_value": 0
+        }
+    },
+
+    {
+        "pk": 1,
+        "model": "credits.subcategory",
+        "fields": {
+            "category": 1,
+            "ordinal": 0,
+            "max_point_value": 0,
+            "description": "",
+            "title": "Co-Curricular Education"
+        }
+    },
+
+    {
+        "pk": 3,
+        "model": "credits.subcategory",
+        "fields": {
+            "category": 1,
+            "ordinal": 1,
+            "max_point_value": 0,
+            "description": "",
+            "title": "Curriculum"
+        }
+    },
+
+    {
+        "pk": 5,
+        "model": "credits.subcategory",
+        "fields": {
+            "category": 1,
+            "ordinal": 2,
+            "max_point_value": 0,
+            "description": "",
+            "title": "Research"
+        }
+    },
+
+    {
+        "pk": 1,
+        "model": "credits.credit",
+        "fields": {
+            "ordinal": 0,
+            "scoring": "",
+            "staff_notes": "",
+            "subcategory": 1,
+            "title": "Student Sustainability Educators Program",
+            "criteria": "",
+            "measurement": "",
+            "number": 1,
+            "point_value": 5.0,
+            "applicability": "<p>This credit applies to all institutions.</p>",
+            "validation_rules": "if F > A:\n  errors['F'] = \"Oops! The number of students served by the first program should be less than or equal to the total number of students enrolled at the institution.\"\n\nif F > 200000:\n  warnings['F'] = \"The number of students served by the first program is larger than expected.\"\n\nif K > A:\n  errors['K'] = \"Oops! The number of students served by the second program should be less than or equal to the total number of students enrolled at the institution.\"\n\nif K > 200000:\n  warnings['K'] = \"The number of students served by the second program is larger than expected.\"\n\nif P > A:\n  errors['P'] = \"Oops! The number of students served by the third program should be less than or equal to the total number of students enrolled at the institution.\"\n\nif P > 200000:\n  warnings['P'] = \"The number of students served by the third program is larger than expected.\"\n\nif U > A:\n  errors['U'] = \"Oops! The number of students served by all other programs should be less than or equal to the total number of students enrolled at the institution.\"\n\nif U > 200000:\n  warnings['U'] = \"The number of students served by all other programs is larger than expected.\"\n\nif K:  # number of students for 2nd program is non-zero...\n  if not G:\n    errors['G'] = \"This field is required if you wish to earn points for the students served by the second program.\"\n\n  if not H:\n    errors['H'] = \"This field is required if you wish to earn points for the students served by the second program.\"\n\n  if not I:\n    errors['I'] = \"This field is required if you wish to earn points for the students served by the second program.\"\n\n  if not J:\n    errors['J'] = \"This field is required if you wish to earn points for the students served by the second program.\"\n\n\nif P:   # number of students in 3rd program is non-zero\n  if not L:\n   errors['L'] = \"This field is required if you wish to earn points for the students served by the third program.\"\n\n  if not M:\n    errors['M'] = \"This field is required if you wish to earn points for the students served by the third program.\"\n\n  if not N:\n    errors['N'] = \"This field is required if you wish to earn points for the students served by the third program.\"\n\n  if not O:\n    errors['O'] = \"This field is required if you wish to earn points for the students served by the third program.\"\n\nif U:  #number of students for all other programs is not zero\n  if not Q:\n    errors['Q'] = \"This field is required if you wish to earn points for the students served by all other programs.\"\n\n  if not R:\n    errors['R'] = \"This field is required if you wish to earn points for the students served by all other programs.\"\n\n  if not S:\n    errors['S'] = \"This field is required if you wish to earn points for the students served by all other programs.\"\n\n  if not T:\n    errors['T'] = \"This field is required if you wish to earn points for the students served by all other programs.\"\n",
+            "formula": "var1 = F + (K or 0) + (P or 0) + (U or 0)\n\nif var1 >= A:\n  var2 = A \nelse:\n  var2 = var1\n\n\npoints = 5 * (var2/A)",
+            "type": "t1"
+        }
+    },
+
+    {
+        "pk": 2,
+        "model": "credits.documentationfield",
+        "fields": {
+            "ordinal": 0,
+            "max_range": 500000,
+            "required": "req",
+            "title": "Total number of degree-seeking students enrolled at the institution",
+            "tooltip_help_text": "",
+            "last_choice_is_other": false,
+            "min_range": 0,
+            "credit": 1,
+            "inline_help_text": "",
+            "units": null,
+            "identifier": "A",
+            "type": "numeric"
+        }
+    },
+
+    {
+        "pk": 1,
+        "model": "submissions.numericsubmission",
+        "fields": {
+            "documentation_field": 2,
+            "value": 1200.0,
+            "credit_submission": 1
+        }
+    },
+
+    {
+        "pk": 26,
+        "model": "credits.documentationfield",
+        "fields": {
+            "ordinal": 1,
+            "max_range": null,
+            "required": "req",
+            "title": "Program name (1st program)",
+            "tooltip_help_text": "",
+            "last_choice_is_other": false,
+            "min_range": null,
+            "credit": 1,
+            "inline_help_text": "",
+            "units": null,
+            "identifier": "B",
+            "type": "text"
+        }
+    },
+
+    {
+        "pk": 2,
+        "model": "submissions.textsubmission",
+        "fields": {
+            "documentation_field": 26,
+            "value": "Sustainability",
+            "credit_submission": 1
+        }
+    },
+
+    {
+        "pk": 27,
+        "model": "credits.documentationfield",
+        "fields": {
+            "ordinal": 3,
+            "max_range": null,
+            "required": "req",
+            "title": "A brief description of how the student educators are selected (1st program)",
+            "tooltip_help_text": "",
+            "last_choice_is_other": false,
+            "min_range": null,
+            "credit": 1,
+            "inline_help_text": "",
+            "units": null,
+            "identifier": "C",
+            "type": "long_text"
+        }
+    },
+
+    {
+        "pk": 3,
+        "model": "submissions.longtextsubmission",
+        "fields": {
+            "documentation_field": 27,
+            "value": "",
+            "credit_submission": 1
+        }
+    },
+
+    {
+        "pk": 30,
+        "model": "credits.documentationfield",
+        "fields": {
+            "ordinal": 2,
+            "max_range": 500000,
+            "required": "req",
+            "title": "Number of students served by the program (1st program)",
+            "tooltip_help_text": "",
+            "last_choice_is_other": false,
+            "min_range": 0,
+            "credit": 1,
+            "inline_help_text": "",
+            "units": null,
+            "identifier": "F",
+            "type": "numeric"
+        }
+    },
+
+    {
+        "pk": 4,
+        "model": "submissions.numericsubmission",
+        "fields": {
+            "documentation_field": 30,
+            "value": 1100.0,
+            "credit_submission": 1
+        }
+    },
+
+    {
+        "pk": 28,
+        "model": "credits.documentationfield",
+        "fields": {
+            "ordinal": 4,
+            "max_range": null,
+            "required": "req",
+            "title": "A brief description of the formal training that the student educators receive (1st program)",
+            "tooltip_help_text": "",
+            "last_choice_is_other": false,
+            "min_range": null,
+            "credit": 1,
+            "inline_help_text": "",
+            "units": null,
+            "identifier": "D",
+            "type": "long_text"
+        }
+    },
+
+    {
+        "pk": 6,
+        "model": "submissions.longtextsubmission",
+        "fields": {
+            "documentation_field": 28,
+            "value": "",
+            "credit_submission": 1
+        }
+    },
+
+    {
+        "pk": 29,
+        "model": "credits.documentationfield",
+        "fields": {
+            "ordinal": 5,
+            "max_range": null,
+            "required": "req",
+            "title": "A brief description of the staff and/or other financial support the institution provides to the program (1st program)",
+            "tooltip_help_text": "",
+            "last_choice_is_other": false,
+            "min_range": null,
+            "credit": 1,
+            "inline_help_text": "",
+            "units": null,
+            "identifier": "E",
+            "type": "long_text"
+        }
+    },
+
+    {
+        "pk": 7,
+        "model": "submissions.longtextsubmission",
+        "fields": {
+            "documentation_field": 29,
+            "value": "",
+            "credit_submission": 1
+        }
+    },
+
+    {
+        "pk": 31,
+        "model": "credits.documentationfield",
+        "fields": {
+            "ordinal": 7,
+            "max_range": null,
+            "required": "cond",
+            "title": "Program name (2nd program)",
+            "tooltip_help_text": "",
+            "last_choice_is_other": false,
+            "min_range": null,
+            "credit": 1,
+            "inline_help_text": "",
+            "units": null,
+            "identifier": "G",
+            "type": "text"
+        }
+    },
+
+    {
+        "pk": 8,
+        "model": "submissions.textsubmission",
+        "fields": {
+            "documentation_field": 31,
+            "value": null,
+            "credit_submission": 1
+        }
+    },
+
+    {
+        "pk": 35,
+        "model": "credits.documentationfield",
+        "fields": {
+            "ordinal": 8,
+            "max_range": 500000,
+            "required": "cond",
+            "title": "Number of students served by the program (2nd program)",
+            "tooltip_help_text": "",
+            "last_choice_is_other": false,
+            "min_range": 0,
+            "credit": 1,
+            "inline_help_text": "",
+            "units": null,
+            "identifier": "K",
+            "type": "numeric"
+        }
+    },
+
+    {
+        "pk": 9,
+        "model": "submissions.numericsubmission",
+        "fields": {
+            "documentation_field": 35,
+            "value": null,
+            "credit_submission": 1
+        }
+    },
+
+    {
+        "pk": 32,
+        "model": "credits.documentationfield",
+        "fields": {
+            "ordinal": 9,
+            "max_range": null,
+            "required": "cond",
+            "title": "A brief description of how the student educators are selected (2nd program)",
+            "tooltip_help_text": "",
+            "last_choice_is_other": false,
+            "min_range": null,
+            "credit": 1,
+            "inline_help_text": "",
+            "units": null,
+            "identifier": "H",
+            "type": "long_text"
+        }
+    },
+
+    {
+        "pk": 10,
+        "model": "submissions.longtextsubmission",
+        "fields": {
+            "documentation_field": 32,
+            "value": null,
+            "credit_submission": 1
+        }
+    },
+
+    {
+        "pk": 33,
+        "model": "credits.documentationfield",
+        "fields": {
+            "ordinal": 10,
+            "max_range": null,
+            "required": "cond",
+            "title": "A brief description of the formal training that the student educators receive (2nd program)",
+            "tooltip_help_text": "",
+            "last_choice_is_other": false,
+            "min_range": null,
+            "credit": 1,
+            "inline_help_text": "",
+            "units": null,
+            "identifier": "I",
+            "type": "long_text"
+        }
+    },
+
+    {
+        "pk": 11,
+        "model": "submissions.longtextsubmission",
+        "fields": {
+            "documentation_field": 33,
+            "value": null,
+            "credit_submission": 1
+        }
+    },
+
+    {
+        "pk": 153,
+        "model": "credits.documentationfield",
+        "fields": {
+            "ordinal": 6,
+            "max_range": null,
+            "required": "opt",
+            "title": "The website URL for 1st  Program",
+            "tooltip_help_text": "",
+            "last_choice_is_other": false,
+            "min_range": null,
+            "credit": 1,
+            "inline_help_text": "",
+            "units": null,
+            "identifier": "W",
+            "type": "url"
+        }
+    },
+
+    {
+        "pk": 12,
+        "model": "submissions.urlsubmission",
+        "fields": {
+            "documentation_field": 153,
+            "value": "http://duke.edu",
+            "credit_submission": 1
+        }
+    },
+
+    {
+        "pk": 34,
+        "model": "credits.documentationfield",
+        "fields": {
+            "ordinal": 11,
+            "max_range": null,
+            "required": "cond",
+            "title": "A brief description of the staff and/or other financial support the institution provides to the program (2nd program)",
+            "tooltip_help_text": "",
+            "last_choice_is_other": false,
+            "min_range": null,
+            "credit": 1,
+            "inline_help_text": "",
+            "units": null,
+            "identifier": "J",
+            "type": "long_text"
+        }
+    },
+
+    {
+        "pk": 12,
+        "model": "submissions.longtextsubmission",
+        "fields": {
+            "documentation_field": 34,
+            "value": null,
+            "credit_submission": 1
+        }
+    },
+
+    {
+        "pk": 154,
+        "model": "credits.documentationfield",
+        "fields": {
+            "ordinal": 12,
+            "max_range": null,
+            "required": "opt",
+            "title": "The website URL for 2nd program",
+            "tooltip_help_text": "",
+            "last_choice_is_other": false,
+            "min_range": null,
+            "credit": 1,
+            "inline_help_text": "",
+            "units": null,
+            "identifier": "X",
+            "type": "url"
+        }
+    },
+
+    {
+        "pk": 13,
+        "model": "submissions.urlsubmission",
+        "fields": {
+            "documentation_field": 154,
+            "value": null,
+            "credit_submission": 1
+        }
+    },
+
+    {
+        "pk": 36,
+        "model": "credits.documentationfield",
+        "fields": {
+            "ordinal": 13,
+            "max_range": null,
+            "required": "cond",
+            "title": "Program name (3rd program)",
+            "tooltip_help_text": "",
+            "last_choice_is_other": false,
+            "min_range": null,
+            "credit": 1,
+            "inline_help_text": "",
+            "units": null,
+            "identifier": "L",
+            "type": "text"
+        }
+    },
+
+    {
+        "pk": 14,
+        "model": "submissions.textsubmission",
+        "fields": {
+            "documentation_field": 36,
+            "value": null,
+            "credit_submission": 1
+        }
+    },
+
+    {
+        "pk": 40,
+        "model": "credits.documentationfield",
+        "fields": {
+            "ordinal": 14,
+            "max_range": 500000,
+            "required": "cond",
+            "title": "Number of students served by the program (3rd program)",
+            "tooltip_help_text": "",
+            "last_choice_is_other": false,
+            "min_range": 0,
+            "credit": 1,
+            "inline_help_text": "",
+            "units": null,
+            "identifier": "P",
+            "type": "numeric"
+        }
+    },
+
+    {
+        "pk": 15,
+        "model": "submissions.numericsubmission",
+        "fields": {
+            "documentation_field": 40,
+            "value": null,
+            "credit_submission": 1
+        }
+    },
+
+    {
+        "pk": 37,
+        "model": "credits.documentationfield",
+        "fields": {
+            "ordinal": 15,
+            "max_range": null,
+            "required": "cond",
+            "title": "A brief description of how the student educators are selected (3rd program)",
+            "tooltip_help_text": "",
+            "last_choice_is_other": false,
+            "min_range": null,
+            "credit": 1,
+            "inline_help_text": "",
+            "units": null,
+            "identifier": "M",
+            "type": "long_text"
+        }
+    },
+
+    {
+        "pk": 16,
+        "model": "submissions.longtextsubmission",
+        "fields": {
+            "documentation_field": 37,
+            "value": null,
+            "credit_submission": 1
+        }
+    },
+
+    {
+        "pk": 38,
+        "model": "credits.documentationfield",
+        "fields": {
+            "ordinal": 16,
+            "max_range": null,
+            "required": "cond",
+            "title": "A brief description of the formal training that the student educators receive (3rd program)",
+            "tooltip_help_text": "",
+            "last_choice_is_other": false,
+            "min_range": null,
+            "credit": 1,
+            "inline_help_text": "",
+            "units": null,
+            "identifier": "N",
+            "type": "long_text"
+        }
+    },
+
+    {
+        "pk": 17,
+        "model": "submissions.longtextsubmission",
+        "fields": {
+            "documentation_field": 38,
+            "value": null,
+            "credit_submission": 1
+        }
+    },
+
+    {
+        "pk": 39,
+        "model": "credits.documentationfield",
+        "fields": {
+            "ordinal": 17,
+            "max_range": null,
+            "required": "cond",
+            "title": "A brief description of the staff and/or other financial support the institution provides to the program (3rd program)",
+            "tooltip_help_text": "",
+            "last_choice_is_other": false,
+            "min_range": null,
+            "credit": 1,
+            "inline_help_text": "",
+            "units": null,
+            "identifier": "O",
+            "type": "long_text"
+        }
+    },
+
+    {
+        "pk": 18,
+        "model": "submissions.longtextsubmission",
+        "fields": {
+            "documentation_field": 39,
+            "value": null,
+            "credit_submission": 1
+        }
+    },
+
+    {
+        "pk": 155,
+        "model": "credits.documentationfield",
+        "fields": {
+            "ordinal": 18,
+            "max_range": null,
+            "required": "opt",
+            "title": "The website URL for 3rd program",
+            "tooltip_help_text": "",
+            "last_choice_is_other": false,
+            "min_range": null,
+            "credit": 1,
+            "inline_help_text": "",
+            "units": null,
+            "identifier": "Y",
+            "type": "url"
+        }
+    },
+
+    {
+        "pk": 19,
+        "model": "submissions.urlsubmission",
+        "fields": {
+            "documentation_field": 155,
+            "value": null,
+            "credit_submission": 1
+        }
+    },
+
+    {
+        "pk": 41,
+        "model": "credits.documentationfield",
+        "fields": {
+            "ordinal": 19,
+            "max_range": null,
+            "required": "cond",
+            "title": "Program name (All other programs)",
+            "tooltip_help_text": "",
+            "last_choice_is_other": false,
+            "min_range": null,
+            "credit": 1,
+            "inline_help_text": "",
+            "units": null,
+            "identifier": "Q",
+            "type": "text"
+        }
+    },
+
+    {
+        "pk": 20,
+        "model": "submissions.textsubmission",
+        "fields": {
+            "documentation_field": 41,
+            "value": null,
+            "credit_submission": 1
+        }
+    },
+
+    {
+        "pk": 45,
+        "model": "credits.documentationfield",
+        "fields": {
+            "ordinal": 20,
+            "max_range": 500000,
+            "required": "cond",
+            "title": "Number of students served by the program (All other programs)",
+            "tooltip_help_text": "",
+            "last_choice_is_other": false,
+            "min_range": 0,
+            "credit": 1,
+            "inline_help_text": "",
+            "units": null,
+            "identifier": "U",
+            "type": "numeric"
+        }
+    },
+
+    {
+        "pk": 21,
+        "model": "submissions.numericsubmission",
+        "fields": {
+            "documentation_field": 45,
+            "value": null,
+            "credit_submission": 1
+        }
+    },
+
+    {
+        "pk": 42,
+        "model": "credits.documentationfield",
+        "fields": {
+            "ordinal": 21,
+            "max_range": null,
+            "required": "cond",
+            "title": "A brief description of how the student educators are selected (All other programs)",
+            "tooltip_help_text": "",
+            "last_choice_is_other": false,
+            "min_range": null,
+            "credit": 1,
+            "inline_help_text": "",
+            "units": null,
+            "identifier": "R",
+            "type": "long_text"
+        }
+    },
+
+    {
+        "pk": 22,
+        "model": "submissions.longtextsubmission",
+        "fields": {
+            "documentation_field": 42,
+            "value": null,
+            "credit_submission": 1
+        }
+    },
+
+    {
+        "pk": 43,
+        "model": "credits.documentationfield",
+        "fields": {
+            "ordinal": 22,
+            "max_range": null,
+            "required": "cond",
+            "title": "A brief description of the formal training that the student educators receive (All other programs)",
+            "tooltip_help_text": "",
+            "last_choice_is_other": false,
+            "min_range": null,
+            "credit": 1,
+            "inline_help_text": "",
+            "units": null,
+            "identifier": "S",
+            "type": "long_text"
+        }
+    },
+
+    {
+        "pk": 23,
+        "model": "submissions.longtextsubmission",
+        "fields": {
+            "documentation_field": 43,
+            "value": null,
+            "credit_submission": 1
+        }
+    },
+
+    {
+        "pk": 44,
+        "model": "credits.documentationfield",
+        "fields": {
+            "ordinal": 23,
+            "max_range": null,
+            "required": "cond",
+            "title": "A brief description of the staff and/or other financial support the institution provides to the program (All other programs)",
+            "tooltip_help_text": "",
+            "last_choice_is_other": false,
+            "min_range": null,
+            "credit": 1,
+            "inline_help_text": "",
+            "units": null,
+            "identifier": "T",
+            "type": "long_text"
+        }
+    },
+
+    {
+        "pk": 24,
+        "model": "submissions.longtextsubmission",
+        "fields": {
+            "documentation_field": 44,
+            "value": null,
+            "credit_submission": 1
+        }
+    },
+
+    {
+        "pk": 156,
+        "model": "credits.documentationfield",
+        "fields": {
+            "ordinal": 24,
+            "max_range": null,
+            "required": "opt",
+            "title": "The website URL for all other programs",
+            "tooltip_help_text": "",
+            "last_choice_is_other": false,
+            "min_range": null,
+            "credit": 1,
+            "inline_help_text": "",
+            "units": null,
+            "identifier": "Z",
+            "type": "url"
+        }
+    },
+
+    {
+        "pk": 25,
+        "model": "submissions.urlsubmission",
+        "fields": {
+            "documentation_field": 156,
+            "value": null,
+            "credit_submission": 1
+        }
+    },
+
+    {
+        "pk": 14,
+        "model": "credits.credit",
+        "fields": {
+            "ordinal": 0,
+            "scoring": "",
+            "staff_notes": "",
+            "subcategory": 3,
+            "title": "Sustainability Course Identification",
+            "criteria": "",
+            "measurement": "",
+            "number": 5,
+            "point_value": 3.0,
+            "applicability": "<p>This credit applies to all institutions.</p>",
+            "validation_rules": "if D:  # answer yes to adopt defn\n  if not A:\n    errors['A'] = \"This field is required in order to earn points for adopting the definition.\"\n\nif E:  # answer yes to inventory\n  if not B:\n    errors['B'] = \"This field is required in order to earn points for the inventory.\"\n\nif F:  # answer yes to public available online\n  if not C:\n    errors['C'] = \"This field is required in order to earn points for making the inventory available publicly.\"",
+            "formula": "var1 = 1 if D else 0 #1 pt for adopting defn\n\nvar2 = 1 if E else 0 #1 pt for identifying courses\n\nvar3 = 1 if F else 0 #1 pt for making public\n\npoints = var1 + var2 + var3",
+            "type": "t1"
+        }
+    },
+
+    {
+        "pk": 238,
+        "model": "credits.documentationfield",
+        "fields": {
+            "ordinal": 0,
+            "max_range": null,
+            "required": "req",
+            "title": "Has the institution developed a definition of sustainability in the curriculum?",
+            "tooltip_help_text": "",
+            "last_choice_is_other": false,
+            "min_range": null,
+            "credit": 14,
+            "inline_help_text": "",
+            "units": null,
+            "identifier": "D",
+            "type": "boolean"
+        }
+    },
+
+    {
+        "pk": 26,
+        "model": "submissions.booleansubmission",
+        "fields": {
+            "documentation_field": 238,
+            "value": true,
+            "credit_submission": 2
+        }
+    },
+
+    {
+        "pk": 214,
+        "model": "credits.documentationfield",
+        "fields": {
+            "ordinal": 1,
+            "max_range": null,
+            "required": "cond",
+            "title": "A copy of the institution's definition of sustainability in the curriculum?",
+            "tooltip_help_text": "<p>In order to report on other STARS Curriculum credits, the definition of sustainability in the curriculum should distinguish between courses that focus or concentrate on the concept of sustainability throughout the course and courses that relate to an aspect of sustainability or include sustainability as part of the course. <span style=\"text-decoration: underline;\"></span></p>\r\n<p><strong>Sustainability-focused courses</strong> concentrate on the concept of sustainability, including its social, economic, and environmental dimensions, or examine an issue or topic using sustainability as a lens.&nbsp;</p>\r\n<p><strong>Sustainability-related courses</strong> incorporate sustainability as a distinct course component or module, or concentrate on a single sustainability principle or issue.</p>\r\n<ul>\r\n</ul>",
+            "last_choice_is_other": false,
+            "min_range": null,
+            "credit": 14,
+            "inline_help_text": "<p><span><span>This field is required if claiming points for adopting a definition (Part 1)</span></span></p>",
+            "units": null,
+            "identifier": "A",
+            "type": "long_text"
+        }
+    },
+
+    {
+        "pk": 27,
+        "model": "submissions.longtextsubmission",
+        "fields": {
+            "documentation_field": 214,
+            "value": "",
+            "credit_submission": 2
+        }
+    },
+
+    {
+        "pk": 239,
+        "model": "credits.documentationfield",
+        "fields": {
+            "ordinal": 2,
+            "max_range": null,
+            "required": "req",
+            "title": "Has the institution identified its sustainability-focused and sustainability-related course offerings?",
+            "tooltip_help_text": "",
+            "last_choice_is_other": false,
+            "min_range": null,
+            "credit": 14,
+            "inline_help_text": "",
+            "units": null,
+            "identifier": "E",
+            "type": "boolean"
+        }
+    },
+
+    {
+        "pk": 28,
+        "model": "submissions.booleansubmission",
+        "fields": {
+            "documentation_field": 239,
+            "value": true,
+            "credit_submission": 2
+        }
+    },
+
+    {
+        "pk": 215,
+        "model": "credits.documentationfield",
+        "fields": {
+            "ordinal": 3,
+            "max_range": null,
+            "required": "cond",
+            "title": "A brief description of the methodology the institution followed to complete the inventory",
+            "tooltip_help_text": "",
+            "last_choice_is_other": false,
+            "min_range": null,
+            "credit": 14,
+            "inline_help_text": "<p><span><span>This field is required if claiming points for inventorying sustainability in the curriculum (Part 2)</span></span></p>",
+            "units": null,
+            "identifier": "B",
+            "type": "long_text"
+        }
+    },
+
+    {
+        "pk": 29,
+        "model": "submissions.longtextsubmission",
+        "fields": {
+            "documentation_field": 215,
+            "value": "",
+            "credit_submission": 2
+        }
+    },
+
+    {
+        "pk": 240,
+        "model": "credits.documentationfield",
+        "fields": {
+            "ordinal": 4,
+            "max_range": null,
+            "required": "req",
+            "title": "Does the institution make its sustainability course inventory publicly available online?",
+            "tooltip_help_text": "",
+            "last_choice_is_other": false,
+            "min_range": null,
+            "credit": 14,
+            "inline_help_text": "",
+            "units": null,
+            "identifier": "F",
+            "type": "boolean"
+        }
+    },
+
+    {
+        "pk": 30,
+        "model": "submissions.booleansubmission",
+        "fields": {
+            "documentation_field": 240,
+            "value": true,
+            "credit_submission": 2
+        }
+    },
+
+    {
+        "pk": 216,
+        "model": "credits.documentationfield",
+        "fields": {
+            "ordinal": 5,
+            "max_range": null,
+            "required": "cond",
+            "title": "The website URL where the sustainability course inventory is posted",
+            "tooltip_help_text": "",
+            "last_choice_is_other": false,
+            "min_range": null,
+            "credit": 14,
+            "inline_help_text": "<p><span><span><span>This field is required if claiming points for making the inventory publicly available (Part 3)</span></span></span></p>",
+            "units": null,
+            "identifier": "C",
+            "type": "url"
+        }
+    },
+
+    {
+        "pk": 31,
+        "model": "submissions.urlsubmission",
+        "fields": {
+            "documentation_field": 216,
+            "value": "http://duke.edu",
+            "credit_submission": 2
+        }
+    },
+
+    {
+        "pk": 24,
+        "model": "credits.credit",
+        "fields": {
+            "ordinal": 0,
+            "scoring": "",
+            "staff_notes": "",
+            "subcategory": 5,
+            "title": "Sustainability Research Identification",
+            "criteria": "",
+            "measurement": "",
+            "number": 15,
+            "point_value": 3.0,
+            "applicability": "<p>This credit applies to all institutions where research is considered during faculty tenure and promotion decisions.</p>",
+            "validation_rules": "if D:  # answer yes to adopt defn\n  if not A:\n    errors['A'] = \"Please provide a copy of the institution\u2019s definition of sustainability research. This field is required if you wish to earn points for adopting the definition.\"\n\nif E:  # answer yes to inventory\n  if not B:\n    errors['B'] = \"Please provide a brief description of the methodology the institution followed to complete the inventory. This field is required if you wish to earn points for the inventory.\"\n\nif F:  # answer yes to public available online\n  if not C:\n    errors['C'] = \"Please provide the website URL where the sustainability research inventory is posted. This field is required if you wish to earn points for making the inventory available publicly.\"",
+            "formula": "var1 = 1 if D else 0 #1 pt for adopting defn\n\nvar2 = 1 if E else 0 #1 pt for identifying courses\n\nvar3 = 1 if F else 0 #1 pt for making public\n\npoints = var1 + var2 + var3",
+            "type": "t1"
+        }
+    },
+
+    {
+        "pk": 393,
+        "model": "credits.documentationfield",
+        "fields": {
+            "ordinal": 0,
+            "max_range": null,
+            "required": "req",
+            "title": "Has the institution developed a definition of sustainability research?",
+            "tooltip_help_text": "",
+            "last_choice_is_other": false,
+            "min_range": null,
+            "credit": 24,
+            "inline_help_text": "",
+            "units": null,
+            "identifier": "D",
+            "type": "boolean"
+        }
+    },
+
+    {
+        "pk": 32,
+        "model": "submissions.booleansubmission",
+        "fields": {
+            "documentation_field": 393,
+            "value": true,
+            "credit_submission": 3
+        }
+    },
+
+    {
+        "pk": 221,
+        "model": "credits.documentationfield",
+        "fields": {
+            "ordinal": 1,
+            "max_range": null,
+            "required": "cond",
+            "title": "A copy of the institution's definition of sustainability research",
+            "tooltip_help_text": "",
+            "last_choice_is_other": false,
+            "min_range": null,
+            "credit": 24,
+            "inline_help_text": "<p><span>This field is required if claiming points for adopting a definition (Part 1)</span></p>",
+            "units": null,
+            "identifier": "A",
+            "type": "long_text"
+        }
+    },
+
+    {
+        "pk": 33,
+        "model": "submissions.longtextsubmission",
+        "fields": {
+            "documentation_field": 221,
+            "value": "",
+            "credit_submission": 3
+        }
+    },
+
+    {
+        "pk": 394,
+        "model": "credits.documentationfield",
+        "fields": {
+            "ordinal": 2,
+            "max_range": null,
+            "required": "req",
+            "title": "Has the institution identified its sustainability research activities and initiatives?",
+            "tooltip_help_text": "",
+            "last_choice_is_other": false,
+            "min_range": null,
+            "credit": 24,
+            "inline_help_text": "",
+            "units": null,
+            "identifier": "E",
+            "type": "boolean"
+        }
+    },
+
+    {
+        "pk": 34,
+        "model": "submissions.booleansubmission",
+        "fields": {
+            "documentation_field": 394,
+            "value": true,
+            "credit_submission": 3
+        }
+    },
+
+    {
+        "pk": 222,
+        "model": "credits.documentationfield",
+        "fields": {
+            "ordinal": 3,
+            "max_range": null,
+            "required": "cond",
+            "title": "A brief description of the methodology the institution followed to complete the inventory",
+            "tooltip_help_text": "",
+            "last_choice_is_other": false,
+            "min_range": null,
+            "credit": 24,
+            "inline_help_text": "<p><span>This field is required if claiming points for inventorying sustainability research (Part 2)</span></p>",
+            "units": null,
+            "identifier": "B",
+            "type": "long_text"
+        }
+    },
+
+    {
+        "pk": 35,
+        "model": "submissions.longtextsubmission",
+        "fields": {
+            "documentation_field": 222,
+            "value": "",
+            "credit_submission": 3
+        }
+    },
+
+    {
+        "pk": 395,
+        "model": "credits.documentationfield",
+        "fields": {
+            "ordinal": 4,
+            "max_range": null,
+            "required": "req",
+            "title": "Does the institution make its sustainability research inventory publicly available online?",
+            "tooltip_help_text": "",
+            "last_choice_is_other": false,
+            "min_range": null,
+            "credit": 24,
+            "inline_help_text": "",
+            "units": null,
+            "identifier": "F",
+            "type": "boolean"
+        }
+    },
+
+    {
+        "pk": 36,
+        "model": "submissions.booleansubmission",
+        "fields": {
+            "documentation_field": 395,
+            "value": true,
+            "credit_submission": 3
+        }
+    },
+
+    {
+        "pk": 223,
+        "model": "credits.documentationfield",
+        "fields": {
+            "ordinal": 5,
+            "max_range": null,
+            "required": "cond",
+            "title": "The website URL where the sustainability research inventory is posted (required if claiming Part 2 of the credit)",
+            "tooltip_help_text": "",
+            "last_choice_is_other": false,
+            "min_range": null,
+            "credit": 24,
+            "inline_help_text": "<p><span><span>This field is required if claiming points for making the inventory publicly available (Part 3)</span></span></p>",
+            "units": null,
+            "identifier": "C",
+            "type": "url"
+        }
+    },
+
+    {
+        "pk": 37,
+        "model": "submissions.urlsubmission",
+        "fields": {
+            "documentation_field": 223,
+            "value": "http://duke.edu",
+            "credit_submission": 3
+        }
+    },
+
+    {
+        "pk": 1,
+        "model": "submissions.submissionset",
+        "fields": {
+            "creditset": 2,
+            "institution": 56,
+            "date_registered": "2010-01-01",
+            "date_submitted": "2010-02-01",
+            "registering_user": 1,
+            "submitting_user": 1,
+            "status": "pr",
+            "reporter_status": false
+        }
+    },
+
+    {
+        "pk": 1,
+        "model": "submissions.categorysubmission",
+        "fields": {
+            "submissionset": 1,
+            "category": 1
+        }
+    },
+
+    {
+        "pk": 1,
+        "model": "submissions.subcategorysubmission",
+        "fields": {
+            "category_submission": 1,
+            "subcategory": 1
+        }
+    },
+
+    {
+        "pk": 2,
+        "model": "submissions.subcategorysubmission",
+        "fields": {
+            "category_submission": 1,
+            "subcategory": 3
+        }
+    },
+
+    {
+        "pk": 3,
+        "model": "submissions.subcategorysubmission",
+        "fields": {
+            "category_submission": 1,
+            "subcategory": 5
+        }
+    },
+
+    {
+        "pk": 1,
+        "model": "submissions.creditsubmission",
+        "fields": {
+            "credit": 1
+        }
+    },
+
+    {
+        "pk": 2,
+        "model": "submissions.creditsubmission",
+        "fields": {
+            "credit": 14
+        }
+    },
+
+    {
+        "pk": 3,
+        "model": "submissions.creditsubmission",
+        "fields": {
+            "credit": 24
+        }
+    },
+
+    {
+        "pk": 1,
+        "model": "submissions.creditusersubmission",
+        "fields": {
+            "subcategory_submission": 1,
+            "submission_status": "c",
+            "responsible_party_confirm": true
+        }
+    },
+
+    {
+        "pk": 2,
+        "model": "submissions.creditusersubmission",
+        "fields": {
+            "subcategory_submission": 2,
+            "submission_status": "c",
+            "responsible_party_confirm": true
+        }
+    },
+
+    {
+        "pk": 3,
+        "model": "submissions.creditusersubmission",
+        "fields": {
+            "subcategory_submission": 3,
+            "submission_status": "c",
+            "responsible_party_confirm": true
+        }
+    }
+]

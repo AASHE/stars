@@ -1,0 +1,24 @@
+{% extends "tool/credit_editor/credits/base.html" %}
+
+{% load bootstrap %}
+
+{% block editor_content %}
+    {% with active_tab="applicability" %}
+        {{ block.super }}
+    {% endwith %}
+{% endblock %}
+
+{% block credit_content %}
+    <div class='creditContent'>
+        <form class='generalForm' method='POST' action='.'>
+            {{ object_form|bootstrap }}
+            <div class="form-actions">
+                <input type="submit" class="btn btn-primary"
+                       value="Save reason" id="submit_button"/>
+                <a href="{{ credit.get_edit_url }}applicability"
+                   class="btn">
+                    Cancel
+                </a>
+            </div>
+        </form>
+{% endblock %}

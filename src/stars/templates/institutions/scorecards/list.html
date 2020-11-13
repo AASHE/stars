@@ -1,0 +1,76 @@
+{% extends "institutions/base.html" %}
+
+{% block title %}{{ institution }} | {{ block.super }}{% endblock %}
+
+{% block crumb-tab %}
+	<li>{{ institution }}</li>
+{% endblock %}
+
+{% block content %}
+    <div class='row inner20'>
+        <h1>{{ institution }} Reports</h1>
+        <h4>
+            {{ institution.get_location_string }}
+        </h4>
+        <br/>
+        <div class='inner20'>
+        <table class='table'>
+        	<thead>
+            <tr>
+                <th>STARS Version</th>
+                <th>Submission Date</th>
+								<th>Valid Through</th>
+                <th>Rating</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for ss in submission_sets %}
+                <tr>
+                    <td>
+                        {{ ss.creditset }}
+                    </td>
+                    <td>
+                        <a href='{{ ss.get_scorecard_url }}'>
+                            {% if ss.date_submitted %}
+                                {{ ss.date_submitted }}
+                            {% else %}
+                                Pending Submission
+                            {% endif %}
+                        </a>
+                    </td>
+										<td>
+                            {% if ss.date_expiration %}
+                                {{ ss.date_expiration }}
+                            {% else %}
+                                Pending Expiration
+                            {% endif %}
+                    </td>
+                    <td>
+                        {% if ss.status == 'r' %}
+                          {% if not ss.expired %}
+                            {{ ss.rating }}
+                          {% else %}
+                            {{ ss.rating }} - expired
+                          {% endif %}
+                        {% else %}
+                            Not Rated
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    </div>
+
+    <script>
+        jQuery( function($) {
+            $('tbody tr').addClass('clickable').click( function() {
+                var href = $(this).find('a').attr('href')
+                if(href) {
+                    window.location = href;
+                }
+            });
+        });
+    </script>
+{% endblock %}

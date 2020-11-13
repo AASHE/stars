@@ -1,0 +1,93 @@
+<script type='text/javascript'>
+
+	add_filter = function(obj_id) {
+		sel = document.getElementById(obj_id);
+		url = sel.options[sel.selectedIndex].value
+		if (url && url != "") {
+			window.location.replace(url);
+		}
+	}
+
+</script>
+
+<div class='greyBox'>
+
+	<div style="text-align: right">
+		Selected STARS Version:
+		<a
+			href="{{url_2_0}}"
+			class="btn {% if url_2_0 == '#'%}btn-primary{% endif %}">2.0</a>
+		<a
+			href="{{url_1_0}}"
+			class="btn {% if url_1_0 == '#'%}btn-primary{% endif %}">1.0</a>
+	</div>
+
+	Display results for institutions with the following characteristics:<br/><br/>
+
+	<table class='table'>
+		<thead>
+		<tr>
+			<th></th>
+			<th>Type of Characteristic</th>
+			<th>Specific Characteristic</th>
+			<th></th>
+		</tr>
+		</thead>
+		<tbody>
+		{% if selected_filters %}
+			{% for f in selected_filters %}
+				<tr>
+					<td style="text-align: center;">
+						<a href='{{ request.path }}?{{ f.del_link }}'>
+							<i class='icon-trash'></i>
+						</a>
+					</td>
+					<td>{{ f.filter_title }}</td>
+					<td>{{ f.selected_item_title }}</td>
+					<td></td>
+				</tr>
+			{% endfor %}
+		{% else %}
+			<tr><td colspan='4'>Select a filter</td></tr>
+		{% endif %}
+
+		{% if available_filters %}
+			<tr>
+				<td></td>
+				<td>
+					<select name="type" id="filter_type" data-target='filter_options' data-target-options='choicesLookup'>
+						<option value="" selected="selected">-------</option>
+						{% for f in available_filters %}
+							<option value='{{ f.filter_key }}'>{{ f.filter_title }}</option>
+						{% endfor %}
+					</select>
+					<script type='text/javascript'>
+						$('#filter_type').parentChildSelect();
+					</script>
+				</td>
+				<td>
+					<select id='filter_options'>
+					</select>
+				</td>
+				<td>
+					<button type='button' class='btn' onclick="add_filter('filter_options')">Add Filter</button>
+				</td>
+		{% endif %}
+
+		{% if new_filter_form %}
+		<tr>
+			<td></td>
+			<td>
+				{{ new_filter_form.type }}
+				{{ new_filter_form.errors.type }}
+			</td>
+			<td>
+				{{ new_filter_form.errors.item }}
+				{{ new_filter_form.item }}
+			</td>
+			<td><button type='submit' class='btn'>Add Filter</button></td>
+		</tr>
+		{% endif %}
+		</tbody>
+	</table>
+</div>

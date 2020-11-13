@@ -1,0 +1,24 @@
+{% extends "tool/base.html" %}
+
+{% block crumbs-tool %}
+  <a href="{% url 'tool:my_submission:submission-summary' institution.slug submissionset.id %}">
+    My Submission
+  </a>
+  <span class="divider">/</span>
+  Submit Report
+{% endblock %}
+
+
+{% block tool_content %}
+  <h2>Thank you for your submission</h2>
+  <p>
+    Congratulations!  Your institution's data has been successfully
+    submitted to AASHE.  The STARS Liaison for your institution will
+    receive a confirmation email shortly with information about next
+    steps
+  </p>
+  <p>
+    If you have any questions or concerns, please contact us
+    at <a href='mailto:stars@aashe.org'>stars@aashe.org</a>.
+  </p>
+{% endblock %}

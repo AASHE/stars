@@ -1,0 +1,42 @@
+{% extends "tool/submissions/submit_wizard.html" %}
+
+{% load bootstrap %}
+{% load content %}
+
+{% block above_submit_form %}
+    {% display_block_content 'submit_for_rating_contacts' user %}
+{% endblock %}
+
+{% block submit_form_fields %}
+  <h3>
+    STARS Liaison
+  </h3>
+  <p>
+    {{ wizard.form.contact_first_name|bootstrap }}
+    {{ wizard.form.contact_last_name|bootstrap }}
+    {{ wizard.form.contact_title|bootstrap }}
+    {{ wizard.form.contact_department|bootstrap }}
+    {{ wizard.form.contact_email|bootstrap }}
+  </p>
+  <hr>
+  <h3>
+    Executive Contact
+  </h3>
+  <p>
+    {{ wizard.form.executive_contact_first_name|bootstrap }}
+    {{ wizard.form.executive_contact_last_name|bootstrap }}
+    {{ wizard.form.executive_contact_title|bootstrap }}
+    {{ wizard.form.executive_contact_department|bootstrap }}
+    {{ wizard.form.executive_contact_email|bootstrap }}
+  </p>
+  <hr>
+  <h3>
+    President, Chancellor or other high-ranking executive (optional)
+  </h3>
+  <p>
+    {{ wizard.form.president_first_name|bootstrap }}
+    {{ wizard.form.president_last_name|bootstrap }}
+    {{ wizard.form.president_title|bootstrap }}
+    {{ wizard.form.president_email|bootstrap }}
+  </p>
+{% endblock %}

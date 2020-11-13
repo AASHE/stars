@@ -1,0 +1,12 @@
+[
+{"pk": 1, "model": "helpers.helpcontext", "fields": {"help_text": "This 'help context' is used by \"automated unit tests\" - do not change this text!", "name": "test"}}, 
+{"pk": 2, "model": "helpers.helpcontext", 
+          "fields": {"help_text": "The table above provides a key that maps variable names (A, B, C, ....) to documentation fields.<br>\r\nEnter a formula below that assigns a value to <strong><em>points</em></strong> using these variables to give the score for a given credit submission.  Any valid Python code is valid, but it must assign a value to points.\r\n<blockquote>E.g. points = 2 if A > 3 else 1 if A > 2 else 0</blockquote>\r\nSee <a href=\"http://code.aashedev.org/stars/wiki/UserFormulaEditor\">Using the STARS formula editor</a> for more information.\r\n", 
+          "name": "credit_formula"}}, 
+{"pk": 3, "model": "helpers.helpcontext", 
+          "fields": {"help_text": "Your 'active set' is the STARS credit set version your institution is currently completing.<br>If your institution has participated in pervious versions of STARS, you can select the credit set version you want your users to make submissions for here.", 
+          "name": "active_set"}}, 
+{"pk": 4, "model": "helpers.helpcontext", 
+          "fields": {"help_text": "<p>Enter the e-mail address of the  user you want to add an account for.</p><ul><li> You can change the user level for existing users by simply re-adding them with a new user level.</li><li> The user must have an account with <a href='http://aashe.org'>aashe.org</a>.</li><li> <img src='/media/static/images/delete.png' /> deletes the user account - the user will no longer have rights to view, edit, review, or otherwise manage STARS submissions for your institution.</li></ul>  ", 
+          "name": "add_account"}}
+]

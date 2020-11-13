@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% load content %}
+
+{% block title %}Institutions | {{ block.super }}{% endblock %}
+
+{% block main_menu %}
+	{% with selected="mm_institutions" %}
+    	{% include 'helpers/main_menu.html' %}
+    {% endwith %}
+{% endblock %}
+
+{% block crumbs %}
+	<ul class="breadcrumb">
+		<li>
+	    	<a href="/">Home</a> <span class="divider">/</span>
+	  	</li>
+	  <li>
+	    <a href="{% url 'institutions:participants-reports' %}">
+              STARS Institutions
+            </a>
+            <span class="divider">/</span>
+	  </li>
+	  {% block crumb-tab %}{% endblock %}
+	</ul>
+{% endblock %}
+
+{% block content %}
+	<h1>{% block h1 %}STARS Institutions{% endblock %}</h1>
+      {% block page_description %}{% endblock %}
+	  {% block tabs %}{% endblock %}
+      <div class="tab-content">
+      	<div class="tab-pane active">
+            {% block tab_content %}{% endblock %}
+			{% block tab_footer %}
+			  {% display_block_content 'data_use_guidelines_message' user %}
+			{% endblock %}
+        </div>
+      </div>
+{% endblock %}

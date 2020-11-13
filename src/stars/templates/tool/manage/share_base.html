@@ -1,0 +1,18 @@
+{% extends 'tool/manage/base.html' %}
+
+{% block crumbs-tool %}<li>Share Data</li>{% endblock %}
+
+{% block tabs %}
+	{% with active_tab="share" %}{{ block.super }}{% endwith %}
+{% endblock %}
+
+{% block subtabs %}
+	<ul class="nav nav-pills">
+		<li{% if active_tab == 'third-parties' %} class="active" {% endif %}>
+	  	<a href="{% url 'tool:manage:share-third-parties' institution.slug %}">Data Sharing Instructions</a>
+	  </li>
+	  <li{% if active_tab == 'snapshots' %} class="active" {% endif %}>
+	    <a href="{% url 'tool:manage:share-data' institution.slug %}">My Snapshots (archive)</a>
+	  </li>
+	</ul>
+{% endblock %}

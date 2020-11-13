@@ -1,0 +1,51 @@
+{% load l10n %}
+{% load terms %}
+
+{% localize off %}
+
+{% autoescape off %}
+  {% if help_text %}
+    {% if tooltip %}
+      <a href="#bm{{ id }}" name="#bm{{ id }}"
+         id="{{ id }}">
+        <i class='{{ icon }}'></i></a>
+      <script type='text/javascript'>
+       var options = {
+         "title": "{{ help_text_title }}",
+         "content": "{{ help_text }}",
+         "html": true,
+         "trigger": 'click',
+         "position": 'top'
+       }
+       $("#{{ id }}").popover(options);
+      </script>
+    {% else %}
+      {% if modal %}
+        <div class="modal hide fade" id="{{ id }}">
+          {% if help_text_title %}
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal"
+                      aria-hidden="true">&times;</button>
+              <h3>
+                {{ help_text_title }}
+              </h3>
+            </div>
+          {% endif %}
+          <div class="modal-body">
+            <p>{{ help_text }}</p>
+          </div>
+          <div class="modal-footer">
+            <a href="#" class="btn" data-dismiss="modal">Close</a>
+          </div>
+        </div>
+        <a data-toggle="modal" href="#{{ id }}" >
+          <i class='icon-question-sign'></i>
+        </a>
+      {% else %}
+        <span class='help_text'> {{ help_text|replace_terms }} </span>
+      {% endif %}
+    {% endif %}
+  {% endif %}
+{% endautoescape %}
+
+{% endlocalize %}

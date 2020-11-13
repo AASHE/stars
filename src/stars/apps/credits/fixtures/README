@@ -1,0 +1,5 @@
+Fixtures:
+---------
+initial_data.json - contains the 1.0 creditset object as of March 2nd, 2010.  At least one creditset object is required to display the credit editor so you can add more!
+
+creditset_v2.json - creditset v2.0

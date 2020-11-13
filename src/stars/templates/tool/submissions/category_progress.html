@@ -1,0 +1,30 @@
+<table class='headed_list wide'>
+    <tr>
+        <td class='header' colspan='9'>
+            {% if title.get_submit_url %}
+                <a href='{{ title.get_submit_url }}'>{{ title }}</a>
+                {% if title.get_status %}
+                    <span class='status'>({{ title.get_status }})</span>
+                {% endif %}
+            {% else %}
+                {{ title }}
+            {% endif %}
+        </td>
+    </tr>
+    <tr>
+        <th colspan=2>Subcategory</th>
+        <th>Credits Completed</th>
+        <th>Points Claimed</th>
+    </tr>
+    {% load submit_tags %}
+    {% for sub in subcategory_submission_list %}
+        <tr>
+            <td>{% show_progress_icon sub.get_percent_complete 'medium' %}</td>
+            <td class='subcategory_summary'>
+                <a href='{{ sub.subcategory.get_submit_url }}'>{{ sub }}</a>
+            </td>
+            <td>{{ sub.get_finished_credit_count }} / {{ sub.subcategory.credit_set.count }}</td>
+            <td>{{ sub.get_claimed_points }} / {% format_available_points sub %}</td>
+        </tr>
+    {% endfor %}
+</table>

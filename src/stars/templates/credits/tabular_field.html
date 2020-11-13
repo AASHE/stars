@@ -1,0 +1,58 @@
+{% comment %}
+	Displays a tabular fields for three situations:
+
+		1) Displaying in the credit editor
+		2) Displaying in a public report
+		3) Editing in the reporting tool
+
+	It does not handle creating/editing within the Credit Editor
+
+	Expects:
+		1)
+		A DocumentationField or SubmissionField called `field` in the context
+		with a property called `sub_table`, a table generated using
+		credits.utils.get_array_for_tabular_fields or one that mirrors the
+		structure:
+
+		[
+		 [None, ColHeader, ...,],
+         [Row Header, DF, ...,],
+         ...,
+        ]
+
+      	2)
+      	A context variable, field_template, with the template to use for the
+      	field. So, if the table contains documentation fields or submission
+      	fields they can be displayed properly. For example:
+
+      	{% with '.../documentation_field_inside_table.html" as field_template %}
+      		{% include "path/to/this/tabular_field.html" %}
+      	{% endwith %}
+{% endcomment %}
+
+<table class="table table-bordered tabular">
+  <thead>
+    {% for row in documentation_field.get_sub_table %}
+      <tr>
+        {% for col in row %}
+          {% if forloop.parentloop.first %}
+            <td>{% if col %}{{ col }}{% endif %}</td>
+          {% elif forloop.first %}
+            <td>{% if col %}{{ col }}{% endif %}</td>
+          {% else %}
+            <td>
+              {% with col as field %}
+                {% include field_template %}
+              {% endwith %}
+            </td>
+          {% endif %}
+        {% endfor %}
+
+        {% if forloop.first %}
+          </thead>
+          <tbody>
+        {% endif %}
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>

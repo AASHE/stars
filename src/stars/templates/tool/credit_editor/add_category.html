@@ -1,0 +1,8 @@
+{% extends "tool/credit_editor/add_base.html" %}
+
+{% block crumbs %}
+    {% load ce_tags %}
+    {% show_editor_crumbs creditset %}
+{% endblock %}
+
+{% block h1 %}Add Category{% endblock %}

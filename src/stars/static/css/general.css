@@ -1,0 +1,84 @@
+html, body {
+    font-size: 12px;
+    font-family: DejaVuSans, Helvetica, Arial;
+    margin: 0px;
+    padding: 4px;
+    line-height: 1.5;
+}
+
+img {
+    border-width: 0px;
+}
+
+a {
+    color: #176180;
+}
+
+h1, h2, h3, h4 {
+    font-family: DejaVuSans, Helvetica, Arial;
+    color: #404040;
+    line-height: 1.2;
+    font-size: 2.5em;
+    font-weight: normal;
+    border-bottom: 1px solid #333333;
+    margin: 0px;
+    padding: 0px 0px 5px 0px;
+}
+
+h2 {
+    font-size: 2em;
+    border-top: 3px solid #1b617f;
+    padding: 10px 0px;
+    margin: 20px 0px 0px 0px;
+}
+
+h3 {
+    font-size: 1.4em;
+/*    font-weight: bold;*/
+    text-transform: uppercase;
+}
+
+h4 {
+    font-size: 1.2em;
+    text-transform: uppercase;
+    font-weight: bold;
+    border: 0px;
+    margin: 0px;
+    padding: 10px 0px;
+}
+
+h1 a, h1 a:visited {
+    color: #404040;
+    text-decoration: none;
+}
+
+h1 a:hover {
+    text-decoration: underline;
+}
+
+hr {
+    color: #848e2b;
+    background-color: #848e2b;
+    height: 3px;
+    border-width: 0px;
+    margin: 20px 0px;
+}
+
+hr.blue {
+	color: #1b617f;
+	background-color: #1b617f;
+	height: 4px;
+}
+
+hr.thin {
+    height: 2px;
+}
+
+dt {
+	font-weight: bold;
+}
+
+table tr td p {
+	padding: 0px;
+	margin: 0px;	
+}

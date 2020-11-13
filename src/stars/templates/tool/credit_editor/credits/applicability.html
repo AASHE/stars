@@ -1,0 +1,64 @@
+{% extends "tool/credit_editor/credits/base.html" %}
+
+{% load bootstrap %}
+
+{% block editor_content %}
+  {% with active_tab="applicability" %}
+    {{ block.super }}
+  {% endwith %}
+{% endblock %}
+
+{% block credit_content %}
+  {% if object_ordering %}
+    <form class='generalForm' method='POST' action='.'>
+      <table class="table table-condensed" id='dndtable'>
+        <tr nodrop="true" nodrag="true">
+          <th colspan='2'
+              style="align; left;">
+            Reasons
+          </th>
+        </tr>
+        {% include 'tool/credit_editor/ordering_form_table.html' %}
+      </table>
+
+      <div class="form-actions">
+        <button type='submit'
+                id='submit_button'
+                class="btn btn-primary">
+          Save credit
+        </button>
+      </div>
+    </form>
+  {% endif %}
+  <div class="accordion" id="add-reason-accordion">
+    <div class="accordion-group">
+      <div class="accordion-heading">
+        <a href="#add-reason-form"
+           data-toggle="collapse"
+           data-parent="#add-reason-accordion"
+           class="accordion-toggle">
+          Add reason
+        </a>
+      </div>
+      <div id="add-reason-form" class="accordion-body collapse">
+        <form action='{{ credit.get_edit_url }}add-reason/'
+              method='POST' class='generalForm'
+              style="padding:20px;">
+          {{ new_reason_form|bootstrap }}
+          <div class="form-actions">
+            <input type="submit"
+                   class="btn btn-primary"
+                   value="Save reason"
+                   id="add-reason-button"/>
+            <input type="button"
+                   class="btn"
+                   value="Cancel"
+                   data-toggle="collapse"
+                   data-parent="#add-reason-accordion"
+                   href="#add-reason-form"/>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

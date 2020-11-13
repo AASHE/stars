@@ -1,0 +1,19 @@
+{% extends 'tool/submissions/credit_base.html' %}
+
+{% load bootstrap %}
+
+{% block credit_tabs %}{% with active='notes' %}{{ block.super }}{% endwith %}{% endblock %}
+
+{% block tab_content %}
+<div class='creditContent'>
+    <h2>Internal Notes</h2>
+    <form method='post' action='.' class='generalForm' name='submission_form' enctype="multipart/form-data">
+		{{ form.internal_notes|bootstrap }}
+        <div class='form-actions'>
+        	<button type='submit' id='submit_button' class="btn btn-primary">
+            	Save
+        	</button>
+    	</div>
+    </form>
+</div>
+{% endblock %}

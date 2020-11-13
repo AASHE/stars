@@ -1,0 +1,43 @@
+{% extends 'tool/admin/watchdog/base.html' %}
+
+{% block crumbs %} {{ block.super }} &gt; Log{% endblock %}
+
+{% block watchdog_content %}
+  {% ifnotequal entries.object_list.count 0 %}
+    <table id='watchdog_table' class='summary'>
+        <tr><th>Severity</th><th>Message</th><th>User</th><th>Time</th></tr>
+        {% for entry in entries.object_list %}
+        <tr>
+          <td>{{ entry.get_severity }}</td>
+          <td>
+            <a href='{{ entry.get_absolute_url }}'>
+                {{ entry.message }}
+            </a>
+          </td>
+          <td>{{entry.user}}</td>
+          <td>{{entry.timestamp.ctime}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+  {% else %}
+    No Log Entries    
+  {% endifnotequal %} 
+  <hr>
+  <div class="pagination">
+    <span class="step-links">
+        {% if entries.has_previous %}
+            <a href="?page={{ entries.previous_page_number }}" title="previous page" >&lt;&lt;</a>&nbsp;&nbsp;
+        {% endif %}
+
+        <span class="current">
+            Page {{ entries.number }} of {{ entries.paginator.num_pages }}.
+        </span>
+
+        {% if entries.has_next %}
+            &nbsp;&nbsp;<a href="?page={{ entries.next_page_number }}" title="next page">&gt;&gt;</a>
+        {% endif %}
+    </span>
+  </div>  
+  <hr>
+  <a href="/tool/admin/watchdog/purge">Purge log</a> of entries older than {{ expiry_date }}   
+{% endblock %}

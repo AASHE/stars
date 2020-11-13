@@ -1,0 +1,9 @@
+{% extends 'tool/submissions/credit_base.html' %}
+
+{% block credit_tabs %}{% with active='info' %}{{ block.super }}{% endwith %}{% endblock %}
+
+{% block tab_content %}
+<div class='creditContent'>
+    {% include 'tool/submissions/credit_documentation.html' %}
+</div>
+{% endblock %}

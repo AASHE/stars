@@ -1,0 +1,75 @@
+/*
+	List Expander 
+*/
+
+.listexpander, .listexpander ul, .listexpander li{
+	margin: 0px;
+	padding: 0px;
+	list-style: none;
+}
+
+.listexpander li{
+	line-height: 1.4;
+	padding-left: 15px;
+	margin-top: 1px;
+	cursor: default;
+}
+
+.listexpander li.collapsed, .listexpander li.expanded{cursor:pointer;} 
+
+/* all expanded/collapsed LIs */
+
+.listexpander li.collapsed {
+    background-image: url('/media/static/images/expand.png');
+}
+
+.listexpander li.expanded {
+    background-image: url('/media/static/images/collapse.png');
+}
+
+.listexpander li.collapsed, .listexpander li.expanded {
+    background-position: 0px .4em;
+    background-repeat: no-repeat;
+}
+
+/* buttons */
+
+p.listexpander{
+	height:1.5em;
+	margin:1em 0;
+	text-align: center;
+}
+p.listexpander a{
+	float:left;
+	height:1.5em;
+	line-height:1.5em;
+	padding:0 20px;
+	border:1px solid #eee;
+	margin-right:0px;
+	cursor:pointer;
+	margin-left: 20px;
+}
+p.listexpander a:hover{
+	background:#f8f8f8;
+}
+
+/* float fix */
+.listexpander li:after{
+    content: "."; 
+    display: block; 
+    height: 0; 
+    clear: both; 
+    visibility: hidden;
+}
+.listexpander li{
+	display: inline-block;
+}
+/* Hides from IE-mac \*/
+* html .listexpander li{
+	height: 1%;
+}
+.listexpander li{
+	display: block;
+}
+/* End hide from IE-mac */
+/* end float fix */

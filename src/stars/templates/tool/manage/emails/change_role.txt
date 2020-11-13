@@ -1,0 +1,9 @@
+{% extends 'tool/manage/emails/base_account.txt' %}
+{% block content %} 
+{{ admin.get_full_name }} changed your user status for {{institution}}'s account in the STARS Reporting Tool (http://stars.aashe.org/).
+You now have "{{ account.get_user_level_display }}" access, which means you can 
+{% ifequal account.user_level 'admin' %}manage users' privileges, update information in the institution profile, and complete the final submission.  
+{% else %}{% ifequal account.user_level 'submit' %}enter and save data for STARS credits.
+{% else %}{% ifequal account.user_level 'view' %}view the latest status report for {{institution}}'s STARS submission.
+{% endifequal %}{% endifequal %}{% endifequal %}
+{% endblock %} 

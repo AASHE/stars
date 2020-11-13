@@ -1,0 +1,113 @@
+{% extends 'institutions/data_views/index.html' %}
+
+{% block title %}Aggregated STARS Category Scores{% endblock %}
+
+{% block content %}
+	<div class='inner20'>
+		<h1>Aggregated STARS Category Scores</h1>
+		<div style='margin: 15px 100px'>
+			Compare average scores for groups of institutions.
+			<p>
+			<b>Ideas for filters:</b> Carnegie Class, STARS Rating, Enrollment, Endowment, Athletic Conference
+			</p><p>
+			In <span style='background-color: #ffa;'>YELLOW</span> below: an institution can compare itself to a group
+			<br/>(this could be limited to one institution so there isn't a direct comparison).
+			</p>
+		</div>
+		<div class='greyBox'>
+			Display results for institutions with the following characteristics:<br/><br/>
+			<table class='filterList'>
+				<tr>
+					<th></th>
+					<th>Type of Characteristic</th>
+					<th>Specific Characteristic</th>
+					<th></th>
+				</tr>
+				<tr>
+					<td style="text-align: center;">
+						<a href='#' title="Remove"><img src='/media/static/images/delete_grey_x.png' alt='[x]' /></a>
+					</td>
+					<td>Carnegie Classification</td>
+					<td>Research</td>
+					<td>(3 found)</td>
+				</tr>
+				<tr class='odd'>
+					<td style="text-align: center;">
+						<a href='#' title="Remove"><img src='/media/static/images/delete_grey_x.png' alt='[x]' /></a>
+					</td>
+					<td>Carnegie Classification</td>
+					<td>Community Colleges</td>
+					<td>(2 found)</td>
+				</tr>
+				<tr>
+					<td style="text-align: center;"></td>
+					<td>
+						<select>
+							<option>-----</option>
+							<option>Sports Division</option>
+							<option>Region</option>
+							<option>STARS Rating</option>
+							<option>Enrollment</option>
+						</select>
+					</td>
+					<td>
+						<select>
+							<option>-----</option>
+							<option>Bronze</option>
+							<option>Silver</option>
+							<option>Gold</option>
+							<option>Platinum</option>
+						</select>
+					</td>
+					<td><button>Add Characteristic</button></td>
+				</tr>
+				
+				<tr style='padding: 0px 20px;background-color:#ffa;'>
+					<td colspan='4' style='text-align: center'>
+						<input type='checkbox' /> Include my institution below
+					</td>
+				</tr>
+			</table>
+		</div>
+		
+		<div style='text-align: center'>
+			<img src='/media/static/images/arrow_down.png' />
+		</div>
+		<p style='margin: 10px 10px 5px 10px; text-align: right;'>
+			<a href='#'>See Graph <img src='/media/static/images/chart_bar.png' /></a>
+		</p>
+		<table id="institution_list" class='greyTable'>
+        	<tr>
+        		<th style='text-align: left'>
+        			Selected Characteristic
+        		</th>
+        		<th>
+        			ER
+        		</th>
+        		<th>
+        			OP
+        		</th>
+        		<th>
+        			PAE
+        		</th>
+        		<th>
+        			Innovation
+        		</th>
+        	</tr>
+        	<tr>
+        		<td style='text-align: left'>Research</td>
+        		<td>50%</td>
+        		<td>45.8%</td>
+        		<td>40%</td>
+        		<td>.9</td>
+        	</tr>
+        	<tr class='odd'>
+        		<td style='text-align: left'>Community Colleges</td>
+        		<td>50%</td>
+        		<td>45.8%</td>
+        		<td>40%</td>
+        		<td>.9</td>
+        	</tr>
+        </table>
+	</div>
+{% endblock %}

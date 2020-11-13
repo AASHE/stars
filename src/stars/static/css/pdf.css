@@ -1,0 +1,219 @@
+body {
+        font-family: Arial, sans-serif;
+        font-size: 10pt;
+}
+
+a {
+        text-decoration: none;
+        color: #176180;
+}
+
+h1 {
+        color: black;
+        font-size: 30pt;
+        padding: 0cm;
+        padding-top: 1cm;
+        margin: 0cm;
+        line-height: 1.2;
+        text-align: center;
+}
+
+h2, h3, h4 {
+        page-break-before: always;
+}
+
+/* Category */
+h2 {
+        color: #17365D;
+        text-align: center;
+        font-size: 24pt;
+        padding: 0cm;
+        margin: 0cm;
+}
+
+/* the first subcategory */
+.noBreak {
+        page-break-before: avoid;
+}
+
+h2.toc {
+        padding: 0cm;
+        margin: 0cm;
+}
+
+/* Subcategory */
+h3 {
+        color: #1F497D;
+        font-size: 18pt;
+}
+
+div.seals {
+        padding-top: 4cm;
+        text-align: center;
+}
+
+table.submissionSummary {
+        width: 100%;
+        margin: 1cm 0;
+}
+
+table.submissionSummary td, table.submissionSummary th {
+        padding: 2px;
+        margin: 0px;
+}
+
+table.submissionSummary th {
+        text-align: right;
+}
+
+table.submissionSummary td {
+        text-align: left;
+}
+
+table.summary {
+        margin: 0cm .25cm;
+}
+
+.tocCatRow {
+        vertical-align: middle;
+        /* border-bottom: 1px solid #999; */
+        font-weight: bold;
+        /* line-height: 1.2; */
+        /* padding: .5cm 0cm 4px 0cm; */
+        font-size: 12pt;
+        margin: 0cm;
+}
+
+.tocSub, .tocCat {
+        color: #555;
+}
+
+.tocCreditRow {
+        vertical-align: middle;
+        margin: 0cm;
+}
+
+tr {
+        vertical-align: middle;
+}
+
+tr.oddRow, tr.evenRow {
+    /*
+      border-bottom: 1px solid #eee;
+      border-top: 1px solid #eee;
+   */
+    font-weight: bold;
+    vertical-align: middle;
+    /* line-height: 1.2; */
+    /* padding: 4px 0px 4px 0px;  */
+}
+
+tr.oddRow {
+        background-color: #eee;
+        color: red;
+}
+
+.disclaimer {
+        padding: .25cm 2cm 0cm 2cm;
+        color: #555;
+        font-style: italic;
+        font-size: .8em;
+}
+
+#footerContent {
+        text-align: right;
+        color: #777;
+        padding: .4cm 0 0 0;
+}
+
+#headerContent {
+        text-align: center;
+        color: red;
+}
+
+table.creditList {
+        border: 1px solid #eee;
+}
+
+table.creditList tr td, table.creditList tr th {
+        padding: 2px 2px 2px 2px;
+        vertical-align: middle;
+}
+
+table.creditList tr td a {
+        color: black;
+}
+
+span.scorecardFieldTitle {
+        font-weight: bold;
+        font-size: 1.1em;
+        page-break-after: avoid;
+}
+
+div.greyBox, div.greyBoxSmall {
+    padding: 10px;
+    margin: 10px 2cm 0px 1.5cm;
+    -webkit-border-radius: 10px;
+    page-break-before: avoid;
+}
+
+div.greyBoxSmall {
+        padding-top: 0px;
+        padding-bottom: 0px;
+        margin-top: 0px;
+        margin-bottom: 0px;
+}
+
+div.greyBox p {
+        margin: 0px;
+        padding-top: 5px;
+}
+
+table.scoreTable {
+        border: 0px;
+        margin: 0px;
+        width: 100%;
+}
+
+table.scoreTable th, table.scoreTable td {
+        padding: 3px;
+}
+
+table.horizontal th, table.horizontal td {
+        text-align: center;
+}
+
+table.vertical th {
+        text-align: right;
+}
+
+table.tableOfContents {
+        width: 100%;
+}
+
+div.note {
+        background-color: #eee;
+        padding: 4px;
+}
+
+div.note p {
+        padding: 0px 2px 0px 2px;
+}
+
+div.correction {
+        background-color: #ffefe0;
+        border: 1px dashed #fa3;
+        margin: 0px 20px;
+        padding: 3px;
+        color: #555;
+}
+
+pdftoc.pdftoclevel1 {
+    font-weight: bold;
+    margin-left: 0cm;
+}
+
+pdftoc.pdftoclevel2 {
+    font-weight: normal;
+    margin-left: 1.5cm;
+}

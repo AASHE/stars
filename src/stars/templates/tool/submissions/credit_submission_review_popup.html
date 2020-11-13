@@ -1,0 +1,12 @@
+{% extends 'empty_base.html' %}
+
+{% block title %} Credit Submission Review | {{ credit }}{% endblock %}
+
+{% block body %}
+  <div style="padding-left: 10px">
+    <div class="well">
+      <h1>{{ credit }}</h1>
+    </div>
+    {% include 'tool/submissions/credit_submission_review_form.html' %}
+  </div>
+{% endblock %}

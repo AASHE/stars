@@ -1,0 +1,10 @@
+<a href='/institutions/'>STARS Institutions</a> &gt;
+
+{% for object in object_set %}
+    {% if forloop.revcounter0 %}
+        <a href='{{ object.get_scorecard_url }}'>{{ object.get_crumb_label }}</a> &gt;
+    {% else %}
+        {{ object.get_crumb_label }}
+    {% endif %}
+{% endfor %}
+    Scorecard

@@ -1,0 +1,28 @@
+<ul class="nav nav-list well">
+	<li class="nav-header" {% if not article and not subcategory %}class="active"{% endif %}>
+		<a href='{{ category.get_absolute_url }}'>
+			{{ category }}
+		</a>
+	</li>
+	{% for a in category.get_articles %}
+	    <li {% if article and a == article %}class="active"{% endif %}>
+	        <a href='{{ a.get_absolute_url }}'>
+	            {{ a.title }}
+	        </a>
+	    </li>
+	{% endfor %}
+	{% for sub in category.get_published_subcategories %}
+		<li class="nav-header" {% if not article and subcategory and sub == subcategory %}class="active"{% endif %}>
+			<a 	href='{{ sub.get_absolute_url }}'>
+				{{ sub.title }}
+			</a>
+		</li>
+		{% for a in sub.get_published_articles %}
+			<li {% if article and a == article %}class="active"{% endif %}>
+				<a href='{{ a.get_absolute_url }}'>
+	            	{{ a.title }}
+	        	</a>
+	        </li>
+		{% endfor %}
+	{% endfor %}
+</ul>

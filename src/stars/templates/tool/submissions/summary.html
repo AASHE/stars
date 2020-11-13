@@ -1,0 +1,340 @@
+{% extends "tool/submissions/columned_layout.html" %}
+
+{% load logical_rules_tags %}
+{% load compress %}
+
+{% block crumbs-tool %}
+  {% load submit_tags  %}
+  {% show_submit_crumbs submissionset %}
+{% endblock %}
+
+{% block extra_head %}
+  {% compress js %}
+    <script type="text/javascript">
+     function getCreditUserSubmissionId(radioButton) {
+       var id = radioButton.getAttribute("id");
+       return $(id.split('-')).last()[0];
+     }
+     function setOptInCredits(subId) {
+       $("body").css("cursor", "wait");
+
+       var modal = $("#editOptInCredits" + subId);
+       var form = modal.find("form");
+       var radiobuttons = form.find(":radio");
+       var ajax_data = {};
+
+       radiobuttons.each(function(index, radioButton) {
+         var creditUserSubmissionId = getCreditUserSubmissionId(radioButton);
+         if (radioButton.value == "pursue") {
+           ajax_data[creditUserSubmissionId] = radioButton.checked
+         }
+       });
+
+       var ajax_request = $.ajax({
+         url: "{% url 'submissions:set-opt-in-credits' %}",
+         type: "POST",
+         data: ajax_data,
+         error: function(data, textStatus, jqXHR) {
+           alert("Error\n\n" + data.responseText);
+           $("body").css("cursor", "default");
+
+         },
+         complete: function(data, textStatus, jqXHR) {
+           modal.modal("hide");
+           data_obj = JSON.parse(data.responseText);
+           if (data_obj["data_changed"]) {
+             location.reload();  // reload from server
+           }
+           else {
+             $("body").css("cursor", "default");
+           }
+         }
+       });
+     }
+    </script>
+  {% endcompress %}
+{% endblock %}
+
+{% block tool_content %}
+
+  {% include "tool/submissions/submission_summary_header.html" %}
+
+  {% load submit_tags %}
+
+  <div class="accordion" id="categories">
+    {% for cat in category_submission_list %}
+      <div class="accordion-group">
+        <div class="accordion-heading">
+          <a class="accordion-toggle" data-toggle="collapse"
+             data-parent="#categories" href="#ec_{{ cat.category.id }}">
+            <strong>{{ cat }}</strong>
+	    {% if creditset.has_category_scoring_feature %}
+              {% testrule institution_is_participant institution %}
+                <div style='float: right;'>
+                  {% if cat.category.include_in_score %}
+                    {% ifnotequal cat.category.title 'Innovation' %}
+                      Provisional Score:
+                      <strong>{{ cat.get_STARS_score|floatformat:2 }}%</strong>
+                    {% else %}
+                      Claimed Points:
+                      {{ cat.get_claimed_points|floatformat:2 }}
+                    {% endifnotequal %}
+                  {% endif %}
+                </div>
+              {% endtestrule %}
+
+            {% elif cat.category.abbreviation == 'IN' %}
+                {% testrule institution_is_participant institution %}
+                  <div style='float: right;'>
+                    {% if cat.category.include_in_score %}
+                      Bonus Points Claimed:
+                      <strong>
+                        {{ cat.get_claimed_points|floatformat:2 }}
+                      </strong>
+                       (4 Maximum)
+                    {% endif %}
+                  </div>
+                {% endtestrule %}
+            {% endif %}
+          </a>
+          <table class='table' style='margin-bottom: 0px;'>
+            <tr>
+              <td>
+                {% if not cat.category.abbreviation == "IN" %}
+                  {% show_progress_icon cat %}
+                {% endif %}
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <div id="ec_{{ cat.category.id }}" class="accordion-body in">
+          <div class="accordion-inner">
+
+            {% if cat.category.description %}
+              <div class='well'>
+                {% autoescape off %}
+                  {{ cat.category.description }}
+                {% endautoescape %}
+              </div>
+            {% endif %}
+
+            {% for sub in cat.subcategorysubmission_set.all %}
+
+              <div class="accordion subcategory_accordion"
+                   id="accordion_{{ sub.subcategory.id }}">
+                <div class="accordion-group">
+                  <div class="accordion-heading">
+                    {% if not sub.subcategory.passthrough %}
+                      <a class="accordion-toggle" data-toggle="collapse"
+                         data-parent="#accordion_{{ sub.subcategory.id }}"
+                         href="#ec_{{ cat.category.id }}_{{ sub.subcategory.id }}">
+                        {{ sub }}
+                        {% testrule institution_is_participant institution %}
+                          {% if cat.category.abbreviation != "IN"%}
+                            <div style='float: right;'>
+                              {% if cat.category.include_in_score %}
+                                Points Claimed:
+                                <strong>
+                                  {{ sub.get_claimed_points|floatformat:2 }}
+                                    /
+                                    {{ sub.get_adjusted_available_points|floatformat:2 }}
+                                </strong>
+                              {% endif %}
+                            </div>
+                          {% endif %}
+                        {% endtestrule %}
+                      </a>
+                      <table class='table' style='margin-bottom: 0px;'>
+                        <tr>
+                          <td>
+                            {% if not cat.category.abbreviation == "IN" %}
+                              {% show_progress_icon sub %}
+                            {% endif %}
+                          </td>
+                        </tr>
+                      </table>
+                    {% endif %}
+                  </div>
+                  <div id="ec_{{ cat.category.id }}_{{ sub.subcategory.id }}"
+                       class="accordion-body in">
+                    <div class="accordion-inner">
+                      {% if not sub.subcategory.passthrough %}
+                        {% if submissionset.creditset.has_subcategory_description_feature %}
+                          {% if not submission_under_review %}
+                            {% if not sub.subcategory.category.abbreviation == "IN" %}
+                              <div class='well' style='text-align: center'>
+                                {% if sub.description %}
+                                  {{ sub.description|urlizetrunc:85|linebreaks }}
+                                {% endif %}
+                                <a href='{{ sub.get_submit_edit_url }}'
+                                   type="button"
+                                   class="btn btn-info btn-small"
+                                   style="color: white">
+                                    <i class='icon-pencil icon-white'></i>
+                                  {% if sub.description %}
+                                    Edit Description
+                                  {% else %}
+                                    Add Description (optional)
+                                  {% endif %}
+                                </a>
+                              </div>
+                            {% endif %}
+                          {% elif sub.description %}
+                            <div class='well' style='text-align: center'>
+                              {{ sub.description|urlizetrunc:85|linebreaks }}
+                            </div>
+                          {% endif %}
+                        {% endif %}
+                      {% endif %}
+                      <table class='table table-condensed table-striped'>
+                        <thead>
+                          <tr>
+                            <th>Credit</th>
+                            <th>Status</th>
+                            {% testrule institution_is_participant institution %}
+                              {% if cat.category.include_in_score %}
+                                <th>Points</th>
+                              {% endif %}
+                            {% endtestrule %}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for c in sub.creditusersubmission_set.all %}
+                            {% if not c.credit.is_opt_in or c.submission_status != 'na' %}
+                              <tr class='{% cycle 'even' 'odd' %}'
+                                      {% ifchanged c.credit.type %}
+                                        style="border-top-width: 1px;"
+                                      {% endifchanged %}>
+                                <td class='credit'>
+                                  <a href='{{ c.get_submit_url }}'>
+                                    {{ c.credit }} <!-- {{ c.id }} -->
+                                  </a>
+                                </td>
+                                <td>
+                                  {% if submissionset.is_under_review %}
+                                    {% if c.is_unlocked_for_review %}
+                                      <i class="fa fa-unlock fa-lg fa-fw text-red" style="color:red"></i>
+                                    {% else %}
+                                      <i class="fa fa-lock fa-lg fa-fw"></i>
+                                    {% endif %}
+                                  {% endif %}
+                                  {% show_status_icon c %}
+                                </td>
+                                {% testrule institution_is_participant institution %}
+                                  {% if cat.category.include_in_score %}
+                                    <td>
+                                      {{ c.assessed_points|floatformat:2 }} /
+                                      {% format_available_points c %}
+                                    </td>
+                                  {% endif %}
+                                {% endtestrule %}
+                              </tr>
+                            {% endif %}
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                      {% subcategory_has_opt_in_credits sub.subcategory as handle_opt_in_credits %}
+                      {% if handle_opt_in_credits %}
+                        <button type="button" class="btn btn-info btn-small"
+                                data-toggle="modal"
+                                data-target="#editOptInCredits{{ sub.id|slugify }}">
+                          <i class='icon-check icon-white'></i>
+                          Add/Drop Credits
+                        </button>
+                        <div class="modal fade"
+                             id="editOptInCredits{{ sub.id|slugify }}" tabindex="-1"
+                             role="dialog">
+                          <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <button type="button" class="close"
+                                        data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                                <h4 class="modal-title">
+                                  Add/Drop {{ sub.subcategory }} Credits
+                                </h4>
+                              </div>
+                              <div class="modal-body">
+                                <form role="form">
+                                  <table>
+                                    <tr>
+                                      <th style="padding-right: 10px;">
+                                        Add
+                                      </th>
+                                      <th style="padding-right: 10px;">
+                                        Drop
+                                      </th>
+                                      <th align="left">
+                                        Credit
+                                      </th>
+                                    </tr>
+                                    {% for credit_submission in sub.creditusersubmission_set.all %}
+                                      {% if credit_submission.credit.is_opt_in %}
+                                        <tr>
+                                          <td align="center"
+                                              style="padding-right: 10px;">
+                                            <input type="radio"
+                                                   class="form-control"
+                                                   value="pursue"
+                                                   name="{{ credit_submission.id|slugify }}"
+                                                   id="opt-in-{{ credit_submission.id|slugify }}"
+                                                   {% if credit_submission.submission_status != "na" %}
+                                                     checked
+                                                   {% endif %} />
+                                          </td>
+                                          <td align="center"
+                                               style="padding-right: 15px;">
+                                            <input type="radio"
+                                                   class="form-control"
+                                                   value="opt-out"
+                                                   name="{{ credit_submission.id|slugify }}"
+                                                   id="opt-in-{{ credit_submission.id|slugify }}"
+                                                   {% if credit_submission.submission_status == "na" %}
+                                                     checked
+                                                   {% endif %} />
+                                          </td>
+                                          <td align="left">
+                                            {{ credit_submission.credit }}
+                                          </td>
+                                        </tr>
+                                      {% endif %}
+                                    {% endfor %}
+                                  </table>
+                                </form>
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-default"
+                                        data-dismiss="modal">
+                                  Cancel
+                                </button>
+                                <button type="submit" class="btn btn-primary"
+                                        onclick="setOptInCredits({{ sub.id|slugify }})">
+                                  Save changes
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}
+
+{% block extra_footer %}
+  {{ block.super }}
+  {% compress js %}
+    <script type="text/javascript">
+     $(".collapse").collapse('hide');
+    </script>
+  {% endcompress %}
+{% endblock %}

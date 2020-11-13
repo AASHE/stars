@@ -1,0 +1,29 @@
+<ul class="breadcrumb">
+	<li>
+    	<a href="/">Home</a>
+    	<span class="divider">/</span>
+  	</li>
+	{% if subcategory or article %}
+		<li>
+			<a href='{{ category.get_absolute_url }}'>{{ category }}</a>
+			<span class="divider">/</span>
+		</li>
+	{% else %}
+		<li>{{ category }}</li>
+	{% endif %}
+	
+	{% if subcategory and not article %}
+		<li>{{ subcategory }}</li>
+	{% endif %}
+		
+	{% if article %}
+		{% if subcategory %}
+			<li>
+				<a href='{{ subcategory.get_absolute_url }}'>{{ subcategory }}</a>
+				<span class="divider">/</span>
+			</li>
+		{% endif %}
+		<li>{{ article }}</li>
+	{% else%}
+	{% endif %}
+</ul>

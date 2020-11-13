@@ -1,0 +1,35 @@
+{% load humanize %}
+{% load help %}
+
+{% if field %}
+  {# field can be none if not published #}
+  <span class='scorecardFieldTitle'>
+    {{ field.documentation_field.title }}:
+  </span>
+
+  {% if field.documentation_field.type == 'tabular' %}
+    {% with field.documentation_field as documentation_field %}
+      {% if pdf %}
+        {% with "institutions/pdf/tabular_field.html" as field_template %}
+          {% include "credits/tabular_field.html" %}
+        {% endwith %}
+      {% else %}
+        {% with "institutions/scorecards/tabular_field.html" as field_template %}
+          {% include "credits/tabular_field.html" %}
+        {% endwith %}
+      {% endif %}
+    {% endwith %}
+  {% else %}
+    <div class='well'
+      {% ifequal field.documentation_field.type 'long_text' %}
+         style='padding: 10px 20px;'>
+      {% else %}
+         >
+      {% endifequal %}
+      {% block formatting_include %}
+        {% include 'institutions/scorecards/field_formatting.html' %}
+      {% endblock %}
+    </div>
+  {% endif %}
+  <br/>
+{% endif %}

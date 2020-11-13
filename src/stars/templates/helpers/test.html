@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %} This is a Test {% endblock %}
+
+{% block top_menu %} {% endblock %}
+
+{% block main_menu %} {% endblock %}
+
+{% block crumbs %} {% endblock %} 
+
+{% block content %}
+  <div id='column_container'>
+    <div id='center'>
+     <H1> This is a test </H1>
+     {% load fieldsets %}
+     {% fieldset legend with title,type as fields from form initial_state %}
+        <p>
+            Fieldset content
+        </p>
+     {% endfieldset %}
+     {% fieldset "No Fields" 'collapsed'%}
+        <p>
+            Fieldset content
+        </p>
+     {% endfieldset %}
+    </div>
+  </div>
+{% endblock %}

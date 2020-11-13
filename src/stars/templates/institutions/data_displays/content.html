@@ -1,0 +1,210 @@
+{% extends 'institutions/data_displays/base.html' %}
+
+{% load content %}
+{% load l10n %}
+
+{% block crumb-tab %}
+  <li>Content Display</li>
+{% endblock %}
+
+{% block title %}
+  Content | {{ block.super }}
+{% endblock %}
+
+{% block body_onload %}
+  {{ block.super }}
+  initLookup();
+  initPullDowns();
+{% endblock %}
+
+{% block tabs %}
+  {% with active='content' %}
+    {% include "institutions/data_displays/tabs.html" %}
+  {% endwith %}
+{% endblock %}
+
+{% block extra_head %}
+  {{ block.super }}
+  {% localize off %}
+    <script type='text/javascript'>
+     function ajaxFillTarget(url, target) {
+       $(target).load(url);
+     }
+
+     function initPullDowns() {
+       {% if reporting_field %}
+         initCategory({{ reporting_field.credit.subcategory.category.id }},
+                      {{ credit_set.id }});
+         initSubcategory({{ reporting_field.credit.subcategory.category.id }},
+                         {{ reporting_field.credit.subcategory.id }});
+         initCredit({{ reporting_field.credit.subcategory.id }},
+                    {{ reporting_field.credit.id }});
+         initField({{ reporting_field.credit.id }}, {{ reporting_field.id }});
+       {% else %}
+         initCategory(null, {{ credit_set.id }});
+       {% endif %}
+     }
+    </script>
+  {% endlocalize %}
+  {% include "institutions/data_displays/filter_js.html" %}
+{% endblock %}
+
+{% block h1 %}STARS Report Content{% endblock %}
+
+{% block tab_content %}
+  {% display_block_content 'data_display_content' user %}
+  <div class='well'>
+    <span class="badge" style="font-size: 1.1em;">Step 1</span><br/>
+    {% include 'institutions/data_displays/top_level_filters.html' %}
+  </div>
+
+  <div class='row displays-down-arrow'><i class='icon-arrow-down'></i></div>
+
+  <div class='well'>
+    <span class="badge" style="font-size: 1.1em;">Step 2</span><br/>
+    {% display_block_content 'data_display_content_second_filter' user %}
+    <table style='margin: 0px auto;' class='vertical'>
+      <tr>
+	<th>
+	  Category:
+	</th>
+	<td>
+	  <select id='category_select' onchange='selectCategory(this);'>
+	    <option value=''>-------</option>
+	  </select>
+	</td>
+      </tr>
+      <tr>
+	<th>
+	  Subcategory:
+	</th>
+	<td>
+	  <select id='subcategory_select' onchange='selectSubcategory(this);'>
+	    <option value=''>-------</option>
+	  </select>
+	</td>
+      </tr>
+      <tr>
+	<th>
+	  Credit:
+	</th>
+	<td>
+	  <select id='credit_select' onchange='selectCredit(this);'>
+	    <option value=''>-------</option>
+	  </select>
+	</td>
+      </tr>
+      <tr>
+	<th>
+	  Reporting Field:
+	</th>
+	<td>
+	  {{ select_form.reporting_field }}
+	</td>
+      </tr>
+    </table>
+    <div style='text-align: center'>
+      <script type='text/javascript'>
+       !function ($) {
+
+	 $.fn.selectReportingField = function($prefix){
+
+	   // Bind the click event to the selection populate method
+	   this.bind('click.selectReportingField', function(){
+
+	     var $this = $(this);
+
+	     var $new_query = "";
+
+             // Get the values of the select:
+	     if($('#id_reporting_field').val() != "") {
+	       $new_query = "reporting_field=" + $('#id_reporting_field').val();
+	     }
+
+	     var $url = ""
+	     if($prefix.length > 0) {
+	       $url = $prefix;
+	       if($new_query.length > 0) {
+		 $url += "&" + $new_query;
+	       }
+	     }
+
+	     window.location.replace("?" + $url);
+	   });
+	 };
+
+       }(window.jQuery);
+      </script>
+      <button type='button' class='btn' id='applyButton'>Apply</button>
+      <script type='text/javascript'>
+       $('#applyButton').selectReportingField(
+         "{{ selected_filters_querydict.urlencode|safe }}");
+      </script>
+    </div>
+  </div>
+
+  <div class='row displays-down-arrow'><i class='icon-arrow-down'></i></div>
+
+  {% if object_list and get_params %}
+    <div class='row'><div class='span2 offset10'>
+      <a href='excel/?{{ get_params }}' class='btn btn-info'>
+	<i class='icon-th icon-white'></i> Export Results
+      </a>
+    </div></div>
+  {% endif %}
+
+  <table id='institution_list' class='table'>
+    {% if object_list %}
+      <thead>
+	<tr>
+	  <th style='text-align: left'>
+	    Matching Institutions
+	  </th>
+	  <th>
+	    Credit Score
+	  </th>
+	  <th>
+	    {{ reporting_field.title }}
+	  </th>
+	</tr>
+      </thead>
+      <tbody>
+	{% for o in object_list %}
+	  <tr class="{% cycle 'even' 'odd' %}">
+	    <td style='text-align: left;'>
+	      <a href='{{ o.ss.get_scorecard_url }}'>{{ o.ss }}</a>
+	    </td>
+	    <td>
+	      {% if o.credit %}
+	       	<a href='{{ o.credit.get_scorecard_url }}'
+                   style='white-space:nowrap;'>
+		  {{ o.assessed_points }}
+                  {% if o.point_value %}
+                    / {{ o.point_value }}
+                  {% endif %}
+		</a>
+	      {% else %}
+		--
+	      {% endif %}
+	    </td>
+	    <td>
+       	    {% with field=o.field %}{% with data_display=1 %}
+       		    {% if field and not field.is_empty %}
+       		        {% include 'institutions/scorecards/field_formatting.html' %}
+       		    {% else %}
+       		        --
+       		    {% endif %}
+       	    {% endwith %}{% endwith %}
+	    </td>
+	  </tr>
+	{% endfor %}
+      </tbody>
+    {% else %}
+      <tr><td colspan="6">
+       	<p style='padding: 30px;'>
+       	  No results yet. Please filter on a characteristic above.
+       	</p>
+      </td></tr>
+    {% endif %}
+  </table>
+{% endblock %}

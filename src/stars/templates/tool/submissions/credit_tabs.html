@@ -1,0 +1,83 @@
+{% load logical_rules_tags %}
+
+<ul class="nav nav-tabs">
+  <li {% if active == "fields"%} class='active'{% endif %}>
+  	<a href="{{ credit_submission.get_submit_url }}">Reporting Fields</a>
+  </li>
+
+  {% if credit_submission.credit.show_info %}
+    <li class="dropdown{% if active == 'info' %} active{% endif %}">
+      <a class="dropdown-toggle"
+         data-toggle="dropdown"
+         href="#">
+          Credit Info
+          <b class="caret"></b>
+        </a>
+      <ul class="dropdown-menu">
+        <li>
+          <a href="{{ credit_submission.get_submit_url }}documentation/">
+            Open Here
+          </a>
+        </li>
+        <li>
+          <a href="{{ credit_submission.get_submit_url }}documentation/?popup=True"
+             target='_blank'
+             onclick='return open_popup("{{ credit_submission.get_submit_url }}documentation/?popup=True", "CreditInfo");'
+             class='credit-info-popout'>
+            Pop Out
+          </a>
+        </li>
+      </ul>
+    </li>
+  {% endif %}
+
+  <li
+     {% if active == "notes" %}
+       class="active"
+     {% else %}
+       {% testrule institution_is_participant institution %}
+       {% else %}
+         class="disabled"
+       {% endtestrule %}
+     {% endif %}
+    >
+    <a href="{{ credit_submission.get_submit_url }}notes/">
+      Internal Notes
+    </a>
+  </li>
+
+   <li
+     {% if active == "history" %}
+       class="active"
+     {% endif %}
+     >
+     <a href="{{ credit_submission.get_submit_url }}history/">
+       History
+     </a>
+   </li>
+
+    {% if credit_submission.subcategory_submission.category_submission.submissionset.is_under_review %}
+      <li class="dropdown{% if active == 'review' %} active{% endif %}">
+        <a class="dropdown-toggle"
+           data-toggle="dropdown"
+           href="#">
+          Review
+          <b class="caret"></b>
+        </a>
+        <ul class="dropdown-menu">
+          <li>
+            <a href="{{ credit_submission.get_submit_url }}review/">
+              Open Here
+            </a>
+          </li>
+          <li>
+            <a href="{{ credit_submission.get_submit_url }}review/?popup=True"
+               target='_blank'
+               onclick='return open_popup("{{ credit_submission.get_submit_url }}review/?popup=True", "Review", 700, 700);'>
+              Pop Out
+            </a>
+          </li>
+        </ul>
+      </li>
+    {% endif %}
+</ul>

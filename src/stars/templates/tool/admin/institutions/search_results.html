@@ -1,0 +1,13 @@
+{% if institution_list %}
+    <table style='margin: 0px 30px'>
+    {% for institution in institution_list %}
+        <tr>
+            <td>
+                <a href='/tool/admin/institution/masquerade/{{ institution.id }}/'>{{ institution.name }}</a>
+            </td>
+        </tr>
+    {% endfor %}
+    </table>
+{% else %}
+    <p>No Results</p>
+{% endif %}

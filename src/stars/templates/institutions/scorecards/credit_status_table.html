@@ -1,0 +1,72 @@
+{% load submit_tags %}
+<thead>
+<tr>
+  <th>
+    Status
+  </th>
+  <th>Score</th>
+  <th>Responsible Party</th>
+</tr>
+</thead>
+<tbody>
+  <tr>
+    <td>
+      {% with credit_submission as c %}
+        {% include 'credits/credit_status_icon.html' %}
+      {% endwith %}
+      {% if credit_submission.submission_status == "na" %}
+        {% load help %}
+        {% show_help_context "not_applicable" %}
+      {% endif %}
+
+      {% if user.is_staff %}
+        <a href="{{ credit_submission.get_flag_url }}"
+           class='btn btn-warning btn-mini'>
+          <i class='icon-flag icon-white'></i>
+        </a>
+      {% endif %}
+
+      {% if credit_submission.flags %}
+        {% for f in credit_submission.flags %}
+          <a href="{% if user.is_staff %}{{ f.get_admin_url }}{% else %}#{% endif %}"
+             rel="popover"
+             id="flag_{{ f.id }}"
+             data-content="{{ f.description }}"
+             data-original-title="Flagged Field">
+            <i class='icon-flag'> </i></a>
+          <script type='text/javascript'>$('#flag_{{ f.id }}').popover();</script>
+        {% endfor %}
+      {% endif %}
+
+      {% if user.is_staff %}
+        <a href="{{ credit_submission.get_status_update_url }}?next={{ request.get_full_path  }}"
+           class="btn btn-warning btn-mini">
+          <i class="icon-refresh icon-white"></i>
+        </a>
+      {% endif %}
+    </td>
+    <td>
+      {% if rating.publish_score %}
+        {% if category_submission.category.include_in_score %}
+          {{ credit_submission.assessed_points|floatformat:2 }} /
+          {% format_available_points credit_submission %}
+        {% else %}
+            N/A
+        {% endif %}
+      {% else %}
+        Reporter
+        {% load help %}
+        {% show_help_context "reporter_status" %}
+      {% endif %}
+    </td>
+    <td style='text-align: right;'>
+      {% if credit_submission.responsible_party %}
+        <b>
+          {{ credit_submission.responsible_party.first_name }}
+          {{ credit_submission.responsible_party.last_name }}</b><br/>
+        {{ credit_submission.responsible_party.title }}<br/>
+        {{ credit_submission.responsible_party.department }}
+      {% endif %}
+    </td>
+  </tr>
+</tbody>

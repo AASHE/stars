@@ -1,0 +1,88 @@
+{% extends 'institutions/scorecards/base.html' %}
+
+{% load bootstrap %}
+{% load compress %}
+
+{% block extra_head %}
+  {{ block.super }}
+  <script type="text/javascript"
+          src="http://code.jquery.com/jquery-1.4.2.min.js"></script>
+  </script>
+{% endblock %}
+
+{% block crumb-tab %}
+  <li>
+    <a href="{% url 'institutions:corecard-list' institution.slug %}">{{ institution }}</a>
+    <span class="divider">/</span>
+  </li>
+  <li>
+    <a href='{{ submissionset.get_scorecard_url }}'>
+      {{ submissionset.date_submitted }}
+    </a>
+    <span class="divider">/</span>
+  </li>
+  <li>
+    Accuracy Inquiry
+  </li>
+{% endblock %}
+
+{% block body_onload %}disable_select_options();{% endblock %}
+
+{% block content %}
+  <br/>
+  <h1>{{ submissionset.institution }}, Accuracy Inquiry:</h1>
+  <form class='generalForm' method='post' action='.'
+        enctype="multipart/form-data" style='margin: 10px 50px;'>
+    {% load content %}
+    {% display_block_content 'accuracy_header' user %}
+    <h2>Your Contact Information</h2><br/>
+    {% load fieldsets %}
+
+    <div class="accordion" id="accordion2">
+      <div class="accordion-group">
+        <div class="accordion-heading">
+          <div class="accordion-toggle">
+            {{ form.non_field_errors }}
+            {% get_fieldset anonymous as fieldset from form %}
+            {{ fieldset|bootstrap }}
+          </div>
+        </div>
+        <div id="checkboxCollapse" class="accordion-body collapse in">
+          <div class="accordion-inner">
+            {% get_fieldset first_name,last_name,affiliation,city,state,email_address,phone_number as fieldset from form %}
+            {{ fieldset|bootstrap }}
+          </div>
+        </div>
+        {% comment %}
+          <div id="checkboxCollapse" class="accordion-body collapse in">
+            <div class="accordion-inner">
+              {% get_fieldset captcha as fieldset from form %}
+              {{ fieldset|bootstrap }}
+            </div>
+          </div>
+        {% endcomment %}
+      </div>
+    </div>
+    <h2>
+      Specific Credit(s) In Question for {{ submissionset.institution }}
+    </h2>
+    {% display_block_content 'credit_dispute' user %}
+    {% for formset in inlines %}
+      {{ formset.management_form }}
+      {% for f in formset %}
+        <div id='{{ formset.prefix }}_table{{ forloop.counter0 }}' class='tbl'>
+          {{ f|bootstrap }}
+        </div>
+      {% endfor %}
+      <a href="javascript:addFormToFormset('{{ formset.prefix }}');"
+         class="btn">
+        <i class='icon-plus-sign'></i> Add Another Credit
+      </a>
+    {% endfor %}
+    <hr/>
+
+    <div class='form-actions'>
+      <button type='submit' class='btn btn-success'>Submit</button>
+    </div>
+  </form>
+{% endblock %}
