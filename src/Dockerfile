@@ -2,7 +2,7 @@
 FROM python:2.7-slim
 
 RUN apt-get update
-RUN apt-get install libpq-dev python-dev git -y
+RUN apt-get install libpq-dev python-dev git default-libmysqlclient-dev build-essential -y
 
 # Set the working directory to /app
 WORKDIR /app
