@@ -1,5 +1,5 @@
 # Python image to use.
-FROM python:2.7-slim
+FROM python:2.7-slim-stretch
 
 RUN apt-get update
 RUN apt-get install libpq-dev python-dev git default-libmysqlclient-dev build-essential -y
