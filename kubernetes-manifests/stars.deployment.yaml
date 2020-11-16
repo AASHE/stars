@@ -82,7 +82,6 @@ spec:
             secretKeyRef:
               name: stars-prod-k5684b57h2
               key: stars_db_url
-          value: mysql://stars-dev:sg7RvxrDbQSSzYt@10.61.240.3:3306/stars
         - name: STARS_MS_PUBLICATION_ID
           value: "6faf90e4-009e-cb9b-7c9e-0b3bcd6dff6a"
         - name: STARS_REPORTS_HOST
