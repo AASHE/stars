@@ -3,7 +3,7 @@ FROM gcr.io/aashe-migration/stars-base-image:a0bfd050-d8e4-4ac1-868c-434b4739f30
 
 RUN apt-get update
 RUN apt-get install \
-    git \
+    libpangocairo-1.0-0 \
     -y
 
 # Set the working directory to /app
