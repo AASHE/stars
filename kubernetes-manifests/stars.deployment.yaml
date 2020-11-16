@@ -23,22 +23,50 @@ spec:
         ports:
         - containerPort: 8080
         env:
+        - name: AWS_ACCESS_KEY_ID
+          value: "AKIAJ4YAC7CZL3PGQJIA"
+        - name: AWS_STORAGE_BUCKET_NAME
+          value: "starsdev"
+        - name: BT_HOST
+          value: "https://benchmarks.aashe.org"
+        - name: CACHE_URL
+          value: "pymemcached://127.0.0.1:11211"
+        - name: DEFAULT_FROM_EMAIL
+          value: "stars_notifier@aashe.org"
         - name: PORT
           value: "8080"
+        - name: EMAIL_BACKEND
+          value: "django.core.mail.backends.smtp.EmailBackend"
+        - name: EMAIL_HOST
+          value: "smtp.gmail.com"
         - name: EMAIL_HOST_PASSWORD
           value: "oridianybder"
+        - name: EMAIL_PORT
+          value: "587"
+        - name: EMAIL_REPLY_TO
+          value: "stars@aashe.org"
         - name: STARS_DB_URL
           value: mysql://root:123456@127.0.0.1:3306/stars
         - name: ISS_DB_URL
-          value: mysql://root@localhost/iss
+          value: "mysql://stars:RCgX5gOIGA2l@10.176.128.183/iss"
+        - name: MEDIA_ROOT
+          value: "/var/www/stars/media/"
         - name: MS_ACCESS_KEY
           value: "AAAAAPIAF8qMCQs8Vb1AGA"
         - name: MS_SECRET_KEY
-          value: blah
+          value: "YsJDBhx8RKDdf6ruC30OrRJ0Pu7UZY7Ykef+UM9/btmNHAXSfdYQK0UJ1+UWfTWYks2novzjmN8i0ZGuY2Yzxg=="
         - name: MS_ASSOCIATION_ID
           value: "6faf90e4-0004-c3a4-9500-0b3b58a242ba"
+        - name: RECAPTCHA_PRIVATE_KEY
+          value: "6LeaEL0SAAAAACP5wb3qqxujJc3Cf_qHhVGUr4QV"
+        - name: RECAPTCHA_PUBLIC_KEY
+          value: "6LeaEL0SAAAAAMiipP79s-PzlR0qHlH1-E_jYsyW"
+        - name: SSO_API_KEY
+          value: "8dca728d46c85b3fda4529692a7f7725"
         - name: STARS_BROCHURE_HOST
-          value: aashestars.wpengine.com
+          value: stars.aashe.org
+        - name: STARS_MS_PUBLICATION_ID
+          value: "6faf90e4-009e-cb9b-7c9e-0b3bcd6dff6a"
         - name: STARS_REPORTS_HOST
           value: localhost:8000
         - name: STARS_BENCHMARKS_HOST
