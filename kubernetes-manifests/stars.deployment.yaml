@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: stars
-        image: gcr.io/aashe-migration/stars-image:b6fd3668-deac-4700-8100-f7dda1c6540a
+        image: gcr.io/aashe-migration/stars-image:BUILD_ID
         ports:
         - containerPort: 8080
         env:

@@ -2,15 +2,15 @@
 FROM python:2.7-slim-stretch
 
 RUN apt-get update
-RUN apt-get install && \
-    libpq-dev && \
-    python-dev && \
-    git && \
-    default-libmysqlclient-dev && \
-    build-essential && \
-    libcairo2 && \
-    libcairo-gobject2 && \
-    libpango-1.0-0 && \
+RUN apt-get install \
+    libpq-dev \
+    python-dev \
+    git \
+    default-libmysqlclient-dev \
+    build-essential \
+    libcairo2 \
+    libcairo-gobject2 \
+    libpango-1.0-0 \
     -y
 
 # Set the working directory to /app
