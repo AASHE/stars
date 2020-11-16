@@ -1,26 +1,19 @@
 # Python image to use.
-FROM python:2.7-slim-stretch
+FROM gcr.io/aashe-migration/stars-base-image:a0bfd050-d8e4-4ac1-868c-434b4739f306
 
 RUN apt-get update
 RUN apt-get install \
-    libpq-dev \
-    python-dev \
     git \
-    default-libmysqlclient-dev \
-    build-essential \
-    libcairo2 \
-    libcairo-gobject2 \
-    libpango-1.0-0 \
     -y
 
 # Set the working directory to /app
 WORKDIR /app
 
 # copy the requirements file used for dependencies
-COPY requirements.txt .
+#COPY requirements.txt .
 
 # Install any needed packages specified in requirements.txt
-RUN pip install --trusted-host pypi.python.org -r requirements.txt
+#RUN pip install --trusted-host pypi.python.org -r requirements.txt
 
 # Copy the rest of the working directory contents into the container at /app
 COPY . .

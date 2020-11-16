@@ -25,16 +25,18 @@ spec:
         env:
         - name: PORT
           value: "8080"
+        - name: EMAIL_HOST_PASSWORD
+          value: "oridianybder"
         - name: STARS_DB_URL
           value: mysql://root:123456@127.0.0.1:3306/stars
         - name: ISS_DB_URL
           value: mysql://root@localhost/iss
         - name: MS_ACCESS_KEY
-          value: blah
+          value: "AAAAAPIAF8qMCQs8Vb1AGA"
         - name: MS_SECRET_KEY
           value: blah
         - name: MS_ASSOCIATION_ID
-          value: blah
+          value: "6faf90e4-0004-c3a4-9500-0b3b58a242ba"
         - name: STARS_BROCHURE_HOST
           value: aashestars.wpengine.com
         - name: STARS_REPORTS_HOST
