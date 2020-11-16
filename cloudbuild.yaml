@@ -3,7 +3,23 @@ steps:
 
 # Docker build
   - name: 'gcr.io/cloud-builders/docker'
+    dir: 'src'
     args: ['build', '-t', 'gcr.io/aashe-migration/stars-image:$BUILD_ID', '.']
 
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'gcr.io/aashe-migration/stars-image:$BUILD_ID']
+
+# This step generates the new kubernetes manifest
+  - name: 'ubuntu'
+    dir: 'kubernetes-manifests'
+    args: ['sed', '-e', 's/BUILD_ID/$BUILD_ID/g', '-i', '${_GKE_DEPLOYMENT}']
+
+  # GKE Deploy django deployment
+  - name: 'gcr.io/cloud-builders/gke-deploy'
+    dir: 'kubernetes-manifests'
+    args: ['apply', '-f', '${_GKE_DEPLOYMENT}', '--location=${_GKE_LOCATION}', '--cluster=${_GKE_CLUSTER}'] 
+
+  # GKE Deploy Django service
+  - name: 'gcr.io/cloud-builders/gke-deploy'
+    dir: 'kubernetes-manifests'
+    args: ['apply', '-f', '${_GKE_SERVICE}', '--location=${_GKE_LOCATION}', '--cluster=${_GKE_CLUSTER}'] 
