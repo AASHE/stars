@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: stars
-  namespace: stars-dev
   labels:
     app: stars
     tier: app
@@ -25,15 +24,9 @@ spec:
         - containerPort: 8080
         env:
         - name: AWS_ACCESS_KEY_ID
-          valueFrom:
-            secretKeyRef:
-              name: stars-dev-fh4kgkmmb8 
-              key: aws_access_key_id
+          value: "AKIAJ4YAC7CZL3PGQJIA"
         - name: AWS_SECRET_ACCESS_KEY
-          valueFrom:
-            secretKeyRef:
-              name: stars-dev-fh4kgkmmb8 
-              key: aws_secret_access_key
+          value: "HtTfqoVlSc5zhA+91Zx/HH+QuycxZojneCGz1LRK"
         - name: AWS_STORAGE_BUCKET_NAME
           value: "starsdev"
         - name: BT_HOST
@@ -53,75 +46,41 @@ spec:
         - name: EMAIL_HOST_USER
           value: "stars_notifier@aashe.org"
         - name: EMAIL_HOST_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: stars-dev-fh4kgkmmb8 
-              key: email_host_password 
           value: "oridianybder"
         - name: EMAIL_PORT
           value: "587"
         - name: EMAIL_REPLY_TO
           value: "stars@aashe.org"
         - name: ISS_DB_URL
-          valueFrom:
-            secretKeyRef:
-              name: stars-dev-fh4kgkmmb8 
-              key: iss_db_url 
+          value: "mysql://stars:RCgX5gOIGA2l@10.176.128.183/iss"
         - name: MEDIA_ROOT
           value: "/var/www/stars/media/"
         - name: MS_ACCESS_KEY
-          valueFrom:
-            secretKeyRef:
-              name: stars-dev-fh4kgkmmb8 
-              key: ms_access_key
+          value: "AAAAAPIAF8qMCQs8Vb1AGA"
         - name: MS_SECRET_KEY
-          valueFrom:
-            secretKeyRef:
-              name: stars-dev-fh4kgkmmb8 
-              key: ms_secret_key
+          value: "YsJDBhx8RKDdf6ruC30OrRJ0Pu7UZY7Ykef+UM9/btmNHAXSfdYQK0UJ1+UWfTWYks2novzjmN8i0ZGuY2Yzxg=="
         - name: MS_ASSOCIATION_ID
-          valueFrom:
-            secretKeyRef:
-              name: stars-dev-fh4kgkmmb8 
-              key: ms_association_id
+          value: "6faf90e4-0004-c3a4-9500-0b3b58a242ba"
         - name: NEW_RELIC_CONFIG_FILE
           value: "/var/www/stars//newrelic.ini" 
         - name: PORT
           value: "8080"
         - name: RAVEN_CONFIG_DSN
-          valueFrom:
-            secretKeyRef:
-              name: stars-dev-fh4kgkmmb8 
-              key: raven_config_dsn
+          value: "https://3b96bf9dd7bf4654b6cc7a27c31806a2:bdff478d81b644bd8637ff7f0c4d9b50@app.getsentry.com/8910"
         - name: RECAPTCHA_PRIVATE_KEY
-          valueFrom:
-            secretKeyRef:
-              name: stars-dev-fh4kgkmmb8 
-              key: recaptcha_private_key
+          value: "6LeaEL0SAAAAACP5wb3qqxujJc3Cf_qHhVGUr4QV"
         - name: RECAPTCHA_PUBLIC_KEY
-          valueFrom:
-            secretKeyRef:
-              name: stars-dev-fh4kgkmmb8 
-              key: recaptcha_public_key
+          value: "6LeaEL0SAAAAAMiipP79s-PzlR0qHlH1-E_jYsyW"
         - name: SSO_API_KEY
-          valueFrom:
-            secretKeyRef:
-              name: stars-dev-fh4kgkmmb8 
-              key: sso_api_key
+          value: "8dca728d46c85b3fda4529692a7f7725"
         - name: STARS_BENCHMARKS_HOST
           value: "benchmarks.aashe.org"
         - name: STARS_BROCHURE_HOST
           value: stars.aashe.org
         - name: STARS_DB_URL
-          valueFrom:
-            secretKeyRef:
-              name: stars-dev-fh4kgkmmb8 
-              key: stars_db_url
+          value: mysql://stars-dev:sg7RvxrDbQSSzYt@10.61.240.3:3306/stars
         - name: STARS_MS_PUBLICATION_ID
-          valueFrom:
-            secretKeyRef:
-              name: stars-dev-fh4kgkmmb8 
-              key: stars_ms_publication_id 
+          value: "6faf90e4-009e-cb9b-7c9e-0b3bcd6dff6a"
         - name: STARS_REPORTS_HOST
           value: reports.aashe.org
         - name: STARS_BENCHMARKS_HOST
