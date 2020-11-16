@@ -20,7 +20,7 @@ from mixins import VersionedModel
 from utils import get_array_for_tabular_fields
 
 RATING_DURATION = 365 * 3
-DUMMY_UNIT_LABEL = ""
+DUMMY_UNIT_LABEL = "DUMMY_UNIT"
 
 logger = getLogger("stars")
 
