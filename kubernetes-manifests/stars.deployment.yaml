@@ -32,7 +32,7 @@ spec:
         - name: BT_HOST
           value: "https://benchmarks.aashe.org"
         - name: CACHE_URL
-          value: "pymemcached://10.61.241.3:11211"
+          value: "pymemcached://10.61.241.67:11211"
         - name: COMPRESS_ENABLED
           value: "True"
         - name: CONFIG
