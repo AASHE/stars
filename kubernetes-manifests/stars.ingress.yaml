@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: stars-dev-ingress
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: stars-dev-ingress
+    networking.gke.io/v1beta1.FrontendConfig: stars-dev-frontend-config
+spec:
+  backend:
+    serviceName: stars-dev-http
+    servicePort: 60001
+  tls:
+  - secretName: blah
+  rules:
+  - http:
+      paths:
+      - path: /
+        backend:
+          serviceName: stars-dev-htp
+          servicePort: 60000
+      - path: /discounted
+        backend:
+          serviceName: my-discounted-products
+          servicePort: 80
