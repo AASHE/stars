@@ -16,6 +16,6 @@ steps:
     args:
     - '-c'
     - | 
-      SECRET=gcloud secrets versions access latest --secret=${_RMQ_PWD_SECRET}
+      SECRET=$(gcloud secrets versions access latest --secret=${_RMQ_PWD_SECRET})
       echo $SECRET
       helm uninstall ${_RMQ_NAME} bitnami/rabbitmq --namespace ${_GKE_NAMESPACE} --set auth.password=$SECRET 
