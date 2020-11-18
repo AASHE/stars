@@ -1,37 +1,6 @@
 # Access the id_github file from Secret Manager
 steps:
 
-# Access the id_github file from Secret Manager
-  - name: gcr.io/cloud-builders/gcloud
-    entrypoint: 'bash'
-    args:
-      - '-c'
-    -|
-    'SECRET=gcloud secrets versions access latest --secret=${_SECRET_NAME}> secret.txt'
-    
-    env:
-      'RMQ_PASSWORD=SECRET'
-
-
-# Set up git with key and domain
-  - name: 'gcr.io/cloud-builders/git'
-    entrypoint: 'bash'
-    args:
-    - '-c'
-    - |
-      chmod 600 /root/.ssh/id_github
-      cat <<EOF >/root/.ssh/config
-      Hostname github.com
-      IdentityFile /root/.ssh/id_github
-      EOF
-      ssh-keyscan -t rsa github.com > /root/.ssh/known_hosts
-
-
-# This step generates the new kubernetes manifest
-  - name: 'ubuntu'
-    dir: 'kubernetes-manifests'
-    args: ['sed', '-e', 's/BUILD_ID/$BUILD_ID/g', '-i', '${_GKE_DEPLOYMENT}']
-
 # GKE create namespace  Namespace stars-rmq-dev
   - name: 'gcr.io/cloud-builders/gke-deploy'
     dir: 'kubernetes-manifests'
@@ -43,6 +12,4 @@ steps:
 
 # Helm install for rabbitmq
   - name: 'gcr.io/cloud-builders/helm'
-    args: ['helm', 'install', '${_RMQ_STATEFUL_SET}', 'bitnami/rabbitmq', '--namespace', '${_GKE_NAMESPACE}', '--set', 'auth.password=${_GKE_PASSWORD}'] 
-
-    
+    args: ['helm', 'install', '${_RMQ_STATEFUL_SET}', 'bitnami/rabbitmq', '--namespace', '${_GKE_NAMESPACE}', '--set', 'auth.password=$(gcloud secrets versions access latest --secret=${_SECRET_NAME})'] 
