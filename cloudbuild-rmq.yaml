@@ -11,6 +11,13 @@ steps:
     args: ['repo', 'add', 'bitnami', 'https://charts.bitnami.com/bitnami'] 
 
 # Helm uninstall of rabbitmq
+  - name: 'gcr.io/aashe-migration/helm'
+    entrypoint: 'bash'
+    args:
+     -'-c'
+     - |
+     SECRET=$(gcloud secrets versions access latest --secret=${_RMQ_PWD_SECRET})
+     helm install ${_RMQ_NAME} bitnami/rabbitmq --namespace ${_GKE_NAMESPACE} --set auth.password=$SECRET   
 
 # Helm uninstall of rabbitmq
   - name: 'gcr.io/aashe-migration/helm'
