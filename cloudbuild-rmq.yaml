@@ -7,9 +7,9 @@ steps:
     args: ['apply', '-f', '${_GKE_NAMESPACE}', '--location=${_GKE_LOCATION}', '--cluster=${_GKE_CLUSTER}']
 
 # Helm add repo for rabbitmq
-  - name: 'gcr.io/cloud-builders-community/helm'
-    args: ['helm', 'repo', 'add', 'bitnami', 'https://charts.bitnami.com/bitnami'] 
+  - name: 'gcr.io/aashe-migration/helm'
+    args: ['repo', 'add', 'bitnami', 'https://charts.bitnami.com/bitnami'] 
 
 # Helm install of rabbitmq
-  - name: 'gcr.io/cloud-builders/helm'
-    args: ['helm', 'install', '${_RMQ_STATEFUL_SET}', 'bitnami/rabbitmq', '--namespace', '${_GKE_NAMESPACE}', '--set', 'auth.password=$(gcloud secrets versions access latest --secret=${_SECRET_NAME})'] 
+  - name: 'gcr.io/aashe-migration/helm'
+    args: ['install', '${_RMQ_STATEFUL_SET}', 'bitnami/rabbitmq', '--namespace', '${_GKE_NAMESPACE}', '--set', 'auth.password=$(gcloud secrets versions access latest --secret=${_SECRET_NAME})'] 
