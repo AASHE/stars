@@ -10,15 +10,15 @@ steps:
   - name: 'gcr.io/aashe-migration/helm'
     args: ['repo', 'add', 'bitnami', 'https://charts.bitnami.com/bitnami'] 
 
-# Helm install of rabbitmq
+# Helm uninstall of rabbitmq
+
+# Helm uninstall of rabbitmq
   - name: 'gcr.io/aashe-migration/helm'
     entrypoint: 'bash'
     args:
-    - '-c'
-    - 'if [ ${_DELETE_RABBITMQ} = "yes" ]'
-    - 'then'
-    - |
-      SECRET=$(gcloud secrets versions access latest --secret=${_RMQ_PWD_SECRET})
-      echo $SECRET
-      helm uninstall ${_RMQ_NAME} bitnami/rabbitmq --namespace ${_GKE_NAMESPACE}
-    - fi'
+     - '-c'
+     - |
+        if [ ${_DELETE_RABBITMQ} == "yes" ]
+        then
+          helm uninstall ${_RMQ_NAME} bitnami/rabbitmq --namespace ${_GKE_NAMESPACE
+        fi
