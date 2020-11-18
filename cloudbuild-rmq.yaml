@@ -4,7 +4,7 @@ steps:
 # GKE create namespace  Namespace stars-rmq-dev
   - name: 'gcr.io/cloud-builders/gke-deploy'
     dir: 'kubernetes-manifests'
-    args: ['kubectl', 'create', 'namespace', '${_GKE_NAMESPACE}']
+    args: ['kubectl', 'apply', '-f', '${_GKE_NAMESPACE}', '--location=${_GKE_LOCATION}', '--cluster=${_GKE_CLUSTER}']
 
 # Helm add repo for rabbitmq
   - name: 'gcr.io/cloud-builders/helm'
