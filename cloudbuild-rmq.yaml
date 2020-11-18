@@ -17,7 +17,7 @@ steps:
      - '-c'
      - |
         SECRET=$(gcloud secrets versions access latest --secret=${_RMQ_PWD_SECRET})
-        helm install ${_RMQ_NAME} bitnami/rabbitmq --namespace ${_GKE_NAMESPACE} --set auth.password=$SECRET replicaCount=${_RMQ_SIZE}  
+        helm install ${_RMQ_NAME} bitnami/rabbitmq --namespace ${_GKE_NAMESPACE} --set auth.password=$SECRET --set replicaCount=${_RMQ_SIZE}  
 
 # Helm uninstall of rabbitmq
   - name: 'gcr.io/aashe-migration/helm'
