@@ -4,7 +4,7 @@ steps:
 # GKE create namespace  Namespace stars-rmq-dev
   - name: 'gcr.io/cloud-builders/gke-deploy'
     dir: 'kubernetes-manifests'
-    args: ['apply', '-f', '${_GKE_NAMESPACE}', '--location=${_GKE_LOCATION}', '--cluster=${_GKE_CLUSTER}']
+    args: ['apply', '-f', '${_GKE_NAMESPACE_YAML}', '--location=${_GKE_LOCATION}', '--cluster=${_GKE_CLUSTER}']
 
 # Helm add repo for rabbitmq
   - name: 'gcr.io/aashe-migration/helm'
