@@ -14,7 +14,7 @@ steps:
     dir: 'kubernetes-manifests'
     args: ['sed', '-e', 's/BUILD_ID/$BUILD_ID/g', '-i', '${_GKE_DEPLOYMENT}']
 
-  # GKE Deploy django deployment
+  # GKE Deploy django and celery
   - name: 'gcr.io/cloud-builders/gke-deploy'
     dir: 'kubernetes-manifests'
     args: ['apply', '-f', '${_GKE_DEPLOYMENT}', '--location=${_GKE_LOCATION}', '--cluster=${_GKE_CLUSTER}'] 

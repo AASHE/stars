@@ -1,0 +1,133 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stars-celery
+  namespace: stars
+  labels:
+    app: stars-celery
+    tier: queue
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stars-celery
+      tier: queue
+  template:
+    metadata:
+      labels:
+        app: stars-celery
+        tier: queue
+    spec:
+      containers:
+      - name: stars-celery
+        image: gcr.io/aashe-migration/stars-image:BUILD_ID
+        ports:
+        - containerPort: 8080
+        env:
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: stars-dev-fh4kgkmmb8 
+              key: aws_access_key_id
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: stars-dev-fh4kgkmmb8 
+              key: aws_secret_access_key
+        - name: AWS_STORAGE_BUCKET_NAME
+          value: "starsdev"
+        - name: BT_HOST
+          value: "https://benchmarks.aashe.org"
+        - name: CACHE_URL
+          value: "pymemcached://10.61.241.67:11211"
+        - name: COMPRESS_ENABLED
+          value: "True"
+        - name: CONFIG
+          value: "settings"
+        - name: DEFAULT_FROM_EMAIL
+          value: "stars_notifier@aashe.org"
+        - name: EMAIL_BACKEND
+          value: "django.core.mail.backends.smtp.EmailBackend"
+        - name: EMAIL_HOST
+          value: "smtp.gmail.com"
+        - name: EMAIL_HOST_USER
+          value: "stars_notifier@aashe.org"
+        - name: EMAIL_HOST_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: stars-dev-fh4kgkmmb8 
+              key: email_host_password 
+        - name: EMAIL_PORT
+          value: "587"
+        - name: EMAIL_REPLY_TO
+          value: "stars@aashe.org"
+        - name: ISS_DB_URL
+          valueFrom:
+            secretKeyRef:
+              name: stars-dev-fh4kgkmmb8 
+              key: iss_db_url 
+        - name: MEDIA_ROOT
+          value: "/var/www/stars/media/"
+        - name: MS_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: stars-dev-fh4kgkmmb8 
+              key: ms_access_key
+        - name: MS_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: stars-dev-fh4kgkmmb8 
+              key: ms_secret_key
+        - name: MS_ASSOCIATION_ID
+          valueFrom:
+            secretKeyRef:
+              name: stars-dev-fh4kgkmmb8 
+              key: ms_association_id
+        - name: NEW_RELIC_CONFIG_FILE
+          value: "/var/www/stars//newrelic.ini" 
+        - name: PORT
+          value: "8080"
+        - name: RAVEN_CONFIG_DSN
+          valueFrom:
+            secretKeyRef:
+              name: stars-dev-fh4kgkmmb8 
+              key: raven_config_dsn
+        - name: RECAPTCHA_PRIVATE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: stars-dev-fh4kgkmmb8 
+              key: recaptcha_private_key
+        - name: RECAPTCHA_PUBLIC_KEY
+          valueFrom:
+            secretKeyRef:
+              name: stars-dev-fh4kgkmmb8 
+              key: recaptcha_public_key
+        - name: SSO_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: stars-dev-fh4kgkmmb8 
+              key: sso_api_key
+        - name: STARS_BENCHMARKS_HOST
+          value: "benchmarks.aashe.org"
+        - name: STARS_BROCHURE_HOST
+          value: stars.aashe.org
+        - name: STARS_DB_URL
+          valueFrom:
+            secretKeyRef:
+              name: stars-dev-fh4kgkmmb8 
+              key: stars_db_url
+        - name: STARS_MS_PUBLICATION_ID
+          valueFrom:
+            secretKeyRef:
+              name: stars-dev-fh4kgkmmb8 
+              key: stars_ms_publication_id 
+        - name: STARS_REPORTS_HOST
+          value: reports.aashe.org
+        - name: STARS_BENCHMARKS_HOST
+          value: benchmarks.aashe.org
+        - name: STATIC_ROOT
+          value: "/var/www/stars/media/static/"
+        readinessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 5
