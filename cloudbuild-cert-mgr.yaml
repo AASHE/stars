@@ -1,0 +1,30 @@
+# Access the id_github file from Secret Manager
+steps:
+
+# GKE create namespace  Namespace stars-rmq-dev
+  - name: 'gcr.io/cloud-builders/gke-deploy'
+    dir: 'kubernetes-manifests'
+    args: ['apply', '-f', '${_GKE_NAMESPACE_YAML}', '--location=${_GKE_LOCATION}', '--cluster=${_GKE_CLUSTER}']
+
+# Helm add repo for cert-manager
+  - name: 'gcr.io/aashe-migration/helm'
+    args: ['repo', 'add', 'jetstack', 'https://charts.jetstack.io']
+
+# Helm install of cert-manager
+  - name: 'gcr.io/aashe-migration/helm'
+    entrypoint: 'bash'
+    args:
+     - '-c'
+     - |
+        helm install ${_CERT_MGR_NAME} jetstack/cert-manager --namespace ${_GKE_NAMESPACE} --version ${_CERT_VERSION) --set installCRDs=${_INSTALL_CRD}
+
+# Helm uninstall of cert-manager
+  - name: 'gcr.io/aashe-migration/helm'
+    entrypoint: 'bash'
+    args:
+     - '-c'
+     - |
+        if [ ${_DELETE_CERT_MGR} == "yes" ]
+        then
+          helm uninstall ${_CERT_MGR_NAME} jetstack/cert-manager --namespace ${_GKE_NAMESPACE}
+        fi
