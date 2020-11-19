@@ -16,7 +16,7 @@ steps:
     args:
      - '-c'
      - |
-        helm install ${_CERT_MGR_NAME} jetstack/cert-manager --namespace ${_GKE_NAMESPACE} --version ${_CERT_VERSION) --set installCRDs=${_INSTALL_CRD}
+        helm install ${_CERT_MGR_NAME} jetstack/cert-manager --namespace ${_GKE_NAMESPACE} --version ${_CERT_VERSION} --set installCRDs=${_INSTALL_CRD}
 
 # Helm uninstall of cert-manager
   - name: 'gcr.io/aashe-migration/helm'
