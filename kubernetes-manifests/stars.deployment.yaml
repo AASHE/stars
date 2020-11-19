@@ -164,8 +164,7 @@ spec:
       containers:
       - name: stars-celery
         image: gcr.io/aashe-migration/stars-image:BUILD_ID
-        command: ["celery"]
-        args: ["-A", "stars", "--config", "src/stars/celery.py", "--loglevel=DEBUG"]
+        command: ["./run-celery.sh"]
         ports:
         - containerPort: 8080
         env:

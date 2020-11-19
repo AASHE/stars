@@ -18,5 +18,7 @@ WORKDIR /app
 # Copy the rest of the working directory contents into the container at /app
 COPY . .
 
+RUN chmod +x run-celery.sh
+
 # Start the server when the container launches
 #CMD ["python", "manage.py", "runserver", "0.0.0.0:8080", "--noreload"]
