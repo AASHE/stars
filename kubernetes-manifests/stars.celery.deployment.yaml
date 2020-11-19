@@ -1,28 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: stars
-  namespace: stars-dev
+  name: stars-celery
+  namespace: stars
   labels:
-    app: stars
-    tier: app
+    app: stars-celery
+    tier: queue
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: stars
-      tier: app
+      app: stars-celery
+      tier: queue
   template:
     metadata:
       labels:
-        app: stars
-        tier: app
+        app: stars-celery
+        tier: queue
     spec:
       containers:
-      - name: stars
+      - name: stars-celery
         image: gcr.io/aashe-migration/stars-image:BUILD_ID
-        command: ["python"]
-        args: ["manage.py", "runserver", "0.0.0.0:8080", "--noreload"]
         ports:
         - containerPort: 8080
         env:

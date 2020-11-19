@@ -2,7 +2,7 @@ apiVersion: networking.gke.io/v1beta1
 kind: FrontendConfig
 metadata:
   name: stars-dev-frontend-config
-  namespace: stars-dev.frontend
+  namespace: stars-dev
 spec:
   redirectToHttps:
     enabled: true

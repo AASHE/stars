@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: stars-external-np
+  namespace: stars-dev
+  labels:
+    app: stars
+    tier: app
+spec:
+  type: NodePort
+  ports:
+  - protocol: TCP
+    port: 60000
+    targetPort: 8080
+  selector:
+    app: stars
+    tier: app

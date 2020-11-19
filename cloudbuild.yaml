@@ -17,9 +17,14 @@ steps:
   # GKE Deploy django deployment
   - name: 'gcr.io/cloud-builders/gke-deploy'
     dir: 'kubernetes-manifests'
-    args: ['apply', '-f', '${_GKE_DEPLOYMENT}', '--location=${_GKE_LOCATION}', '--cluster=${_GKE_CLUSTER}'] 
+    args: ['apply', '-f', '${_GKE_DJANGO_DEPLOYMENT}', '--location=${_GKE_LOCATION}', '--cluster=${_GKE_CLUSTER}'] 
 
   # GKE Deploy Django service
   - name: 'gcr.io/cloud-builders/gke-deploy'
     dir: 'kubernetes-manifests'
     args: ['apply', '-f', '${_GKE_SERVICE}', '--location=${_GKE_LOCATION}', '--cluster=${_GKE_CLUSTER}'] 
+
+  # GKE Deploy Celery service
+  - name: 'gcr.io/cloud-builders/gke-deploy'
+    dir: 'kubernetes-manifests'
+    args: ['apply', '-f', '${_GKE_CELERY_DEPLOYMENT}', '--location=${_GKE_LOCATION}', '--cluster=${_GKE_CLUSTER}'] 
