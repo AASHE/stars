@@ -138,7 +138,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: stars-celery
-  namespace: stars
+  namespace: stars-dev
   labels:
     app: stars-celery
     tier: queue
