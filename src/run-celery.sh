@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "started"
+
 #Start Celery Workers
 celery -A stars worker --config stars/celery.py --loglevel=DEBUG &
 
