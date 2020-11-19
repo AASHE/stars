@@ -11,7 +11,12 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'stars.settings')
 from django.conf import settings
 from django.core.management import call_command
 
-app = Celery('stars', broker='amqp://guest:guest@localhost:5672/')
+#Changed for Kubernetes
+#app = Celery('stars', broker='amqp://guest:guest@localhost:5672/')
+rmq_password = os.environ.get('RMQ_PASSWORD')
+rmq_ip = os.environ.get('RMQ_IP')
+app = Celery('stars', broker='amqp://user:{}@{}:5672/'.format(rmq_password, rmq_ip))
+
 app.conf.update(accept_content=['json', ])
 logger = get_task_logger(__name__)
 

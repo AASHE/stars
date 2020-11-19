@@ -29,12 +29,12 @@ spec:
         - name: AWS_ACCESS_KEY_ID
           valueFrom:
             secretKeyRef:
-              name: stars-dev-fh4kgkmmb8 
+              name: stars-dev-dkt78t8bt9 
               key: aws_access_key_id
         - name: AWS_SECRET_ACCESS_KEY
           valueFrom:
             secretKeyRef:
-              name: stars-dev-fh4kgkmmb8 
+              name: stars-dev-dkt78t8bt9 
               key: aws_secret_access_key
         - name: AWS_STORAGE_BUCKET_NAME
           value: "starsdev"
@@ -57,7 +57,7 @@ spec:
         - name: EMAIL_HOST_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: stars-dev-fh4kgkmmb8 
+              name: stars-dev-dkt78t8bt9 
               key: email_host_password 
         - name: EMAIL_PORT
           value: "587"
@@ -66,24 +66,24 @@ spec:
         - name: ISS_DB_URL
           valueFrom:
             secretKeyRef:
-              name: stars-dev-fh4kgkmmb8 
+              name: stars-dev-dkt78t8bt9 
               key: iss_db_url 
         - name: MEDIA_ROOT
           value: "/var/www/stars/media/"
         - name: MS_ACCESS_KEY
           valueFrom:
             secretKeyRef:
-              name: stars-dev-fh4kgkmmb8 
+              name: stars-dev-dkt78t8bt9 
               key: ms_access_key
         - name: MS_SECRET_KEY
           valueFrom:
             secretKeyRef:
-              name: stars-dev-fh4kgkmmb8 
+              name: stars-dev-dkt78t8bt9 
               key: ms_secret_key
         - name: MS_ASSOCIATION_ID
           valueFrom:
             secretKeyRef:
-              name: stars-dev-fh4kgkmmb8 
+              name: stars-dev-dkt78t8bt9 
               key: ms_association_id
         - name: NEW_RELIC_CONFIG_FILE
           value: "/var/www/stars//newrelic.ini" 
@@ -92,22 +92,29 @@ spec:
         - name: RAVEN_CONFIG_DSN
           valueFrom:
             secretKeyRef:
-              name: stars-dev-fh4kgkmmb8 
+              name: stars-dev-dkt78t8bt9 
               key: raven_config_dsn
         - name: RECAPTCHA_PRIVATE_KEY
           valueFrom:
             secretKeyRef:
-              name: stars-dev-fh4kgkmmb8 
+              name: stars-dev-dkt78t8bt9 
               key: recaptcha_private_key
         - name: RECAPTCHA_PUBLIC_KEY
           valueFrom:
             secretKeyRef:
-              name: stars-dev-fh4kgkmmb8 
+              name: stars-dev-dkt78t8bt9 
               key: recaptcha_public_key
+        - name: RMQ_IP
+          value: '10.104.2.103'
+        - name: RMQ_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: stars-dev-dkt78t8bt9
+              key: rmq_password 
         - name: SSO_API_KEY
           valueFrom:
             secretKeyRef:
-              name: stars-dev-fh4kgkmmb8 
+              name: stars-dev-dkt78t8bt9 
               key: sso_api_key
         - name: STARS_BENCHMARKS_HOST
           value: "benchmarks.aashe.org"
@@ -116,12 +123,12 @@ spec:
         - name: STARS_DB_URL
           valueFrom:
             secretKeyRef:
-              name: stars-dev-fh4kgkmmb8 
+              name: stars-dev-dkt78t8bt9 
               key: stars_db_url
         - name: STARS_MS_PUBLICATION_ID
           valueFrom:
             secretKeyRef:
-              name: stars-dev-fh4kgkmmb8 
+              name: stars-dev-dkt78t8bt9 
               key: stars_ms_publication_id 
         - name: STARS_REPORTS_HOST
           value: reports.aashe.org
@@ -165,12 +172,12 @@ spec:
         - name: AWS_ACCESS_KEY_ID
           valueFrom:
             secretKeyRef:
-              name: stars-dev-fh4kgkmmb8 
+              name: stars-dev-dkt78t8bt9 
               key: aws_access_key_id
         - name: AWS_SECRET_ACCESS_KEY
           valueFrom:
             secretKeyRef:
-              name: stars-dev-fh4kgkmmb8 
+              name: stars-dev-dkt78t8bt9 
               key: aws_secret_access_key
         - name: AWS_STORAGE_BUCKET_NAME
           value: "starsdev"
@@ -193,7 +200,7 @@ spec:
         - name: EMAIL_HOST_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: stars-dev-fh4kgkmmb8 
+              name: stars-dev-dkt78t8bt9 
               key: email_host_password 
         - name: EMAIL_PORT
           value: "587"
@@ -202,24 +209,24 @@ spec:
         - name: ISS_DB_URL
           valueFrom:
             secretKeyRef:
-              name: stars-dev-fh4kgkmmb8 
+              name: stars-dev-dkt78t8bt9 
               key: iss_db_url 
         - name: MEDIA_ROOT
           value: "/var/www/stars/media/"
         - name: MS_ACCESS_KEY
           valueFrom:
             secretKeyRef:
-              name: stars-dev-fh4kgkmmb8 
+              name: stars-dev-dkt78t8bt9 
               key: ms_access_key
         - name: MS_SECRET_KEY
           valueFrom:
             secretKeyRef:
-              name: stars-dev-fh4kgkmmb8 
+              name: stars-dev-dkt78t8bt9 
               key: ms_secret_key
         - name: MS_ASSOCIATION_ID
           valueFrom:
             secretKeyRef:
-              name: stars-dev-fh4kgkmmb8 
+              name: stars-dev-dkt78t8bt9 
               key: ms_association_id
         - name: NEW_RELIC_CONFIG_FILE
           value: "/var/www/stars//newrelic.ini" 
@@ -228,22 +235,29 @@ spec:
         - name: RAVEN_CONFIG_DSN
           valueFrom:
             secretKeyRef:
-              name: stars-dev-fh4kgkmmb8 
+              name: stars-dev-dkt78t8bt9 
               key: raven_config_dsn
+        - name: RMQ_IP
+          value: '10.104.2.103'
+        - name: RMQ_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: stars-dev-dkt78t8bt9
+              key: rmq_password 
         - name: RECAPTCHA_PRIVATE_KEY
           valueFrom:
             secretKeyRef:
-              name: stars-dev-fh4kgkmmb8 
+              name: stars-dev-dkt78t8bt9 
               key: recaptcha_private_key
         - name: RECAPTCHA_PUBLIC_KEY
           valueFrom:
             secretKeyRef:
-              name: stars-dev-fh4kgkmmb8 
+              name: stars-dev-dkt78t8bt9 
               key: recaptcha_public_key
         - name: SSO_API_KEY
           valueFrom:
             secretKeyRef:
-              name: stars-dev-fh4kgkmmb8 
+              name: stars-dev-dkt78t8bt9 
               key: sso_api_key
         - name: STARS_BENCHMARKS_HOST
           value: "benchmarks.aashe.org"
@@ -252,12 +266,12 @@ spec:
         - name: STARS_DB_URL
           valueFrom:
             secretKeyRef:
-              name: stars-dev-fh4kgkmmb8 
+              name: stars-dev-dkt78t8bt9 
               key: stars_db_url
         - name: STARS_MS_PUBLICATION_ID
           valueFrom:
             secretKeyRef:
-              name: stars-dev-fh4kgkmmb8 
+              name: stars-dev-dkt78t8bt9 
               key: stars_ms_publication_id 
         - name: STARS_REPORTS_HOST
           value: reports.aashe.org
