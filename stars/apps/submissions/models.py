@@ -1127,6 +1127,7 @@ class CategorySubmission(models.Model):
         if self.category.abbreviation == "IN":
             claimed = 4 if claimed > 4 else claimed
             available = 4
+
         return claimed, available
 
     def get_adjusted_available_points(self, recalculate=False):
