@@ -94,7 +94,6 @@
                                }
 
                                function drawChartTEST() {
-                                 console.log("IN drawChartTEST")
                                  console.log([
                                    ['{{ sub }}',
                                     asPercentageOfAdjustedAvailablePoints(
@@ -115,7 +114,6 @@
                                }
 
                                function drawChart() {
-                                 console.log('IN drawChart')
                                  var dataTable = new google.visualization.DataTable()
                                  dataTable.addColumn('string', 'Subcategory');
                                  dataTable.addColumn('number', 'Score');
@@ -196,14 +194,13 @@
                                  chart.draw(dataTable, options);
                                }
 
-
                                google.charts.load('current', {
                                  callback: drawChart,
-                                 packages: ['bar', 'corechart', 'table','lchart']
+                                 packages: ['bar', 'corechart', 'table', 'lchart']
                                });
 
-                               //drawChartTEST();
-                               drawChart();
+                               drawChartTEST();
+                               //drawChart();
 
                               </script>
                             </div>
