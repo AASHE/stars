@@ -1,7 +1,8 @@
 {% autoescape off %}
 {% load submit_tags %}
 {% load report_tags %}
-{% load static %}
+{% load staticfiles %}
+{ comment test revert }
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 
@@ -70,7 +71,7 @@
     }
   </style>
 
-  <link href="{% static "/css/pdf.css" %}" rel="stylesheet" type="text/css" />
+  <link href="{{ STATIC_ROOT }}/css/pdf.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
@@ -311,6 +312,13 @@
       </td>
     </tr>
   </table>
+  {% endif %}
+  <p>{{ sub.subcategory.description }}</p>
+  {% if sub.description %}
+  <hr />
+  <h5>From the institution:</h5>
+  {{ sub.description|urlizetrunc:85|linebreaks }}
+  {% endif %}
   <table class='creditList'>
     <tr>
       <th style='text-align: left;'>Credit</th>
