@@ -98,6 +98,31 @@
 
                                function drawChartTEST() {
                                  console.log("start drawChartTEST")
+                                 console.log([
+                                   ['{{ sub }}',
+                                    asPercentageOfAdjustedAvailablePoints(
+                                      {{ sub.get_claimed_points }}),
+                                    0,
+                                    '',
+                                    0,
+                                    '',
+                                    0,
+                                    '',
+                                    0,
+                                    ''],
+                                   ['{{ sub }}',
+                                    0,
+                                    {% subcategory_quartiles sub as q %}
+                                    {{ q.relative_first }},
+                                    '1st quartile: {{ q.absolute_first_percent }}%',
+                                    {{ q.relative_second }},
+                                    'Median: {{ q.absolute_second_percent }}%',
+                                    {{ q.relative_third }},
+                                    '3rd quartile: {{ q.absolute_third_percent }}%',
+                                    {{ q.relative_fourth }},
+                                    'Top score: {{ q.absolute_fourth_percent }}%'
+                                    ],
+                                 ]);
                                }
 
                                function drawChart() {
@@ -182,7 +207,7 @@
                                }
 
                                drawChartTEST();
-                               drawChart();
+                               //drawChart();
 
                               </script>
                             </div>
