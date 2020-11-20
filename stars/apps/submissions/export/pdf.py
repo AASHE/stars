@@ -18,9 +18,10 @@ def render_to_pdf(template_src, context_dict):
         Returns a weasyprint.pdf.
     """
     logger.info("building pdf with weasyprint")
-    logger.info(context_dict)
 
     template = get_template(template_src)
+    logger.info(template)
+
     context = Context(context_dict)
     html = template.render(context)
     pdf = weasyprint.HTML(string=html, base_url="file:///")
