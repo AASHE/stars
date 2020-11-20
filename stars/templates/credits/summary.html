@@ -123,6 +123,7 @@
                                }
 
                                function drawChart() {
+                                 console.log('IN drawChart')
                                  var dataTable = new google.visualization.DataTable()
                                  dataTable.addColumn('string', 'Subcategory');
                                  dataTable.addColumn('number', 'Score');
@@ -204,6 +205,7 @@
                                }
 
                                //drawChartTEST();
+                               google.charts.setOnLoadCallback(drawChart);
                                drawChart();
 
                               </script>
