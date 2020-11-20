@@ -62,19 +62,8 @@ function updateChildOptions(url_prefix, parent_id, child_sel, current) {
 
     ajaxFillTarget(url + get_params, child_sel);
 
-    //console.log(url+get_params)
   }
 }
-
-/*
-choices_lookup = {
-	institution_type: ['Two Year Institution',
-                           'Four Year Institution',
-                           'Graduate Institution',
-                           'System Office'],
-	rating__name: ['Bronze', 'Silver', 'Gold', 'Platinum']
-}
-*/
 
 function initLookup() {
   sel = document.getElementById("id_type");
@@ -199,11 +188,6 @@ function setTable(dndtable) {
           inputs[j].value = count;
           count++;
         }
-
-        /*var inputs =  tds[1].getElementsByTagName("input");
-                if (inputs.length > 0) {
-                    inputs[0].value = i;
-                }*/
       }
     }
     var rel = "save_ordering";
@@ -213,9 +197,6 @@ function setTable(dndtable) {
         buttons[i].disabled = false;
       }
     }
-
-    //var save_button = document.getElementById('save_ordering');
-    //save_button.disabled = false;
   };
 }
 
