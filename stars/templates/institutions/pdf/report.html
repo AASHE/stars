@@ -1,18 +1,23 @@
+{% autoescape off %}
 {% load submit_tags %}
 {% load report_tags %}
-{% load staticfiles %}
+{% load static %}
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
+
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>{{ ss.institution.name }} STARS Report</title>
+
   <style type='text/css'>
     @page {
       margin: 1cm;
       margin-bottom: 1cm;
       size: letter;
 
-        {% if preview %}
+        {
+        % if preview %
+      }
 
       @frame header {
         -pdf-frame-content: headerContent;
@@ -65,7 +70,7 @@
     }
   </style>
 
-  <link href="{{ STATIC_ROOT }}/css/pdf.css" rel="stylesheet" type="text/css" />
+  <link href="{% static "/css/pdf.css" %}" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
@@ -306,8 +311,6 @@
       </td>
     </tr>
   </table>
-  {% endif %}
-  <p>{{ sub.subcategory.description }}</p>
   <table class='creditList'>
     <tr>
       <th style='text-align: left;'>Credit</th>
@@ -431,4 +434,6 @@
   <div id='headerContent'>PREVIEW</div>
   {% endif %}
 </body>
+
 </html>
+{% endautoescape %}
