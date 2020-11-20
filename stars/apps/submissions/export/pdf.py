@@ -20,8 +20,6 @@ def render_to_pdf(template_src, context_dict):
     logger.info("building pdf with weasyprint")
 
     template = get_template(template_src)
-    logger.info(template)
-
     context = Context(context_dict)
     html = template.render(context)
     pdf = weasyprint.HTML(string=html, base_url="file:///")
@@ -51,6 +49,8 @@ def build_report_pdf(submission_set, template=None):
         if save if True, the file will be saved
     """
     rating = submission_set.get_STARS_rating()
+
+    logger.info(submission_set)
 
     context = {
         "ss": submission_set,
