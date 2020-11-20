@@ -87,12 +87,9 @@
                           <div class="row">
                             <div class="span6">
                               <div id="chart_div_{{ sub.id|unlocalize }}"></div>
-                              <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
                               <script>
                                function asPercentageOfAdjustedAvailablePoints(n) {
                                  var percentage = (n / {{ sub.get_adjusted_available_points }});
-                                 console.log(n)
-                                 console.log({{ sub.get_adjusted_available_points }})
                                  return parseFloat(percentage.toFixed(2));
                                }
 
