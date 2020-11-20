@@ -136,10 +136,6 @@ spec:
           value: benchmarks.aashe.org
         - name: STATIC_ROOT
           value: "/var/www/stars/media/static/"
-        readinessProbe:
-          tcpSocket:
-            port: 8080
-          initialDelaySeconds: 5
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -278,7 +274,3 @@ spec:
           value: benchmarks.aashe.org
         - name: STATIC_ROOT
           value: "/var/www/stars/media/static/"
-        readinessProbe:
-          tcpSocket:
-            port: 8080
-          initialDelaySeconds: 5
