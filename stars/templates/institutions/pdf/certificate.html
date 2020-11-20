@@ -93,6 +93,8 @@
 
   {% if  ss.date_expiration %}
     <h3>Valid through {{ ss.date_expiration }}.</h3>
+  {% elif ss.institution.rating_expires %}
+      <h3>Valid through {{ ss.institution.rating_expires }}.</h3>
   {% else %}
     <h3>Submitted on {{ ss.date_submitted }}.</h3>
   {% endif %}
