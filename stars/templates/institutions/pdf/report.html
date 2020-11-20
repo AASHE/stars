@@ -4,20 +4,16 @@
 {% load staticfiles %}
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>{{ ss.institution.name }} STARS Report</title>
-
   <style type='text/css'>
     @page {
       margin: 1cm;
       margin-bottom: 1cm;
       size: letter;
 
-        {
-        % if preview %
-      }
+        {% if preview %}
 
       @frame header {
         -pdf-frame-content: headerContent;
@@ -313,11 +309,6 @@
   </table>
   {% endif %}
   <p>{{ sub.subcategory.description }}</p>
-<!--    {% if sub.description %}
-  <hr />
-<h5>From the institution:</h5>
-  {{ sub.description|urlizetrunc:85|linebreaks }}
-  {% endif %} -->
   <table class='creditList'>
     <tr>
       <th style='text-align: left;'>Credit</th>
