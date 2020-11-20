@@ -205,9 +205,11 @@
                                }
 
                                //drawChartTEST();
-                               google.charts.load('current', {packages: ['corechart']});
-                               google.load("visualization", "1", {packages: ["lchart"]});
-                               google.charts.setOnLoadCallback(drawChart);
+
+                               google.charts.load('current', {
+                                 callback: drawChart,
+                                 packages: ['bar', 'corechart', 'table','lchart']
+                               });
 
                                drawChart();
 
