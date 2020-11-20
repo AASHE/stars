@@ -19,10 +19,9 @@ def render_to_pdf(template_src, context_dict):
     """
     logger.info("building pdf with weasyprint")
 
-    logger.debug("building pdf with weasyprint")
-
     template = get_template(template_src)
     context = Context(context_dict)
+    logger.info(context)
     html = template.render(context)
     pdf = weasyprint.HTML(string=html, base_url="file:///")
 
@@ -44,6 +43,7 @@ def getRatingImage(rating):
 
 
 def build_report_pdf(submission_set, template=None):
+    print submission_set
     """
         Build a PDF export of a specific submission
         store it in outfile, if submitted
