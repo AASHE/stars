@@ -44,19 +44,6 @@
 
     {% include "helpers/google_analytics.html" %}
 
-    <!--  pingdom real user monitoring -->
-    <script>
-     var _prum = [['id', '52b2099cabe53d4c67000000'],
-		  ['mark', 'firstbyte', (new Date()).getTime()]];
-     (function() {
-       var s = document.getElementsByTagName('script')[0]
-	 , p = document.createElement('script');
-       p.async = 'async';
-       p.src = '//rum-static.pingdom.net/prum.min.js';
-       s.parentNode.insertBefore(p, s);
-     })();
-    </script>
-
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="profile" href="http://gmpg.org/xfn/11">
@@ -217,12 +204,12 @@
 
             <div id="member-links">
               {% if user.is_authenticated %}
-                <a href="{% url 'accounts:logout' %}" class="icon-portal">Logout</a>  
+                <a href="{% url 'accounts:logout' %}" class="icon-portal">Logout</a>
               {% else %}
                 <a href="https://{{ settings.STARS_REPORTS_HOST  }}/tool/" class="icon-portal"
                    tabindex="1" target="_blank">Reporting Tool</a>
               {% endif %}
-              
+
             </div>
 
           </div>
