@@ -91,10 +91,13 @@
                               <script>
                                function asPercentageOfAdjustedAvailablePoints(n) {
                                  var percentage = (n / {{ sub.get_adjusted_available_points }});
+                                 console.log(n)
+                                 console.log({{ sub.get_adjusted_available_points }})
                                  return parseFloat(percentage.toFixed(2));
                                }
 
                                function drawChart() {
+                                 console.log("start drawChart")
                                  var dataTable = new google.visualization.DataTable()
                                  dataTable.addColumn('string', 'Subcategory');
                                  dataTable.addColumn('number', 'Score');
@@ -106,7 +109,6 @@
                                  dataTable.addColumn({type: 'string', role: 'tooltip'})
                                  dataTable.addColumn('number', '');
                                  dataTable.addColumn({type: 'string', role: 'tooltip'})
-                                 console.log(  {{ sub.get_claimed_points }})
                                  dataTable.addRows([
                                    ['{{ sub }}',
                                     asPercentageOfAdjustedAvailablePoints(
