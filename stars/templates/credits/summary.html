@@ -106,7 +106,7 @@
                                  dataTable.addColumn({type: 'string', role: 'tooltip'})
                                  dataTable.addColumn('number', '');
                                  dataTable.addColumn({type: 'string', role: 'tooltip'})
-
+                                 console.log(  {{ sub.get_claimed_points }})
                                  dataTable.addRows([
                                    ['{{ sub }}',
                                     asPercentageOfAdjustedAvailablePoints(
@@ -176,7 +176,7 @@
                                  chart.draw(dataTable, options);
                                }
 
-                               //drawChart();
+                               drawChart();
                               </script>
                             </div>
                             <div class="span2" style="font-size: 1em; line-height: 1em;">
