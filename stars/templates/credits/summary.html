@@ -88,29 +88,12 @@
                             <div class="span6">
                               <div id="chart_div_{{ sub.id|unlocalize }}"></div>
                               <script>
-                               function asPercentageOfAdjustedAvailablePoints(n) {
-                                 var percentage = (n / {{ sub.get_adjusted_available_points }});
-                                 return parseFloat(percentage.toFixed(2));
-                               }
+                                google.charts.load('current', {'packages':['corechart']});
+                                google.charts.setOnLoadCallback(drawChart);
 
-                               function drawChartTEST() {
-                                 console.log([
-                                   ['{{ sub }}',
-                                    asPercentageOfAdjustedAvailablePoints(
-                                      {{ sub.get_claimed_points }}),0,'',0,'',0,'',0,''],
-                                   ['{{ sub }}',
-                                    0,
-                                    {% subcategory_quartiles sub as q %}
-                                    {{ q.relative_first }},
-                                    '1st quartile: {{ q.absolute_first_percent }}%',
-                                    {{ q.relative_second }},
-                                    'Median: {{ q.absolute_second_percent }}%',
-                                    {{ q.relative_third }},
-                                    '3rd quartile: {{ q.absolute_third_percent }}%',
-                                    {{ q.relative_fourth }},
-                                    'Top score: {{ q.absolute_fourth_percent }}%'
-                                    ],
-                                 ]);
+                               function asPercentageOfAdjustedAvailablePoints(n) {
+                                 var percentage = (n / 40);
+                                 return parseFloat(percentage.toFixed(2));
                                }
 
                                function drawChart() {
@@ -125,6 +108,7 @@
                                  dataTable.addColumn({type: 'string', role: 'tooltip'})
                                  dataTable.addColumn('number', '');
                                  dataTable.addColumn({type: 'string', role: 'tooltip'})
+
                                  dataTable.addRows([
                                    ['{{ sub }}',
                                     asPercentageOfAdjustedAvailablePoints(
@@ -186,21 +170,12 @@
                                    },
                                  };
 
-                                 var chartContainer = document.getElementById(
-                                   'chart_div_{{ sub.id|unlocalize }}');
-                                 var chart = new google.visualization.BarChart(
-                                   chartContainer);
 
+                                 var chart = new google.visualization.BarChart(document.getElementById('chart_div_{{ sub.id|unlocalize }}'));
                                  chart.draw(dataTable, options);
                                }
 
-                               google.charts.load('current', {
-                                 callback: drawChart,
-                                 packages: ['bar', 'corechart', 'table', 'lchart']
-                               });
-
-                               drawChartTEST();
-                               //drawChart();
+                               drawChart();
 
                               </script>
                             </div>
