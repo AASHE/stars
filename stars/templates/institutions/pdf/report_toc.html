@@ -38,7 +38,7 @@
 
 <table class='tableOfContents'>
   {% for cat in ss.categorysubmission_set.all %}
-  {% if cat.category.include_in_report %}
+  {% if cat.category.include_in_report and cat.subcategory.id %}
   <tr class='tocCatRow'>
     <td style="width: 50%">
       <a class='tocCat' href="#cat{{ cat.subcategory.id }}">{{ cat }}</a>
@@ -46,11 +46,11 @@
     {% if rating.publish_score %}
     <td style="width: 50%; text-align: right;">
       {% if ss.creditset.has_category_scoring_feature %}
-      {% if cat.category.title != 'Innovation' %}
-      {{ cat.get_STARS_score|floatformat:2 }}%
-      {% else %}
-      {{ cat.get_STARS_score|floatformat:2 }}
-      {% endif %}
+        {% if cat.category.title != 'Innovation' %}
+          {{ cat.get_STARS_score|floatformat:2 }}%
+        {% else %}
+          {{ cat.get_STARS_score|floatformat:2 }}
+        {% endif %}
       {% endif %}
     </td>
     {% endif %}
@@ -68,13 +68,6 @@
     </td>
     {% endif %}
   </tr>
-  <!-- {% if sub.description %}
-  <tr>
-    <td colspan=" 2" style="text-align: center;">
-      {{ sub.description|urlizetrunc:85|linebreaks }}
-    </td>
-  </tr>
-  {% endif %} -->
   {% endfor %}
   {% endif %}
   {% endfor %}
