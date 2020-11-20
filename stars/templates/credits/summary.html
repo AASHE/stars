@@ -94,19 +94,11 @@
                                }
 
                                function drawChartTEST() {
-                                 console.log("start drawChartTEST")
+                                 console.log("IN drawChartTEST")
                                  console.log([
                                    ['{{ sub }}',
                                     asPercentageOfAdjustedAvailablePoints(
-                                      {{ sub.get_claimed_points }}),
-                                    0,
-                                    '',
-                                    0,
-                                    '',
-                                    0,
-                                    '',
-                                    0,
-                                    ''],
+                                      {{ sub.get_claimed_points }}),0,'',0,'',0,'',0,''],
                                    ['{{ sub }}',
                                     0,
                                     {% subcategory_quartiles sub as q %}
@@ -204,7 +196,7 @@
                                  chart.draw(dataTable, options);
                                }
 
-                               //drawChartTEST();
+                               drawChartTEST();
 
                                google.charts.load('current', {
                                  callback: drawChart,
