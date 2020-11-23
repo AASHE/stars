@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: stars-dev-ingress
+  namespace: stars-dev
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: stars-dev-ingress
+    kubernetes.io/ingress.class: nginx
+    cloud.google.com/backend-config: '{"default": "stars-http-hc-config"}'
+    cloud.google.com/neg: '{"ingress": false}'
+spec:
+  backend:
+    serviceName: stars-external-np
+    servicePort: 8080
+  rules:
+  - host: reports.aashe.org
+    http:
+      paths:
+      - path: /*
+        backend:
+          serviceName: stars-external-np
+          servicePort: 8080
+  - host: testreports.aashe.org
+    http:
+      paths:
+      - path: /*
+        backend:
+          serviceName: stars-external-np
+          servicePort: 8080
