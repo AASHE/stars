@@ -6,13 +6,15 @@ metadata:
   annotations:
     kubernetes.io/ingress.global-static-ip-name: stars-dev-ingress
     networking.gke.io/v1beta1.FrontendConfig: stars-dev-frontend-config
+    cloud.google.com/backend-config: '{"default": "stars-http-hc-config"}'
 spec:
   tls:
-  - secretName: stars-cert
+  - secretName: stars-tls-secret
   rules:
-  - http:
+  - host: testreports.aashe.org
+    http:
       paths:
-      - path: /
+      - path: /*
         backend:
           serviceName: stars-external-np
           servicePort: 60000
