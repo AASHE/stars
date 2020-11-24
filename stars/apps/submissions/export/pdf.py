@@ -42,6 +42,9 @@ def getRatingImage(rating):
 
 
 def build_report_pdf(submission_set, template=None):
+
+    logger.info(submission_set)
+
     """
         Build a PDF export of a specific submission
         store it in outfile, if submitted
