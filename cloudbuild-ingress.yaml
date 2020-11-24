@@ -14,4 +14,4 @@ steps:
         helm install ${_INGRESS_NAME} ingresss-nginx/ingress-nginx
     env:
     - 'CLOUDSDK_CONTAINER_CLUSTER=${_GKE_CLUSTER}'
-    - 'CLOUDSDK_COMPUTE_ZONE=${_GKE_LOCATION}
+    - 'CLOUDSDK_COMPUTE_ZONE=${_GKE_LOCATION}'
