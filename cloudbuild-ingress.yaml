@@ -3,6 +3,9 @@ steps:
 # Helm add repo for cert-manager
   - name: 'gcr.io/aashe-migration/helm'
     args: ['repo', 'add', 'ingress-nginx', 'https://kubernetes.github.io/ingress-nginx/']
+    env:
+    - 'CLOUDSDK_CONTAINER_CLUSTER=${_GKE_CLUSTER}'
+    - 'CLOUDSDK_COMPUTE_ZONE=${_GKE_LOCATION}'
 
 # Helm install of cert-manager
   - name: 'gcr.io/aashe-migration/helm'
