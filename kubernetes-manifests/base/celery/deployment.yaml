@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stars-celery
+  labels:
+    app: stars-celery
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stars-celery
+  template:
+    metadata:
+      labels:
+        app: stars-celery
+    spec:
+      containers:
+      - name: stars-celery
+        image: stars-celery-image
+        command: ["python"]
+        args: ["manage.py", "runserver", "0.0.0.0:8080", "--noreload"]
+        ports:
+        - containerPort: 8080
+        envFrom:
+        - configMapRef:
+            name: stars-env
+            

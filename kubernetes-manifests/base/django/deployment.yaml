@@ -1,0 +1,101 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stars-django
+  labels:
+    app: stars-django
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stars=django
+  template:
+    metadata:
+      labels:
+        app: stars-django
+    spec:
+      containers:
+      - name: stars-django
+        image: stars-django-image
+        command: ["python"]
+        args: ["manage.py", "runserver", "0.0.0.0:8080", "--noreload"]
+        ports:
+        - containerPort: 8080
+        envFrom:
+        - configMapRef:
+            name: stars-django-map
+        env:
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: stars-django
+              key: aws_access_key_id
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: stars-django
+              key: aws_secret_access_key
+        - name: EMAIL_HOST_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: stars-django 
+              key: email_host_password 
+        - name: ISS_DB_URL
+          valueFrom:
+            secretKeyRef:
+              name: stars-django
+              key: iss_db_url 
+        - name: MS_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: stars-django
+              key: ms_access_key
+        - name: MS_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: stars-django
+              key: ms_secret_key
+        - name: MS_ASSOCIATION_ID
+          valueFrom:
+            secretKeyRef:
+              name: stars-django
+              key: ms_association_id
+        - name: RAVEN_CONFIG_DSN
+          valueFrom:
+            secretKeyRef:
+              name: stars-django 
+              key: raven_config_dsn
+        - name: RMQ_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: stars-django
+              key: rmq_password 
+        - name: RECAPTCHA_PRIVATE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: stars-django
+              key: recaptcha_private_key
+        - name: RECAPTCHA_PUBLIC_KEY
+          valueFrom:
+            secretKeyRef:
+              name: stars-django
+              key: recaptcha_public_key
+        - name: SSO_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: stars-django
+              key: sso_api_key
+        - name: STARS_BENCHMARKS_HOST
+          value: "benchmarks.aashe.org"
+        - name: STARS_BROCHURE_HOST
+          value: stars.aashe.org
+        - name: STARS_DB_URL
+          valueFrom:
+            secretKeyRef:
+              name: stars-django
+              key: stars_db_url
+        - name: STARS_MS_PUBLICATION_ID
+          valueFrom:
+            secretKeyRef:
+              name: stars-django
+              key: stars_ms_publication_id          

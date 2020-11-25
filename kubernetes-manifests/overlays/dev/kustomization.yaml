@@ -1,0 +1,56 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - stars.dev.namespace.yaml
+  - ../../base/django
+  - ../../base/celery
+  - secrets
+
+namePrefix: dev-
+namespace: stars-dev
+commonLabels:
+  env: dev
+commonAnnotations:
+  pythonver: "2.7"
+
+replicas:
+ - name: stars-django
+   count: 1
+ - name: stars-celery
+   count: 1
+
+configMapGenerator:
+  - name: stars-django-map
+    literals:
+    - AWS_STORAGE_BUCKET_NAME=starsdev
+    - BT_HOST=https://benchmarks.aashe.org
+    - CACHE_URL="pymemcached://10.61.241.67:11211"
+    - COMPRESS_ENABLED=True
+    - CONFIG=settings
+    - DEFAULT_FROM_EMAIL=stars_notifier@aashe.org
+    - DJANGO_SETTINGS_MODULE=stars.settings
+    - EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+    - EMAIL_HOST=smtp.gmail.com
+    - EMAIL_HOST_USER=stars_notifier@aashe.org
+    - EMAIL_PORT=587
+    - EMAIL_REPLY_TO=stars@aashe.org
+    - MEDIA_ROOT=/var/www/stars/media/
+    - NEW_RELIC_CONFIG_FILE=/var/www/stars//newrelic.ini
+    - PORT=8080
+    - RMQ_IP=10.104.2.103
+    - STARS_BENCHMARKS_HOST=benchmarks.aashe.org
+    - STARS_BROCHURE_HOST=stars.aashe.org
+    - STARS_REPORTS_HOST=reports.aashe.org
+    - STATIC_ROOT="/var/www/stars/media/static/"
+
+images:
+- name: stars-django-image
+  newName: gcr.io/aashe-migration/stars-image
+  newTag: dde2e494-6c47-4a65-af8d-ebee4dae8130
+- name: stars-celery-image
+  newName: gcr.io/aashe-migration/stars-image
+  newTag: dde2e494-6c47-4a65-af8d-ebee4dae8130
+
+
+ 

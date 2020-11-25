@@ -1,0 +1,4 @@
+commonLabels:
+  app: stars-celery
+resources:
+- deployment.yaml

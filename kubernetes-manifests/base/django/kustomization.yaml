@@ -1,0 +1,5 @@
+commonLabels:
+  app: stars-django
+resources:
+- deployment.yaml
+- service.yaml
