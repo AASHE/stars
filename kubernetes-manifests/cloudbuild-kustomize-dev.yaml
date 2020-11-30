@@ -1,0 +1,21 @@
+# Access the id_github file from Secret Manager
+steps:
+
+# Access the id_github file from Secret Manager
+  - id: kubernetes secrets
+    name: gcr.io/cloud-builders/gcloud
+    entrypoint: 'bash'
+    args: [ '-c', 'gcloud secrets versions access latest --secret=$KUST_SECRET_FILE > secrets/kustomization.yaml' ]
+
+# Kustomize builds kubernetes yaml and kubectl deploys
+  - id: deploy django and celery
+  - name: 'gcr.io/$PROJECT_ID/kustomize:v3.8.7'
+    dir: 'kubernetes-manifests'
+    args:
+    - 'build'
+    - '${_KUST_BUILD_DIR}'
+    env:
+      - 'APPLY=true'
+      - 'CLOUDSDK_COMPUTE_ZONE=${_GKE_LOCATION}'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=${_GKE_CLUSTER}'
+      - 'GCLOUD_PROJECT=$PROJECT_ID'
