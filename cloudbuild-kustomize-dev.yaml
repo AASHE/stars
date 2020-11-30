@@ -13,7 +13,7 @@ steps:
     args: ['push', 'gcr.io/$PROJECT_ID/stars-image:$BUILD_ID']
 
 # Update Kubernetes Django Container Image
-  - id: update Kubernetes Container Image
+  - id: update Kubernetes Django Container Image
     name: 'gcr.io/$PROJECT_ID/kustomize:${_KUSTOMIZE_VERSION}'
     entrypoint: bash
     args:
@@ -28,7 +28,7 @@ steps:
       - 'GCLOUD_PROJECT=$PROJECT_ID'
 
 # Update Kubernetes Celery Container Image
-  - id: update Kubernetes Container Image
+  - id: update Kubernetes Celery Container Image
     name: 'gcr.io/$PROJECT_ID/kustomize:${_KUSTOMIZE_VERSION}'
     entrypoint: bash
     args:
