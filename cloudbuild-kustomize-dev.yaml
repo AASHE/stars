@@ -15,6 +15,7 @@ steps:
 # Update Kubernetes Container Image
   - id: update Kubernetes Container Image
     name: 'gcr.io/$PROJECT_ID/kustomize:${_KUSTOMIZE_VERSION}'
+    entrypoint: bash
     args:
     - '-c'
     - |
