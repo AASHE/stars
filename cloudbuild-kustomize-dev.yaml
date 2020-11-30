@@ -49,3 +49,8 @@ steps:
       - 'CLOUDSDK_COMPUTE_ZONE=${_GKE_LOCATION}'
       - 'CLOUDSDK_CONTAINER_CLUSTER=${_GKE_CLUSTER}'
       - 'GCLOUD_PROJECT=$PROJECT_ID'
+
+# Deployes files back to Git
+  - id: GitOps
+    name: 'gcr.io/cloud-builders/git'
+    args: ['status']
