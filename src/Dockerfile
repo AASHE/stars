@@ -23,5 +23,11 @@ COPY . .
 
 RUN chmod +x run-celery.sh
 
+# Migrate Django after each build
+RUN python manage.py migrate
+
+# Collect website static assets
+RUN django collectstatic
+
 # Start the server when the container launches
 #CMD ["python", "manage.py", "runserver", "0.0.0.0:8080", "--noreload"]
