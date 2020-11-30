@@ -8,7 +8,7 @@ steps:
     args:
     - '-c'
     - |
-      mkdir secrets
+      mkdir /workspace/kubernetes-manifests/${_KUST_BUILD_DIR}/secrets
       gcloud secrets versions access latest --secret=${_KUST_SECRET_FILE} > secrets/kustomization.yaml
 
 # Kustomize builds kubernetes yaml and kubectl deploys
