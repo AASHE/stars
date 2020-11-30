@@ -9,7 +9,7 @@ steps:
 
 # Kustomize builds kubernetes yaml and kubectl deploys
   - id: deploy django and celery
-  - name: 'gcr.io/$PROJECT_ID/kustomize:v3.8.7'
+    name: 'gcr.io/$PROJECT_ID/kustomize:v3.8.7'
     dir: 'kubernetes-manifests'
     args:
     - 'build'
