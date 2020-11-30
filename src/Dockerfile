@@ -23,6 +23,8 @@ COPY . .
 
 RUN chmod +x run-celery.sh
 
+RUN chmod +x run-django.sh
+
 # Migrate Django after each build
 #RUN python manage.py migrate
 
