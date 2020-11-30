@@ -153,5 +153,8 @@ zope.exceptions==4.0.5
 zope.interface==4.0.3
 zope.testing==4.1.1
 
+#Additions for Google Cloud Logging
+google-cloud-logging
+
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools

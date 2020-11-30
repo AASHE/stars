@@ -1,19 +1,19 @@
 steps:
 
-# GKE create namespace  Namespace stars-rmq-dev
+# GKE create namespace
   - name: 'gcr.io/cloud-builders/gke-deploy'
     dir: 'kubernetes-manifests'
     args: ['apply', '-f', '${_GKE_NAMESPACE_YAML}', '--location=${_GKE_LOCATION}', '--cluster=${_GKE_CLUSTER}']
 
 
-# Helm add repo for cert-manager
+# Helm add repo for nginx ingress
   - name: 'gcr.io/aashe-migration/helm'
     args: ['repo', 'add', 'ingress-nginx', 'https://kubernetes.github.io/ingress-nginx/']
     env:
     - 'CLOUDSDK_CONTAINER_CLUSTER=${_GKE_CLUSTER}'
     - 'CLOUDSDK_COMPUTE_ZONE=${_GKE_LOCATION}'
 
-# Helm install of cert-manager
+# Helm install of nginx ingress
   - name: 'gcr.io/aashe-migration/helm'
     entrypoint: 'bash'
     args:

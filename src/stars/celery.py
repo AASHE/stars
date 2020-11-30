@@ -5,6 +5,11 @@ import os
 from celery import Celery
 from celery.utils.log import get_task_logger
 
+# Logging Imports
+import logging
+import google.cloud.logging
+from google.cloud.logging.handlers.container_engine import ContainerEngineHandler
+
 # set the default Django settings module for the 'celery' program.
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'stars.settings')
 
@@ -30,14 +35,17 @@ app.autodiscover_tasks()
 @app.task(bind=True)
 def debug_task(self):
     print('Request: {0!r}'.format(self.request))
+    logging.info('Request: {0!r}'.format(self.request))
 
 
 @app.task(name='tasks.beacon')
 def beacon():
     print("BEATING!")
+    logging.info("BEATING!")
 
 
 @app.task(name='tasks.run_cleanup')
 def run_cleanup():
-    print "running cleanup task"
+    print("running cleanup task")
+    logging.info("running cleanup task")
     call_command('cleanup')
