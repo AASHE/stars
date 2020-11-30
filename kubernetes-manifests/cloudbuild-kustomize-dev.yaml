@@ -5,7 +5,11 @@ steps:
   - id: kubernetes secrets
     name: gcr.io/cloud-builders/gcloud
     entrypoint: 'bash'
-    args: [ '-c', 'gcloud secrets versions access latest --secret=${_KUST_SECRET_FILE} > secrets/kustomization.yaml' ]
+    args:
+    - '-c'
+    - |
+      mkdir secrets
+      gcloud secrets versions access latest --secret=${_KUST_SECRET_FILE} > secrets/kustomization.yaml
 
 # Kustomize builds kubernetes yaml and kubectl deploys
   - id: deploy django and celery
