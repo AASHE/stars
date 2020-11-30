@@ -9,7 +9,7 @@ python manage.py migrate
 echo "after migrate"
 
 # Collect website static assets
-python manage.py collectstatic
+python manage.py collectstatic --noinput
 
 echo "after collectstatic"
 
