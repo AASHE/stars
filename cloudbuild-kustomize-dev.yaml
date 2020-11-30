@@ -12,7 +12,7 @@ steps:
     name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'gcr.io/$PROJECT_ID/stars-image:$BUILD_ID']
 
-# Update Kubernetes Container Image
+# Update Kubernetes Django Container Image
   - id: update Kubernetes Container Image
     name: 'gcr.io/$PROJECT_ID/kustomize:${_KUSTOMIZE_VERSION}'
     entrypoint: bash
@@ -21,6 +21,21 @@ steps:
     - |
       cd /workspace/kubernetes-manifests/${_KUST_BUILD_DIR}
       kustomize edit set image stars-django-image=gcr.io/$PROJECT_ID/stars-image:$BUILD_ID
+    env:
+      - 'APPLY=true'
+      - 'CLOUDSDK_COMPUTE_ZONE=${_GKE_LOCATION}'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=${_GKE_CLUSTER}'
+      - 'GCLOUD_PROJECT=$PROJECT_ID'
+
+# Update Kubernetes Celery Container Image
+  - id: update Kubernetes Container Image
+    name: 'gcr.io/$PROJECT_ID/kustomize:${_KUSTOMIZE_VERSION}'
+    entrypoint: bash
+    args:
+    - '-c'
+    - |
+      cd /workspace/kubernetes-manifests/${_KUST_BUILD_DIR}
+      kustomize edit set image stars-celery-image=gcr.io/$PROJECT_ID/stars-image:$BUILD_ID
     env:
       - 'APPLY=true'
       - 'CLOUDSDK_COMPUTE_ZONE=${_GKE_LOCATION}'
@@ -49,8 +64,3 @@ steps:
       - 'CLOUDSDK_COMPUTE_ZONE=${_GKE_LOCATION}'
       - 'CLOUDSDK_CONTAINER_CLUSTER=${_GKE_CLUSTER}'
       - 'GCLOUD_PROJECT=$PROJECT_ID'
-
-# Deployes files back to Git
-  - id: GitOps
-    name: 'gcr.io/cloud-builders/git'
-    args: ['status']

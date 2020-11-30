@@ -17,8 +17,7 @@ spec:
       containers:
       - name: stars-celery
         image: stars-celery-image
-        command: ["python"]
-        args: ["manage.py", "runserver", "0.0.0.0:8080", "--noreload"]
+        command: ["./run-celery.sh"]
         ports:
         - containerPort: 8080
         envFrom:
