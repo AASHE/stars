@@ -15,11 +15,19 @@ WORKDIR /app
 # Install any needed packages specified in requirements.txt
 #RUN pip install --trusted-host pypi.python.org -r requirements.txt
 
-# Make directory for celery beat
-RUN mkdir -p /var/www/stars/logs
+# Install google cloud logging
+RUN pip install --trusted-host pypi.python.org google-cloud-logging
+
+# Make directories for django and celery
+RUN mkdir -p /var/www/ \
+    mkdir -p /var/www/stars \
+    mkdir -p /var/www/stars/media \
+    mkdir -p /var/www/stars/static \
+    mkdir -p /var/www/stars/logs \
+    mkdir -p /var/www/stars/src/
 
 # Copy the rest of the working directory contents into the container at /app
-COPY . .
+COPY . . 
 
 RUN chmod +x run-celery.sh
 
@@ -28,8 +36,6 @@ RUN chmod +x run-django.sh
 # Migrate Django after each build
 #RUN python manage.py migrate
 
-# Collect website static assets
-#RUN django collectstatic
 
 # Start the server when the container launches
 #CMD ["python", "manage.py", "runserver", "0.0.0.0:8080", "--noreload"]
