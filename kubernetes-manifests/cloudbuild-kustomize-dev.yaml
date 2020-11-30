@@ -9,7 +9,7 @@ steps:
     - '-c'
     - |
       mkdir /workspace/kubernetes-manifests/${_KUST_BUILD_DIR}/secrets
-      gcloud secrets versions access latest --secret=${_KUST_SECRET_FILE} > secrets/kustomization.yaml
+      gcloud secrets versions access latest --secret=${_KUST_SECRET_FILE} > /workspace/kubernetes-manifests/${_KUST_BUILD_DIR}/secrets/kustomization.yaml
 
 # Kustomize builds kubernetes yaml and kubectl deploys
   - id: deploy django and celery
