@@ -9,7 +9,7 @@ python manage.py migrate
 echo "after migrate"
 
 # Collect website static assets
-django collectstatic
+python manage.py collectstatic
 
 echo "after collectstatic"
 
