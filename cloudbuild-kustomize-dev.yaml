@@ -20,6 +20,11 @@ steps:
     - |
       cd /workspace/kubernetes-manifests/${_KUST_BUILD_DIR}
       kustomize edit set image stars-django-image=gcr.io/$PROJECT_ID/stars-image:$BUILD_ID
+    env:
+      - 'APPLY=true'
+      - 'CLOUDSDK_COMPUTE_ZONE=${_GKE_LOCATION}'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=${_GKE_CLUSTER}'
+      - 'GCLOUD_PROJECT=$PROJECT_ID'
 
 # Access the secrets file from Secret Manager
   - id: load kubernetes secrets file
