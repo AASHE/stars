@@ -61,7 +61,7 @@ configMapGenerator:
     - MEDIA_ROOT=/var/www/stars/media/
     - NEW_RELIC_CONFIG_FILE=/var/www/stars//newrelic.ini
     - PORT=8080
-    - RMQ_IP=10.104.2.103
+    - RMQ_IP=10.4.8.25
     - STARS_BENCHMARKS_HOST=benchmarks.aashe.org
     - STARS_BROCHURE_HOST=stars.aashe.org
     - STARS_REPORTS_HOST=reports.aashe.org
