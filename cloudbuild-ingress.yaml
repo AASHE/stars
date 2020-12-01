@@ -2,7 +2,7 @@ steps:
 
 # GKE create namespace
   - name: 'gcr.io/cloud-builders/gke-deploy'
-    dir: 'kubernetes-manifests'
+    dir: 'kubernetes-manifests/ingress-controller'
     args: ['apply', '-f', '${_GKE_NAMESPACE_YAML}', '--location=${_GKE_LOCATION}', '--cluster=${_GKE_CLUSTER}']
 
 
