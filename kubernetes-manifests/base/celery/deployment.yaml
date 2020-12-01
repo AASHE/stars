@@ -17,7 +17,7 @@ spec:
       containers:
       - name: stars-celery
         image: stars-celery-image
-        command: ["./run-celery.sh"]
+        command: ["/bin/sh", "-ec", "sleep 3000"]
         ports:
         - containerPort: 8080
         envFrom:
