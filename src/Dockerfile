@@ -18,6 +18,9 @@ WORKDIR /app
 # Install google cloud logging
 RUN pip install --trusted-host pypi.python.org google-cloud-logging
 
+# Install google cloud logging
+RUN pip install --trusted-host pypi.python.org django-storages[google]
+
 # Make directories for django and celery
 RUN mkdir -p /var/www/ \
     mkdir -p /var/www/stars \
