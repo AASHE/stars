@@ -46,6 +46,11 @@ DATABASES = {"default": dj_database_url.parse(os.environ.get("STARS_DB_URL", Non
 DATABASES["default"]["OPTIONS"] = {"init_command": "SET default_storage_engine=MYISAM"}
 
 # Media
+
+DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+GS_BUCKET_NAME = 'YOUR_BUCKET_NAME_GOES_HERE'
+STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+
 USE_S3 = os.environ.get("USE_S3", None)
 
 if USE_S3:
