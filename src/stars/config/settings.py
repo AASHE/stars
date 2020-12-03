@@ -48,7 +48,7 @@ DATABASES["default"]["OPTIONS"] = {"init_command": "SET default_storage_engine=M
 # Media
 
 DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
-GS_BUCKET_NAME = 'YOUR_BUCKET_NAME_GOES_HERE'
+GS_BUCKET_NAME = 'stars-static'
 STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 
 USE_S3 = os.environ.get("USE_S3", None)
