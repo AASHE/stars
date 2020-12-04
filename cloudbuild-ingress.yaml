@@ -20,7 +20,7 @@ steps:
      - '-c'
      - |
         CLOUDSDK_COMPUTE_ZONE=${_GKE_LOCATION}
-        helm install ${_INGRESS_NAME} ingress-nginx/ingress-nginx --namespace ${_GKE_NAMESPACE}
+        helm install ${_INGRESS_NAME} ingress-nginx/ingress-nginx --namespace ${_GKE_NAMESPACE} --set controller.service.loadBalancerIP=${_EXTERNAL_IP}
     env:
     - 'CLOUDSDK_CONTAINER_CLUSTER=${_GKE_CLUSTER}'
     - 'CLOUDSDK_COMPUTE_ZONE=${_GKE_LOCATION}'
