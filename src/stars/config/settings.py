@@ -50,6 +50,8 @@ DATABASES["default"]["OPTIONS"] = {"init_command": "SET default_storage_engine=M
 
 # Media
 
+USE_GCS = os.environ.get("USE_GCS", None)
+
 if USE_GCS:
     DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
     GS_BUCKET_NAME = 'stars-static'
