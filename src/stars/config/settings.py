@@ -11,6 +11,9 @@ import dj_database_url
 from celerybeat_schedule import STARS_TASK_SCHEDULE
 from django.contrib.messages import constants as messages
 
+#added to support static files in GCS
+#from django.core.files.storage import default_storage
+
 sys.path.append("../")
 
 ADMINS = [
@@ -47,9 +50,10 @@ DATABASES["default"]["OPTIONS"] = {"init_command": "SET default_storage_engine=M
 
 # Media
 
-DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
-GS_BUCKET_NAME = 'stars-static'
-STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+if USE_GCS:
+    DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+    GS_BUCKET_NAME = 'stars-static'
+    STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 
 USE_S3 = os.environ.get("USE_S3", None)
 
