@@ -21,7 +21,7 @@ gcloud beta container clusters create \
   --cluster-version $CLUSTER_VERSION \
   --release-channel $RELEASE_CHANNEL \
   --machine-type $MACHINE_TYPE \
-  --image-type "COS" \
+  --image-type "cos_containerd" \
   --disk-type DISK_TYPE \
   --disk-size DISK_SIZE \
   --metadata disable-legacy-endpoints=true \
