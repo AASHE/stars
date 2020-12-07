@@ -1,6 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 
 # Creates Kubernetes Cluster using gcloud.  gcloud must be installed first with gcloud init already ran
+
+set -e
 
 # set variables
 PROJECT='aashe-migration'
@@ -31,6 +33,7 @@ gcloud beta container clusters create \
   --enable-ip-alias \
   --network "projects/aashe-migration/global/networks/default" \
   --subnetwork "projects/aashe-migration/regions/us-east1/subnetworks/default" \
+  --enable-network-policy \
   --enable-intra-node-visibility \
   --default-max-pods-per-node "110" \
   --no-enable-master-authorized-networks \
@@ -39,9 +42,15 @@ gcloud beta container clusters create \
   --enable-autorepair \
   --max-surge-upgrade 1 \
   --max-unavailable-upgrade 0 \
+  --maintenance-window-start "2020-12-06T06:00:00Z" \
+  --maintenance-window-end "2020-12-07T06:00:00Z" \
+  --maintenance-window-recurrence "FREQ=WEEKLY;BYDAY=SA,SU" \
   --workload-pool $PROJECT_ID".svc.id.goog" \
   --enable-shielded-nodes \
   --security-group "gke-security-groups@aashe.org" \
   $CLUSTER_NAME
 
-  # set maintenance window, COSD, Network Policy, Service Account, autoscaling
+  # set Service Account, autoscaling
+
+echo "GKE Cluster provisioning complete at $(date)"
+exit 0
