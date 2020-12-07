@@ -72,7 +72,7 @@ if settings.DEBUG:
         url(r'^styles/$', TemplateView.as_view(template_name='styles.html'), name="styles")
     ])
 
-if settings.DEBUG:
+if settings.MEDIA_LOCAL:
     urlpatterns.extend([
         url(r'^media/(?P<path>.*)$',
             serve, {

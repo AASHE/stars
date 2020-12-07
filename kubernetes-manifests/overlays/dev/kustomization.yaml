@@ -5,7 +5,7 @@ resources:
   - stars.dev.namespace.yaml
   - ../../base/django
   - ../../base/celery
-  - stars.ingress.yaml
+  - stars.dev.ingress.yaml
   - secrets
 
 namePrefix: dev-
@@ -37,6 +37,7 @@ configMapGenerator:
     - EMAIL_PORT=587
     - EMAIL_REPLY_TO=stars@aashe.org
     - MEDIA_ROOT=/var/www/stars/media/
+    - MEDIA_LOCAL=true
     - PORT=8080
     - RMQ_IP=10.4.8.25
     - STARS_BENCHMARKS_HOST=benchmarks.aashe.org
