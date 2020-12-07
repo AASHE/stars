@@ -28,6 +28,10 @@ DEFAULT_CHARSET = "utf-8"
 PROJECT_PATH = os.path.join(os.path.dirname(__file__), "..")
 
 DEBUG = os.environ.get("DEBUG", False)
+
+# Added to support local Media content from Kubernetes.  12-7-2020
+MEDIA_LOCAL = os.environ.net("MEDIA_LOCAL", False)
+
 API_TEST_MODE = os.environ.get("API_TEST_MODE", DEBUG)
 FIXTURE_DIRS = [
     "fixtures",

@@ -5,7 +5,6 @@ resources:
   - stars.dev.namespace.yaml
   - ../../base/django
   - ../../base/celery
-  - stars.dev.ingress.yaml
   - secrets
 
 namePrefix: dev-
