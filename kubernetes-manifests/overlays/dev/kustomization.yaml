@@ -43,8 +43,7 @@ configMapGenerator:
     - STARS_BROCHURE_HOST=stars.aashe.org
     - STARS_REPORTS_HOST=reports.aashe.org
     - STATIC_ROOT="/var/www/stars/media/static/"
-    - USE_S3=true
-
+    
   - name: stars-celery-map
     literals:
     - AWS_STORAGE_BUCKET_NAME=starsdev
