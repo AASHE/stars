@@ -1,7 +1,5 @@
 # Stars Kubernetes
 
-https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/
-
 The following products are used in GCP for Stars.  More details are in the below sections.
 * GKE to host the Stars Prod, Dev environments
 * GKE to host RabbitMQ, Certificate Manager, NGINX Ingress Controller
@@ -12,7 +10,7 @@ The following products are used in GCP for Stars.  More details are in the below
 * Container Registry to host the contain images
 * Cloud Build to build the containers and deploy changes to GKE
 
-![Stars GCP Architecture][aashe.stars.png]
+![Stars GCP Architecture](aashe.stars.png)
 
 ## GKE Cluster
 
@@ -44,6 +42,19 @@ GKE is integrated with the AASHE Stars Github site using the Cloud Build GitHup 
 |stars-cert-mgr-prod      | Creates Cert Manager and used to update configuration                  |
 |stars-gke-dev            | Deploys changes in code to stars development in GKE                    |
 |stars-gke-prod           | Deployes changes to gke stars production in GKE                        |
+
+[Kustomize](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/) is used as the templating engine to make changes to the environment.  Using the principles of configuration as data and GitOps there is a single set of kubernetes deployment yaml per application.  This prevents duplication of kubernetes yaml files that have the same settings largely repeated between environments.  Below is a summary of the directory structure in this directory.
+
+* Base
+** celery: base Celery deployment YAML file
+** django: base Django deployment and service file
+
+* Overlays
+** cert-manager: Stars certifite files
+** dev: Stars development variables
+** prod: Stars Production variables
+
+A kustomization.yaml is located overlay which specific the base directory, config map values, and a path to secrets.  The kustomize config map and secrets generator is used to generate config maps and secrets.  Due to the sensitive nature of data in secrets the files used secret generator are stored in GCP Secret Manager and loaded by the Cloud Build pipeline during deployment and not stored in Github.
 
 ### Stars Dev
 
