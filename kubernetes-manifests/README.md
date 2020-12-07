@@ -9,6 +9,7 @@ The following products are used in GCP for Stars.  More details are in the below
 * IAM Service Account to acess Cloud Storage (future)
 * Container Registry to host the contain images
 * Cloud Build to build the containers and deploy changes to GKE
+* GCP Secret Manger to store secrets for the Cloud Flare API key and application secrets for Stars
 
 ![Stars GCP Architecture](aashe.stars.png)
 
@@ -46,20 +47,43 @@ GKE is integrated with the AASHE Stars Github site using the Cloud Build GitHup 
 [Kustomize](https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/) is used as the templating engine to make changes to the environment.  Using the principles of configuration as data and GitOps there is a single set of kubernetes deployment yaml per application.  This prevents duplication of kubernetes yaml files that have the same settings largely repeated between environments.  Below is a summary of the directory structure in this directory.
 
 * Base
-** celery: base Celery deployment YAML file
-** django: base Django deployment and service file
+   * celery: base Celery deployment YAML file
+   * django: base Django deployment and service file
 
 * Overlays
-** cert-manager: Stars certifite files
-** dev: Stars development variables
-** prod: Stars Production variables
+  * cert-manager: Stars certifite files
+  * dev: Stars development variables
+  * prod: Stars Production variables
 
 A kustomization.yaml is located overlay which specific the base directory, config map values, and a path to secrets.  The kustomize config map and secrets generator is used to generate config maps and secrets.  Due to the sensitive nature of data in secrets the files used secret generator are stored in GCP Secret Manager and loaded by the Cloud Build pipeline during deployment and not stored in Github.
 
 ### Stars Dev
 
+Below is a summary of files used to deploy Stars development environment
+
+| Name                    | Description                                                            |
+|-------------------------|------------------------------------------------------------------------|
+|kustomization.yaml       | Location of base app manifests, secrets, and config map values         |
+|stars.dev.namespace.yaml | Stars development namespace kubernetes manifest                        |
+
+The secrets directory is created by the star-gke-dev cloud build pipeline.  The kustomize secrets generator file is loaded from stars-secret-dev secret in Secret Manager.  
+
+Builds are automated through Cloud Build when changes are committed to the following directories:
+* kubernetes/manifests/overlays/dev
 
 ### Stars Prod
+
+Below is a summary of files used to deploy Stars production environment
+
+| Name                    | Description                                                            |
+|-------------------------|------------------------------------------------------------------------|
+|kustomization.yaml       | Location of base app manifests, secrets, and config map values         |
+|stars.prod.namespace.yaml | Stars development namespace kubernetes manifest                        |
+
+The secrets directory is created by the star-gke-dev cloud build pipeline.  The kustomize secrets generator file is loaded from stars-secret-prod secret in Secret Manager.  
+
+Builds are automated through Cloud Build when changes are committed to the following directories:
+* kubernetes/manifests/overlays/prod
 
 
 ## Container Registry
