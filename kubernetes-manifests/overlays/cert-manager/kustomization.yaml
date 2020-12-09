@@ -4,4 +4,5 @@ kind: Kustomization
 resources:
   - secrets
   - stars.cert.issuer.yaml
-  - stars.cert.certificate.yaml
+  - stars.dev.cert.certificate.yaml
+  - stars.prod.cert.certificate.yaml
