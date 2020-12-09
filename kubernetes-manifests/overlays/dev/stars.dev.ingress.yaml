@@ -8,7 +8,7 @@ metadata:
     cloud.google.com/neg: '{"ingress": false}'
 spec:
   tls:
-  - secretName: stars-cert-f8p8w
+  - secretName: stars-test-cert-4tfrf
   backend:
     serviceName: dev-stars
     servicePort: 8080
