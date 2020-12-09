@@ -1,47 +1,6 @@
 # Access the id_github file from Secret Manager
 steps:
 
-# Docker build
-  - id: build container
-    name: 'gcr.io/cloud-builders/docker'
-    dir: 'src'
-    args: ['build', '-t', 'gcr.io/$PROJECT_ID/stars-image:$BUILD_ID', '.']
-
-# Push container to GCP Container Registry
-  - id: push container to gcp container registry
-    name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/$PROJECT_ID/stars-image:$BUILD_ID']
-
-# Update Kubernetes Django Container Image
-  - id: update Kubernetes Django Container Image
-    name: 'gcr.io/$PROJECT_ID/kustomize:${_KUSTOMIZE_VERSION}'
-    entrypoint: bash
-    args:
-    - '-c'
-    - |
-      cd /workspace/kubernetes-manifests/${_KUST_BUILD_DIR}
-      kustomize edit set image stars-django-image=gcr.io/$PROJECT_ID/stars-image:$BUILD_ID
-    env:
-      - 'APPLY=true'
-      - 'CLOUDSDK_COMPUTE_ZONE=${_GKE_LOCATION}'
-      - 'CLOUDSDK_CONTAINER_CLUSTER=${_GKE_CLUSTER}'
-      - 'GCLOUD_PROJECT=$PROJECT_ID'
-
-# Update Kubernetes Celery Container Image
-  - id: update Kubernetes Celery Container Image
-    name: 'gcr.io/$PROJECT_ID/kustomize:${_KUSTOMIZE_VERSION}'
-    entrypoint: bash
-    args:
-    - '-c'
-    - |
-      cd /workspace/kubernetes-manifests/${_KUST_BUILD_DIR}
-      kustomize edit set image stars-celery-image=gcr.io/$PROJECT_ID/stars-image:$BUILD_ID
-    env:
-      - 'APPLY=true'
-      - 'CLOUDSDK_COMPUTE_ZONE=${_GKE_LOCATION}'
-      - 'CLOUDSDK_CONTAINER_CLUSTER=${_GKE_CLUSTER}'
-      - 'GCLOUD_PROJECT=$PROJECT_ID'
-
 # Access the secrets file from Secret Manager
   - id: load kubernetes secrets file
     name: gcr.io/cloud-builders/gcloud
@@ -53,7 +12,7 @@ steps:
       gcloud secrets versions access latest --secret=${_KUST_SECRET_FILE} > /workspace/kubernetes-manifests/${_KUST_BUILD_DIR}/secrets/kustomization.yaml
 
 # Kustomize builds kubernetes yaml and kubectl deploys
-  - id: deploy django and celery
+  - id: deploy certificate issuer and stars certificates
     name: 'gcr.io/$PROJECT_ID/kustomize:${_KUSTOMIZE_VERSION}'
     dir: 'kubernetes-manifests'
     args:
