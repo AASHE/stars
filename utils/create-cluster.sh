@@ -5,27 +5,27 @@
 set -e
 
 # set variables
-PROJECT='aashe-migration'
+PROJECT_ID='aashe-migration'
 ZONE='us-east1-b'
-CLUSTER_NAME='aashe-gke-1'
+CLUSTER_NAME='aashe-gke-2'
 CLUSTER_VERSION='1.16.13-gke.404'
 RELEASE_CHANNEL='stable'
 MACHINE_TYPE='e2-medium'
 DISK_TYPE='pd-standard'
-DISK_SIZE='100'
+DISK_SIZE='200GB'
 NUM_NODES='3'
 
 
-gcloud beta container clusters create \
-  --project $PROJECT \
+gcloud beta container clusters create $CLUSTER_NAME \
+  --project $PROJECT_ID \
   --zone $ZONE \
   --no-enable-basic-auth \
   --cluster-version $CLUSTER_VERSION \
   --release-channel $RELEASE_CHANNEL \
   --machine-type $MACHINE_TYPE \
   --image-type "cos_containerd" \
-  --disk-type DISK_TYPE \
-  --disk-size DISK_SIZE \
+  --disk-type $DISK_TYPE \
+  --disk-size $DISK_SIZE \
   --metadata disable-legacy-endpoints=true \
   --scopes "https://www.googleapis.com/auth/devstorage.read_only","https://www.googleapis.com/auth/logging.write","https://www.googleapis.com/auth/monitoring","https://www.googleapis.com/auth/servicecontrol","https://www.googleapis.com/auth/service.management.readonly","https://www.googleapis.com/auth/trace.append" \
   --num-nodes $NUM_NODES \
@@ -45,10 +45,9 @@ gcloud beta container clusters create \
   --maintenance-window-start "2020-12-06T06:00:00Z" \
   --maintenance-window-end "2020-12-07T06:00:00Z" \
   --maintenance-window-recurrence "FREQ=WEEKLY;BYDAY=SA,SU" \
-  --workload-pool $PROJECT_ID".svc.id.goog" \
+  --workload-pool "${PROJECT_ID}.svc.id.goog" \
   --enable-shielded-nodes \
-  --security-group "gke-security-groups@aashe.org" \
-  $CLUSTER_NAME
+  --security-group "gke-security-groups@aashe.org"
 
   # set Service Account, autoscaling
 
