@@ -1,4 +1,9 @@
-#!/bin/bash
+#!/bin/sh
+
+set -e
+
+# Collect website static assets
+python manage.py collectstatic --noinput
 
 #Start Celery Workers
 celery -A stars worker --config stars/celery.py --loglevel=DEBUG &
