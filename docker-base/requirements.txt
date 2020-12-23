@@ -81,6 +81,8 @@ factory-boy==2.1.2
 functools32==3.2.3-2
 future==0.16.0            # via django-membersuite-auth, membersuite-api-client
 gevent==1.0.2
+google-cloud-logging
+google-cloud-storage==1.29.0
 gnureadline==6.3.8
 greenlet==0.4.7
 gunicorn==0.17.0

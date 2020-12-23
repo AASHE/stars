@@ -11,6 +11,7 @@ RUN apt-get install \
     libcairo2 \
     libcairo-gobject2 \
     libpango-1.0-0 \
+    libpangocairo-1.0-0 \
     -y
 
 # Set the working directory to /app
