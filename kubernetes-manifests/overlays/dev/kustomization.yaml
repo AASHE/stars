@@ -35,6 +35,7 @@ configMapGenerator:
     - EMAIL_HOST_USER=stars_notifier@aashe.org
     - EMAIL_PORT=587
     - EMAIL_REPLY_TO=stars@aashe.org
+    - EXPORTS_GCS_BUCKET=stars-exports
     - MEDIA_ROOT=/var/www/stars/media/
     - MEDIA_LOCAL=true
     - PORT=8080
