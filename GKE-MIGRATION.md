@@ -34,3 +34,24 @@ Added in IS_GCS env var to trigger Django loading files into GCS. Django storage
 
 [These instructions are for setting up static in GCS.](https://cloud.google.com/python/django/kubernetes-engine#deploying_the_app_to_)
 
+## Celery
+
+Celery dependendencies
+*  weazyprint
+* static content.  Needs to be loaded locally
+
+
+Commands to verify
+'''
+celery -A stars inspect stats
+celery -A stars status
+celery -A stars inspect scheduled
+celery -A stars inspect active
+celery -A stars inspect active_queues
+celery -A stars inspect conf
+''
+
+Celery uses static files to generate Verify files in static
+ls /var/www/stars/media/static
+
+
