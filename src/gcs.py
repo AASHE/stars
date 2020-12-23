@@ -31,17 +31,3 @@ def download_blob(bucket_name, source_blob_name, destination_file_name):
     except Exception as ex:
         logging.error(ex)
 #END download_blob()
-
-def main():
-    bucket_name='stage-3992'
-    source_file_name='1.txt'
-    destination_blob_name='1.txt'
-    #upload_blob(bucket_name, source_file_name, destination_blob_name)
-
-    source_blob_name='1.txt'
-    destination_file_name='2.txt'
-    download_blob(bucket_name, source_blob_name, destination_file_name)
-
-
-if __name__ == "__main__":
-    main()

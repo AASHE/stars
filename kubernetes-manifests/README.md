@@ -100,10 +100,15 @@ Below are the images used.  A seperate base image was created for Stars do to th
 |stars-image     | stars-gke-dev, stars-gke-prod | Base image for stars django and celery            |
 
 ## Ingress Controller
+An NGINX Ingress Controller is used to replace the previous NGINX instance that Stars used when on a server in rack space.  The NGINX Ingress Contoller is installed via a helm chart run from Cloud Build.
 
 [Installation Link](https://docs.nginx.com/nginx-ingress-controller/configuration/global-configuration/configmap-resource/#using-configmap)
 
 [Default Values](https://nginx.org/en/docs/http/ngx_http_proxy_module.html?&_ga=2.262455436.1488070266.1606851969-754510161.1606169995#proxy_buffers)
+
+Ingress provides load balancing, SSL termination, and named-based virtual hosting. Ingress exposes HTTP and HTTPS routes from the GKE cluster to services inside the cluster.  More detail is [here](https://kubernetes.io/docs/concepts/services-networking/ingress/)
+
+Advanced configuration are [here](https://github.com/nginxinc/kubernetes-ingress/tree/v1.9.1/examples-of-custom-resources) if needed for the future.
 
 ## Cert Manager
 
@@ -121,3 +126,8 @@ kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
 Set path for where it is installed or copy to usr/bin
 
 `kustomize build overlays/dev'
+
+## Migrationg Pods to different node pool
+
+Please follow instructions [here] (https://cloud.google.com/kubernetes-engine/docs/tutorials/migrating-node-pool) to migrate Pods to a different node pool.  The instructions go through cordoning and draining the existing node pool.
+
