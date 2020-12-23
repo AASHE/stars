@@ -20,7 +20,7 @@ spec:
         backend:
           serviceName: dev-stars
           servicePort: 8080
-  - host: testreports.aashe.org
+  - host: reports-dev.aashe.org
     http:
       paths:
       - path: /*
