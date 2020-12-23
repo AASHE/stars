@@ -3,7 +3,10 @@ steps:
 
 # Docker build
   - name: 'gcr.io/cloud-builders/docker'
+    id: build container
+    dir: docker-base
     args: ['build', '-t', 'gcr.io/aashe-migration/stars-base-image:$BUILD_ID', '.']
 
   - name: 'gcr.io/cloud-builders/docker'
+    id: push to container registry
     args: ['push', 'gcr.io/aashe-migration/stars-base-image:$BUILD_ID']
