@@ -1,0 +1,42 @@
+apiVersion: storage.cnrm.cloud.google.com/v1beta1
+kind: StorageBucket
+metadata:
+  annotations:
+    cnrm.cloud.google.com/force-destroy: "false"
+  labels:
+    app: stars
+  name: stars-exports
+  namespace: admin-config-conn
+spec:
+  storageClass: REGIONAL
+  uniformBucketLevelAccess: true
+  location: us-east1
+  versioning:
+    enabled: true
+
+---
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMPolicyMember
+metadata:
+  name: stars-exports-iam-obj-creator
+  namespace: admin-config-conn
+spec:
+  member: serviceAccount:gke-sa-1@aashe-migration.iam.gserviceaccount.com
+  role: roles/storage.objectCreator
+  resourceRef:
+    apiVersion: storage.cnrm.cloud.google.com/v1beta1
+    kind: StorageBucket
+    name: stars-exports
+---
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMPolicyMember
+metadata:
+  name: stars-exports-iam-obj-viewer
+  namespace: admin-config-conn
+spec:
+  member: serviceAccount:gke-sa-1@aashe-migration.iam.gserviceaccount.com
+  role: roles/storage.objectViewer
+  resourceRef:
+    apiVersion: storage.cnrm.cloud.google.com/v1beta1
+    kind: StorageBucket
+    name: stars-exports

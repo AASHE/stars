@@ -2,6 +2,8 @@
 
 Config Connector is a Kubernetes addon that allows you to manage Google Cloud resources through Kubernetes.  Overview of Config Connector is [here](https://cloud.google.com/config-connector/docs/overview)
 
+Sample configs are [here](https://github.com/GoogleCloudPlatform/k8s-config-connector/tree/master/samples/resources)
+
 ## Namespace
 
 
