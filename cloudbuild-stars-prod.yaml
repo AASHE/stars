@@ -27,7 +27,7 @@ steps:
       - 'CLOUDSDK_CONTAINER_CLUSTER=${_GKE_CLUSTER}'
       - 'GCLOUD_PROJECT=$PROJECT_ID'
 
-# Update Kubernetes Celery Container Image
+# Update Kubernetes Celery Container Image and set kubernetes annotation for GitHub commit SHA
   - id: update Kubernetes Celery Container Image
     name: 'gcr.io/$PROJECT_ID/kustomize:${_KUSTOMIZE_VERSION}'
     entrypoint: bash
@@ -36,6 +36,7 @@ steps:
     - |
       cd /workspace/kubernetes-manifests/${_KUST_BUILD_DIR}
       kustomize edit set image stars-celery-image=gcr.io/$PROJECT_ID/stars-image:$BUILD_ID
+      kustomize edit add annotation kubernetes.io/change-cause:$COMMIT_SHA
     env:
       - 'APPLY=true'
       - 'CLOUDSDK_COMPUTE_ZONE=${_GKE_LOCATION}'
