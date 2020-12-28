@@ -11,7 +11,7 @@ metadata:
     nginx.ingress.kubernetes.io/ssl-prefer-server-ciphers: "true"
 spec:
   tls:
-  - secretName: stars-tls-secret-prod
+  - secretName: stars-cert-prod-2hgnp
   backend:
     serviceName: stars-prod
     servicePort: 8080
