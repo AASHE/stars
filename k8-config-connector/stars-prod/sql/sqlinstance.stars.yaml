@@ -1,0 +1,25 @@
+apiVersion: sql.cnrm.cloud.google.com/v1beta1
+kind: SQLInstance
+metadata:
+  name: stars-prod-2
+  namespace: admin-config-conn
+spec:
+  databaseVersion: MYSQL_5_7
+  region: us-east1
+  settings:
+    tier: db-n1-standard-2
+    diskSize: 15
+    diskType: PD_SSD
+    diskAutoresize: true
+    availabilityType: ZONAL
+    backupConfiguration:
+      enabled: true
+      binaryLogEnabled: true
+    maintenanceWindow:
+      day: 2
+      hour: 22
+      updateTrack: stable
+    ipConfiguration:
+      ipv4Enabled: false
+      privateNetworkRef:
+        name: sqlinstance-private-ip
