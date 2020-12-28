@@ -7,6 +7,7 @@ resources:
   - ../../base/celery
   - secrets
   - stars.prod.ingress.yaml
+  - stars.prod.cert.yaml
 
 nameSuffix: -prod
 namespace: stars-prod
