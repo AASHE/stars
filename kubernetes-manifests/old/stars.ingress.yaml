@@ -11,7 +11,7 @@ spec:
   tls:
   - secretName: stars-tls-secret
   rules:
-  - host: testreports.aashe.org
+  - host: reports.aashe.org
     http:
       paths:
       - path: /*

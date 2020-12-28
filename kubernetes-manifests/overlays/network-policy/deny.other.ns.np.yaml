@@ -1,0 +1,12 @@
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  namespace: stars-dev
+  name: stars-dev-deny-from-other-namespaces
+spec:
+  podSelector:
+    matchLabels:
+      app: stars
+  ingress:
+  - from:
+    - podSelector: {}

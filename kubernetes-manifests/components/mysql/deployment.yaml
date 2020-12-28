@@ -1,0 +1,8 @@
+- op: add
+  path: /spec/template/spec/containers/0/env/0
+  value:
+    name: mysql-conn-prod
+    valueFrom:
+      secretKeyRef:
+        name: stars-db-user-pass
+        key: star-db-url

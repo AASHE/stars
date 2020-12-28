@@ -110,6 +110,8 @@ Ingress provides load balancing, SSL termination, and named-based virtual hostin
 
 Advanced configuration are [here](https://github.com/nginxinc/kubernetes-ingress/tree/v1.9.1/examples-of-custom-resources) if needed for the future.
 
+With Ingress the NGINX the configuration can be modified by config maps, annotations, or a custom NGINX template.  Config maps change settings globally while annotations can be set per Ingress resource.  Due to this flexibility and differing settings between web sites annoatations are used for this deployment.  Annotations are [here](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/) for modifying NGINX configuration.
+
 ## Cert Manager
 
 [Cert Manager Site](https://cert-manager.io/docs/)

@@ -6,24 +6,21 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: nginx
     cloud.google.com/neg: '{"ingress": false}'
+    nginx.ingress.kubernetes.io/proxy-body-size: 30m
+    nginx.ingress.kubernetes.io/ssl-ciphers: "HIGH:!aNULL:!MD5"
+    nginx.ingress.kubernetes.io/ssl-prefer-server-ciphers: "true"
 spec:
   tls:
-  - secretName: stars-test-cert-4tfrf
+  - secretName: stars-cert-f8p8w
   backend:
     serviceName: dev-stars
     servicePort: 8080
   rules:
-  - host: reports.aashe.org
+  - host: reports-dev.aashe.org
     http:
       paths:
       - path: /*
         backend:
           serviceName: dev-stars
           servicePort: 8080
-  - host: testreports.aashe.org
-    http:
-      paths:
-      - path: /*
-        backend:
-          serviceName: dev-stars
-          servicePort: 8080
+

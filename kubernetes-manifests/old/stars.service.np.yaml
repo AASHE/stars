@@ -3,6 +3,8 @@ kind: Service
 metadata:
   name: stars-external-np
   namespace: stars-dev
+  annotations:
+    cloud.google.com/neg: '{"ingress": false}'
   labels:
     app: stars
     tier: app
@@ -10,7 +12,7 @@ spec:
   type: NodePort
   ports:
   - protocol: TCP
-    port: 60000
+    port: 8080
     targetPort: 8080
   selector:
     app: stars

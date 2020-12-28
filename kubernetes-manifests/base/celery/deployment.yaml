@@ -3,16 +3,16 @@ kind: Deployment
 metadata:
   name: stars-celery
   labels:
-    app: stars-celery
+    tier: celery
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: stars-celery
+      tier: celery
   template:
     metadata:
       labels:
-        app: stars-celery
+        tier: celery
     spec:
       containers:
       - name: stars-celery

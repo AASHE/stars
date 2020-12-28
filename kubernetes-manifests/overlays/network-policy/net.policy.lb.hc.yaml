@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: test-network-policy
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      role: db
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - ipBlock:
+        cidr: 35.191.0.0/16, 130.211.0.0/22
+    - namespaceSelector:
+        matchLabels:
+          app: stars
+    - podSelector:
+        matchLabels:
+          app: stars
+    ports:
+    - protocol: TCP
+      port: 6379

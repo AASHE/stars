@@ -1,0 +1,24 @@
+apiVersion: kustomize.config.k8s.io/v1alpha1
+kind: Component
+
+#configMapGenerator:
+#- name: conf
+#  behavior: merge
+#  literals:
+#    - recaptcha.conf=|
+#        enabled=true
+#        site_key=/var/run/secrets/recaptcha/site_key.txt
+#        secret_key=/var/run/secrets/recaptcha/secret_key.txt
+
+secretGenerator:
+- name: stars-db-user-pass
+  literals:
+    - stars_db_url=mysql://stars-dev:sg7RvxrDbQSSzYt@10.30.0.5:3306/stars
+
+patchesJson6902:
+- target:
+    #app: stars
+    version: v1
+    kind: Deployment
+    name: stars-django
+  path: deployment.yaml

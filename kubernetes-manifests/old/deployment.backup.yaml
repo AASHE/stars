@@ -3,21 +3,22 @@ kind: Deployment
 metadata:
   name: stars-django
   labels:
-    tier: django
+    app: stars-django
 spec:
   replicas: 1
   selector:
     matchLabels:
-      tier: django
+      app: stars=django
   template:
     metadata:
       labels:
-        tier: django
+        app: stars-django
     spec:
       containers:
       - name: stars-django
         image: stars-django-image
-        command: ["./run-django.sh"]
+        command: ["python"]
+        args: ["manage.py", "runserver", "0.0.0.0:8080", "--noreload"]
         ports:
         - containerPort: 8080
         envFrom:
