@@ -1,7 +1,7 @@
 apiVersion: sql.cnrm.cloud.google.com/v1beta1
 kind: SQLInstance
 metadata:
-  name: stars-mysql-prod
+  name: stars-prod-2
   namespace: admin-config-conn
 spec:
   databaseVersion: MYSQL_5_7
@@ -22,4 +22,4 @@ spec:
     ipConfiguration:
       ipv4Enabled: false
       privateNetworkRef:
-        external: projects/aashe-migration/global/networks/default
+        name: sqlinstance-private-ip

@@ -31,15 +31,3 @@ spec:
   reservedPeeringRanges:
     - name: sqlinstance-private-ip
   service: servicenetworking.googleapis.com
----
-apiVersion: serviceusage.cnrm.cloud.google.com/v1beta1
-kind: Service
-metadata:
-  name: resourcemanager.googleapis.com
-  namespace: admin-config-conn
----
-apiVersion: serviceusage.cnrm.cloud.google.com/v1beta1
-kind: Service
-metadata:
-  name: servicenetworking.googleapis.com
-  namespace: admin-config-conn
