@@ -99,12 +99,15 @@ spec:
               name: stars-django
               key: stars_ms_publication_id
         readinessProbe:
-          tcpSocket:
+          httpGet:
+            path: /
             port: 8080
           initialDelaySeconds: 5
           periodSeconds: 10
         livenessProbe:
-          tcpSocket:
+          httpGet:
+            path: /
             port: 8080
+          failureThreshold: 1
           initialDelaySeconds: 15
-          periodSeconds: 20       
+          periodSeconds: 10   
