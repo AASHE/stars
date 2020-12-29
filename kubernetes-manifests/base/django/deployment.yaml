@@ -98,16 +98,3 @@ spec:
             secretKeyRef:
               name: stars-django
               key: stars_ms_publication_id
-        readinessProbe:
-          httpGet:
-            path: /
-            port: 8080
-          initialDelaySeconds: 5
-          periodSeconds: 10
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 8080
-          failureThreshold: 1
-          initialDelaySeconds: 15
-          periodSeconds: 10   
