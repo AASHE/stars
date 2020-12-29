@@ -1,0 +1,12 @@
+apiVersion: sql.cnrm.cloud.google.com/v1beta1
+kind: SQLDatabase
+metadata:
+  labels:
+    app: bulletin
+    env: dev
+  name: bulletin
+  namespace: admin-config-conn
+spec:
+  charset: utf8
+  instanceRef:
+    name: bulletin-postgres-dev

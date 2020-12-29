@@ -1,0 +1,27 @@
+apiVersion: sql.cnrm.cloud.google.com/v1beta1
+kind: SQLInstance
+metadata:
+  name: bulletin-postgres-dev
+  namespace: admin-config-conn
+spec:
+  databaseVersion: POSTGRES_11
+  region: us-east1
+  settings:
+    tier: db-custom-1-3840
+    diskSize: 50
+    diskType: PD_SSD
+    diskAutoresize: true
+    availabilityType: ZONAL
+    locationPreference:
+      zone: us-east1-b
+    backupConfiguration:
+      enabled: true
+      pointInTimeRecoveryEnabled: true
+    maintenanceWindow:
+      day: 2
+      hour: 22
+      updateTrack: stable
+    ipConfiguration:
+      ipv4Enabled: false
+      privateNetworkRef:
+        external: projects/aashe-migration/global/networks/default
