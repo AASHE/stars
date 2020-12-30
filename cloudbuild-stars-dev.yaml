@@ -3,7 +3,7 @@ steps:
 
 # Docker build
   - id: build container
-    name: 'ubuntu'
+    name: 'gcr.io/cloud-builders/docker'
     dir: 'src'
     entrypoint: 'sh'
     args:
