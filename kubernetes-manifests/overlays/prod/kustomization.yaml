@@ -18,7 +18,7 @@ commonAnnotations:
 
 replicas:
  - name: stars-django
-   count: 1
+   count: 2
  - name: stars-celery
    count: 1
 

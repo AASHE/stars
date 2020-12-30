@@ -1,19 +1,18 @@
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: stars-dev-ingress
+  name: stars-ingress
   namespace: stars-dev
   annotations:
     kubernetes.io/ingress.class: nginx
-    cloud.google.com/neg: '{"ingress": false}'
     nginx.ingress.kubernetes.io/proxy-body-size: 30m
     nginx.ingress.kubernetes.io/ssl-ciphers: "HIGH:!aNULL:!MD5"
     nginx.ingress.kubernetes.io/ssl-prefer-server-ciphers: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    cloud.google.com/neg: '{"ingress": false}'
 spec:
-  tls:
-  - secretName: stars-cert-f8p8w
   backend:
-    serviceName: dev-stars
+    serviceName: stars-dev
     servicePort: 8080
   rules:
   - host: reports-dev.aashe.org
@@ -21,6 +20,10 @@ spec:
       paths:
       - path: /*
         backend:
-          serviceName: dev-stars
+          serviceName: stars-dev
           servicePort: 8080
+  tls:
+  - hosts:
+     - reports-dev.aashe.org
+    secretName: stars-cert-ingress-dev
 
