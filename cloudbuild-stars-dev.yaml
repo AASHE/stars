@@ -9,7 +9,7 @@ steps:
     args:
     - '-c'
     - |
-      if [{$_CONTAINER_BUILD}]; then
-        echo 'hello'
-      else
-        echo 'skipped docker build'
+        if [{$_CONTAINER_BUILD}]; then
+          echo 'hello'
+        else
+          echo 'skipped docker build'
