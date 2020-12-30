@@ -8,10 +8,11 @@ resources:
   - secrets
   - stars.dev.ingress.yaml
 
-namePrefix: dev-
+nameSuffix: -dev
 namespace: stars-dev
 commonLabels:
   env: dev
+  app: stars
 commonAnnotations:
   pythonver: "2.7"
 
