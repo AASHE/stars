@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  annotations:
+    meta.helm.sh/release-name: aashe
+    meta.helm.sh/release-namespace: ingress-nginx
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/instance: aashe
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/version: 0.41.2
+    helm.sh/chart: ingress-nginx-3.15.2
+  name: aashe-ingress-nginx-controller
+  namespace: ingress-nginx
+data:
+ keepalive-timeout: 70s
+ proxy-buffer-size: 32k
+ proxy-read-timeout: "180"
