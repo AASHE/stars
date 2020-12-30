@@ -7,12 +7,16 @@ resources:
   - ../../base/celery
   - secrets
   - stars.dev.ingress.yaml
+  - np.deny.from.other.ns.yaml
+  - np.allow.http.yaml
+  - np.allow.egress.yaml
 
 nameSuffix: -dev
 namespace: stars-dev
 commonLabels:
   env: dev
   app: stars
+  ns: stars-dev
 commonAnnotations:
   pythonver: "2.7"
 
