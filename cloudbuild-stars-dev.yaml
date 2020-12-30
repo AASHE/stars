@@ -5,7 +5,7 @@ steps:
   - id: build container
     name: 'ubuntu'
     dir: 'src'
-    entrypoint: 'bash'
+    entrypoint: 'sh'
     args:
     - '-c'
     - |
@@ -13,3 +13,4 @@ steps:
           echo 'hello'
         else
           echo 'skipped docker build'
+        fi
