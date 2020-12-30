@@ -1,4 +1,4 @@
-# Access the id_github file from Secret Manager
+# Build the base image for stars
 steps:
 
 # Docker build
