@@ -1,0 +1,15 @@
+# Deploys Stars to Dev
+steps:
+
+# Docker build
+  - id: build container
+    name: 'gcr.io/cloud-builders/docker'
+    dir: 'src'
+    entrypoint: sh
+    args:
+    - '-c'
+    - |
+      if {$_CONTAINER_BUILD}; then
+        docker build -t gcr.io/$PROJECT_ID/test-image:$BUILD_ID .
+      else
+        echo 'skipped docker build'
