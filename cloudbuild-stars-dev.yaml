@@ -5,7 +5,7 @@ steps:
   - id: build container
     name: 'gcr.io/cloud-builders/docker'
     dir: 'src'
-    entrypoint: sh
+    entrypoint: 'bash'
     args:
     - '-c'
     - |
