@@ -10,4 +10,4 @@ spec:
   charset: utf8
   collation: utf8_general_ci
   instanceRef:
-    name: stars-prod-2
+    name: stars-mysql-prod
