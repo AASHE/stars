@@ -15,3 +15,8 @@ Config Connector was selected as install option in the GKE Cluster.  Config Conn
 ## Validate Config Connector
 
 To validate Config Connector is running correctly enter `kubectl wait -n cnrm-system --for=condition=Ready pod --all`
+
+
+## PostGres SQL
+
+PostGres supports shared core and custom instance sizes.  This [link](https://cloud.google.com/sql/docs/postgres/create-instance#machine-types) in the API tier string table provides the data need to populate the machine size field.
