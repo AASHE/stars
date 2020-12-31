@@ -9,7 +9,9 @@ steps:
     args:
     - '-c'
     - |
-        if ["yes"=="$_CONTAINER_BUILD"]; then
+        RUN="$_CONTAINER_BUILD"
+        RUN_VAR="yes"
+        if [ $RUN_VAR = $RUN ]; then
           echo 'hello'
         else
           echo 'skipped docker build'
