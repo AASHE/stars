@@ -1,0 +1,14 @@
+apiVersion: redis.cnrm.cloud.google.com/v1beta1
+kind: RedisInstance
+metadata:
+  labels:
+    app: hub
+    env: dev
+  name: hub-dev-redis
+  namespace: admin-config-conn
+spec:
+  displayName: Hub Dev Redis Instance
+  region: us-east1
+  locationId: us-east1-b
+  tier: BASIC
+  memorySizeGb: 4
