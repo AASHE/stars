@@ -87,10 +87,12 @@
                           <div class="row">
                             <div class="span6">
                               <div id="chart_div_{{ sub.id|unlocalize }}"></div>
-
                               <script>
+                                google.charts.load('current', {'packages':['corechart']});
+                                google.charts.setOnLoadCallback(drawChart);
+
                                function asPercentageOfAdjustedAvailablePoints(n) {
-                                 var percentage = (n / {{ sub.get_adjusted_available_points }});
+                                 var percentage = (n / 40);
                                  return parseFloat(percentage.toFixed(2));
                                }
 
@@ -168,15 +170,13 @@
                                    },
                                  };
 
-                                 var chartContainer = document.getElementById(
-                                   'chart_div_{{ sub.id|unlocalize }}');
-                                 var chart = new google.visualization.BarChart(
-                                   chartContainer);
 
+                                 var chart = new google.visualization.BarChart(document.getElementById('chart_div_{{ sub.id|unlocalize }}'));
                                  chart.draw(dataTable, options);
                                }
 
                                drawChart();
+
                               </script>
                             </div>
                             <div class="span2" style="font-size: 1em; line-height: 1em;">

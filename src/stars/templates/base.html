@@ -30,7 +30,7 @@
       <script src="{{ STATIC_URL }}js/registration.js"
               type="text/javascript"></script>
     {% endcompress %}
-
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="https://use.fontawesome.com/64c3db2e90.js"></script>
 
     <link rel="shortcut icon" href="{{ STATIC_URL }}images/stars_favicon.ico"
@@ -43,19 +43,6 @@
     <title>{% block title %}STARS Reports{% endblock %}</title>
 
     {% include "helpers/google_analytics.html" %}
-
-    <!--  pingdom real user monitoring -->
-    <script>
-     var _prum = [['id', '52b2099cabe53d4c67000000'],
-		  ['mark', 'firstbyte', (new Date()).getTime()]];
-     (function() {
-       var s = document.getElementsByTagName('script')[0]
-	 , p = document.createElement('script');
-       p.async = 'async';
-       p.src = '//rum-static.pingdom.net/prum.min.js';
-       s.parentNode.insertBefore(p, s);
-     })();
-    </script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -217,12 +204,12 @@
 
             <div id="member-links">
               {% if user.is_authenticated %}
-                <a href="{% url 'accounts:logout' %}" class="icon-portal">Logout</a>  
+                <a href="{% url 'accounts:logout' %}" class="icon-portal">Logout</a>
               {% else %}
                 <a href="https://{{ settings.STARS_REPORTS_HOST  }}/tool/" class="icon-portal"
                    tabindex="1" target="_blank">Reporting Tool</a>
               {% endif %}
-              
+
             </div>
 
           </div>
@@ -458,7 +445,7 @@
           <div class="copyright">
 
             <div class="desc">
-              © 2019 Association for the Advancement of Sustainability in
+              © 2020 Association for the Advancement of Sustainability in
               Higher Education
             </div>
 
